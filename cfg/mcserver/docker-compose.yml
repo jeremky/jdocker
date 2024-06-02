@@ -1,0 +1,56 @@
+services:
+  mcserver:
+    image: itzg/minecraft-server:latest
+    container_name: mcserver
+    cpus: ${CPU}
+    mem_limit: ${LIMIT}
+    environment:
+      - UID
+      - GID
+      - TZ
+      - EULA
+      - OVERRIDE_SERVER_PROPERTIES
+      - STOP_SERVER_ANNOUNCE_DELAY
+      - MOTD
+      - ENABLE_ROLLING_LOGS
+      - TYPE
+      - VERSION
+      - SNOOPER_ENABLED
+      - MAX_PLAYERS
+      - DIFFICULTY
+      - VIEW_DISTANCE
+      - SIMULATION_DISTANCE
+      - MAX_WORLD_SIZE
+      - SPAWN_PROTECTION
+      - ENABLE_COMMAND_BLOCK
+      - SEED
+      - LEVEL
+      - ALLOW_NETHER
+      - PVP
+      - MODE
+      - FORCE_GAMEMODE
+      - HARDCORE
+      - OPS
+      - WHITELIST
+      - ENFORCE_WHITELIST
+      - NETWORK_COMPRESSION_THRESHOLD
+      - PLAYER_IDLE_TIMEOUT
+      - MEMORY
+      - ENABLE_RCON
+      - RCON_PASSWORD
+      - ONLINE_MODE
+      - ENFORCE_SECURE_PROFILE
+      - RESOURCE_PACK
+      - ENABLE_AUTOPAUSE
+      - MAX_TICK_TIME
+      - AUTOPAUSE_TIMEOUT_INIT
+      - AUTOPAUSE_TIMEOUT_EST
+      - JVM_DD_OPTS
+    volumes:
+      - ${DIRECTORY}:/data
+      - ${BLUEMAP}:/data/bluemap
+    ports:
+      - ${MCPORT}:25565
+    tty: true
+    stdin_open: true
+    restart: unless-stopped

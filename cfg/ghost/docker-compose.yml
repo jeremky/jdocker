@@ -1,0 +1,36 @@
+services:
+  ghost-db:
+    image: mysql:8.0
+    container_name: ghost-db
+    networks:
+      - network
+    environment:
+      - MYSQL_ROOT_PASSWORD
+    volumes:
+      - ${DIRECTORY}/mysql:/var/lib/mysql
+    restart: unless-stopped
+
+  ghost:
+    image: ghost:latest
+    container_name: ghost
+    networks:
+      - network
+      - nginx_proxy
+    environment:
+      - database__client
+      - database__connection__host
+      - database__connection__user
+      - database__connection__password
+      - database__connection__database
+      - url
+    volumes:
+      - ${DIRECTORY}/ghost:/var/lib/ghost/content
+    depends_on:
+      - ghost-db
+    restart: unless-stopped
+
+networks:
+  network:
+    external: false
+  nginx_proxy:
+    external: true

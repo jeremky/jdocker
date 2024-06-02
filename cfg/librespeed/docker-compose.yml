@@ -1,0 +1,15 @@
+services:
+  librespeed:
+    image: lscr.io/linuxserver/librespeed:latest
+    container_name: librespeed
+    networks:
+      - nginx_proxy
+    environment:
+      - PUID
+      - PGID
+      - TZ
+    restart: unless-stopped
+
+networks:
+  nginx_proxy:
+    external: true

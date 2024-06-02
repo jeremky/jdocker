@@ -1,0 +1,14 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    environment:
+      - TZ
+      - WATCHTOWER_SCHEDULE
+      - WATCHTOWER_LABEL_ENABLE
+      - WATCHTOWER_CLEANUP
+      - WATCHTOWER_REMOVE_VOLUMES
+      - WATCHTOWER_DISABLE_CONTAINERS
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

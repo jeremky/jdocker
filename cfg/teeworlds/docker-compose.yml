@@ -1,0 +1,27 @@
+services:
+  teeworlds:
+    image: riftbit/teeworlds:latest
+    container_name: teeworlds
+    environment:
+      - TW_sv_name
+      - TW_sv_max_clients
+      - TW_sv_register
+      - TW_sv_map
+      - TW_password
+      - TW_sv_rcon_password
+      - TW_sv_warmup
+      - TW_sv_scorelimit
+      - TW_sv_timelimit
+      - TW_sv_gametype
+      - TW_sv_maprotation
+      - TW_sv_motd
+    volumes:
+      - data:/teeworlds/data
+    ports:
+      - ${PORT}:8303/udp
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+
+volumes:
+  data:

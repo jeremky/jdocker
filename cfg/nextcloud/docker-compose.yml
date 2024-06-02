@@ -1,0 +1,40 @@
+services:
+  nextcloud-db:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: nextcloud-db
+    networks:
+      - network
+    environment:
+      - PUID
+      - PGID
+      - TZ
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+    volumes:
+      - ${DIRECTORY}/mariadb:/config
+    restart: unless-stopped
+
+  nextcloud:
+    image: lscr.io/linuxserver/nextcloud:latest
+    container_name: nextcloud
+    networks:
+      - network
+      - nginx_proxy
+    environment:
+      - PUID
+      - PGID
+      - TZ
+    volumes:
+      - ${DIRECTORY}/config:/config
+      - ${DIRECTORY}/data:/data
+    depends_on:
+      - nextcloud-db
+    restart: unless-stopped
+
+networks:
+  network:
+    external: false
+  nginx_proxy:
+    external: true
