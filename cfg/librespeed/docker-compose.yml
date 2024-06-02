@@ -8,8 +8,13 @@ services:
       - PUID
       - PGID
       - TZ
+    volumes:
+      - data:/config
     restart: unless-stopped
 
 networks:
   nginx_proxy:
     external: true
+
+volumes:
+  data:
