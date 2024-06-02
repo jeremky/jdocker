@@ -1,19 +1,15 @@
 services:
   nextcloud-db:
-    image: lscr.io/linuxserver/mariadb:latest
+    image: postgres:latest
     container_name: nextcloud-db
     networks:
       - network
     environment:
-      - PUID
-      - PGID
-      - TZ
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_DB
     volumes:
-      - ${DIRECTORY}/mariadb:/config
+      - ${DIRECTORY}/postgres:/var/lib/postgresql/data
     restart: unless-stopped
 
   nextcloud:
