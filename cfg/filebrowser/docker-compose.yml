@@ -6,9 +6,9 @@ services:
     networks:
       - nginx_proxy
     volumes:
-      - ./files/database.db:/database.db
-      - ./files/img:/img
-      - ${DIRECTORY}:/srv
+      - ${DIRECTORY}/database.db:/database.db
+      - ${DIRECTORY}/img:/img
+      - ${HOMEDIR}:/srv
     command: --disable-exec
     restart: unless-stopped
 
