@@ -1,0 +1,6 @@
+## jdocker cron
+jdocksh=DIR/jdocker.sh
+
+# Nextcloud
+0 5 * * 0   root $jdocksh bk nextcloud f >/dev/null 2>&1
+0 5 * * 1-6 root $jdocksh bk nextcloud i >/dev/null 2>&1
