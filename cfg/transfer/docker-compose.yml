@@ -2,7 +2,7 @@ services:
   transfer:
     image: dutchcoders/transfer.sh:latest
     container_name: transfer
-    user: ${UID}:${GID}
+    user: ${ID}:${ID}
     networks:
       - nginx_proxy
     environment:
@@ -11,8 +11,6 @@ services:
       - PURGE_INTERVAL
       - MAX_UPLOAD_SIZE
       - EMAIL_CONTACT
-    volumes:
-      - ${DIRECTORY}:/tmp
     command: --provider local
     restart: unless-stopped
 
