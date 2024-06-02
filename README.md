@@ -1,4 +1,4 @@
-# jdocker
+# jdocker.sh
 
 Script permettant une administration plus simplifiée des conteneurs Docker 
 
