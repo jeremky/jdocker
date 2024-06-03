@@ -1,7 +1,7 @@
 services:
   mcserver:
-    image: itzg/minecraft-server:latest
-    container_name: mcserver
+    image: itzg/minecraft-server:${IMAGE}
+    container_name: ${NAME}
     cpus: ${CPU}
     mem_limit: ${LIMIT}
     environment:
@@ -40,15 +40,8 @@ services:
       - RCON_PASSWORD
       - ONLINE_MODE
       - ENFORCE_SECURE_PROFILE
-      - RESOURCE_PACK
-      - ENABLE_AUTOPAUSE
-      - MAX_TICK_TIME
-      - AUTOPAUSE_TIMEOUT_INIT
-      - AUTOPAUSE_TIMEOUT_EST
-      - JVM_DD_OPTS
     volumes:
       - ${DIRECTORY}:/data
-      - ${BLUEMAP}:/data/bluemap
     ports:
       - ${MCPORT}:25565
     tty: true
