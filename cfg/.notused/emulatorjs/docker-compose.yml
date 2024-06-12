@@ -1,0 +1,20 @@
+services:
+  emulatorjs:
+    image: lscr.io/linuxserver/emulatorjs:latest
+    container_name: emulatorjs
+    cpus: ${CPU}
+    networks:
+      - nginx_proxy
+    environment:
+      - PUID
+      - PGID
+      - TZ
+      - SUBFOLDER
+    volumes:
+      - ${DIRECTORY}/config:/config
+      - ${DIRECTORY}/data:/data
+    restart: unless-stopped
+
+networks:
+  nginx_proxy:
+    external: true
