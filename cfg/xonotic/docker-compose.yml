@@ -3,7 +3,7 @@ services:
     image: itom34/xonotic:latest
     container_name: xonotic
     volumes:
-      - ${CONFIGFILE}:/root/.xonotic/data/server.cfg
+      - ${DIRECTORY}:/root/.xonotic/
     ports:
       - ${PORT}:26000/tcp
       - ${PORT}:26000/udp
