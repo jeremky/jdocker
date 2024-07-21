@@ -1,0 +1,49 @@
+services:
+  mcserver:
+    image: itzg/minecraft-server:${IMAGE}
+    container_name: ${NAME}
+    cpus: ${CPU}
+    mem_limit: ${LIMIT}
+    environment:
+      - UID
+      - GID
+      - TZ
+      - EULA
+      - OVERRIDE_SERVER_PROPERTIES
+      - STOP_SERVER_ANNOUNCE_DELAY
+      - MOTD
+      - ENABLE_ROLLING_LOGS
+      - TYPE
+      - VERSION
+      - SNOOPER_ENABLED
+      - MAX_PLAYERS
+      - DIFFICULTY
+      - VIEW_DISTANCE
+      - SIMULATION_DISTANCE
+      - MAX_WORLD_SIZE
+      - SPAWN_PROTECTION
+      - ENABLE_COMMAND_BLOCK
+      - SEED
+      - LEVEL
+      - ALLOW_NETHER
+      - PVP
+      - MODE
+      - FORCE_GAMEMODE
+      - HARDCORE
+      - OPS
+      - WHITELIST
+      - ENFORCE_WHITELIST
+      - NETWORK_COMPRESSION_THRESHOLD
+      - PLAYER_IDLE_TIMEOUT
+      - MEMORY
+      - ENABLE_RCON
+      - RCON_PASSWORD
+      - ONLINE_MODE
+      - ENFORCE_SECURE_PROFILE
+    volumes:
+      - ${DIRECTORY}:/data
+    ports:
+      - ${MCPORT}:25565
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
