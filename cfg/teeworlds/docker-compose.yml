@@ -1,28 +1,15 @@
 services:
-  teeworlds-dm:
+  teeworlds:
     image: riftbit/teeworlds:latest
-    container_name: teeworlds-dm
+    container_name: teeworlds
     env_file: dm.env
     volumes:
-      - dm_data:/teeworlds/data
+      - data:/teeworlds/data
     ports:
       - 0.0.0.0:8303:8303/udp
     tty: true
     stdin_open: true
     restart: unless-stopped
 
-  teeworlds-ctf:
-    image: riftbit/teeworlds:latest
-    container_name: teeworlds-ctf
-    env_file: ctf.env
-    volumes:
-      - ctf_data:/teeworlds/data
-    ports:
-      - 0.0.0.0:8304:8303/udp
-    tty: true
-    stdin_open: true
-    restart: unless-stopped
-
 volumes:
-  dm_data:
-  ctf_data:
+  data:
