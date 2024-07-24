@@ -3,7 +3,7 @@ services:
     image: postgres:latest
     container_name: nextcloud-db
     networks:
-      - network
+      - default
     environment:
       - POSTGRES_PASSWORD
       - POSTGRES_USER
@@ -16,7 +16,7 @@ services:
     image: lscr.io/linuxserver/nextcloud:latest
     container_name: nextcloud
     networks:
-      - network
+      - default
       - nginx_proxy
     environment:
       - PUID
@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
 
 networks:
-  network:
+  default:
     external: false
   nginx_proxy:
     external: true
