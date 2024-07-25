@@ -111,7 +111,7 @@ case $1 in
             if [ -d /opt/$2 ] ; then
                 if [ ! -d $destbackup/$2/.old ] ; then
                     $sudo mkdir -p $destbackup/$2/.old
-                    $sudo chown -R $user: $destbackup/$2
+                    $sudo chown -R $user: $destbackup
                 fi
                 $dir/jdocker.sh rm $2
                 cd /opt
