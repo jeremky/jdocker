@@ -1,6 +1,6 @@
 services:
   nextcloud-db:
-    image: postgres:latest
+    image: postgres:16
     container_name: nextcloud-db
     networks:
       - default
