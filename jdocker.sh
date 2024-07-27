@@ -42,20 +42,12 @@ case $1 in
             ls -1 $dir/cfg
             exit 0
         else
-            if [ -f $dir/cfg/$2/$(hostname).env ] ; then
-                $sudo $compose -f $dir/cfg/$2/docker-compose.yml --env-file $dir/cfg/$2/$(hostname).env up -d
-            else
-                $sudo $compose -f $dir/cfg/$2/docker-compose.yml up -d
-            fi
+            $sudo $compose -f $dir/cfg/$2/docker-compose.yml up -d
         fi
         ;;
     remove|rm)
         if [ -f $dir/cfg/$2/docker-compose.yml ] ; then
-            if [ -f $dir/cfg/$2/$(hostname).env ] ; then
-                $sudo $compose -f $dir/cfg/$2/docker-compose.yml --env-file $dir/cfg/$2/$(hostname).env down
-            else
-                $sudo $compose -f $dir/cfg/$2/docker-compose.yml down
-            fi
+            $sudo $compose -f $dir/cfg/$2/docker-compose.yml down
         fi
         ;;
     restart|r)
@@ -161,16 +153,11 @@ case $1 in
                 echo "Dossier /opt/$2 non trouvé"
             fi
         else
-            if [ -f $dir/.cron.$(hostname) ] ; then
-                cron=$dir/.cron.$(hostname)
-            else
-                cron=$dir/.cron
-            fi
-            if [ -f $cron ] ; then
-                $sudo cp -v $cron /etc/cron.d/jdocker
+            if [ -f $dir/.cron ] ; then
+                $sudo cp -v $dir/.cron /etc/cron.d/jdocker
                 $sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
             else 
-                echo "Fichier $cron absent"
+                echo "Fichier $dir/.cron absent"
                 exit 0
             fi
         fi
