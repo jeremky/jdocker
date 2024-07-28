@@ -2,5 +2,5 @@
 jdocksh=DIR/jdocker.sh
 
 # mcserver
-0 5 * * 0   root $jdocksh bk mcserver f >/dev/null 2>&1
-0 5 * * 1-6 root $jdocksh bk mcserver i >/dev/null 2>&1
+#0 5 * * 0   root $jdocksh bk mcserver f >/dev/null 2>&1
+#0 5 * * 1-6 root $jdocksh bk mcserver i >/dev/null 2>&1
