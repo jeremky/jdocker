@@ -153,11 +153,11 @@ case $1 in
                 echo "Dossier /opt/$2 non trouvé"
             fi
         else
-            if [ -f $dir/jdocker.cron ] ; then
-                $sudo cp -v $dir/jdocker.cron /etc/cron.d/jdocker
+            if [ -f $dir/.jdocker.cron ] ; then
+                $sudo cp -v $dir/.jdocker.cron /etc/cron.d/jdocker
                 $sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
             else 
-                echo "Fichier $dir/jdocker.cron absent"
+                echo "Fichier $dir/.jdocker.cron absent"
                 exit 0
             fi
         fi
