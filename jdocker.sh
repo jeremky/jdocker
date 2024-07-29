@@ -56,6 +56,15 @@ case $1 in
     purge|pr)
         $sudo docker system prune -f -a --volumes
         ;;
+    purgeall|pra)
+        $sudo docker system prune -f
+        ;;
+    load|lo)
+        for file in $(ls $imgdir/*.tar) ; do
+            $sudo docker load -i $file
+            mv $file $imgdir/.old
+        done
+        ;;
     upgrade|up)
         if [ ! -z "$2" ] ; then
             shift
@@ -172,6 +181,6 @@ case $1 in
         fi
         ;;
     *)
-        cat $dir/jdocker.help
+        cat $dir/.jdocker.help
         ;;
 esac
