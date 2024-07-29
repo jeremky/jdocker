@@ -54,10 +54,10 @@ case $1 in
         $sudo docker restart $2
         ;;
     purge|pr)
-        $sudo docker system prune -f -a --volumes
+        $sudo docker system prune -f
         ;;
     purgeall|pra)
-        $sudo docker system prune -f
+        $sudo docker system prune -f -a --volumes
         ;;
     load|lo)
         for file in $(ls $imgdir/*.tar) ; do
