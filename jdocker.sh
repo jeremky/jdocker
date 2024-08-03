@@ -39,14 +39,22 @@ case $1 in
     install|it)
         if [ ! -f $dir/cfg/$2/docker-compose.yml ] || [ -z "$2" ] ; then
             echo "Applications disponibles :"
+            echo ""
             ls -1 $dir/cfg
+            echo ""
             exit 0
         else
             $sudo $compose -f $dir/cfg/$2/docker-compose.yml up -d
         fi
         ;;
     remove|rm)
-        if [ -f $dir/cfg/$2/docker-compose.yml ] ; then
+        if [ ! -f $dir/cfg/$2/docker-compose.yml ] || [ -z "$2" ] ; then
+            echo "Application non trouvée dans la liste :"
+            echo ""
+            $sudo docker container ls --format "table {{.Names}}" | grep -v NAMES
+            echo ""
+            exit 0
+        else
             $sudo $compose -f $dir/cfg/$2/docker-compose.yml down
         fi
         ;;
