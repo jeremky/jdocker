@@ -5,11 +5,13 @@ Commandes :
   v   | volume          Lister les volumes docker
   l   | logs            Consulter les logs pour un conteneur spécifié
   e   | extract         Extraire les logs dans un fichier
+  lo  | load            Charge les images présentes dans le dossier $imgdir
   lzd | lazydocker      Installer lazydocker
   it  | install         Installer un conteneur avec compose
   rm  | remove          Supprimer un conteneur avec compose
   r   | restart         Redémarrer un conteneur
-  pr  | purge           Purger les anciennes images, et les volumes et réseaux non utilisés
+  pr  | purge           Purger les anciennes images
+  pra | purgeall        Purge les images, les volumes et réseaux non utilisés
   s   | search          Rechercher une image docker
   at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
   up  | upgrade         Recherche une nouvelle version des images docker.
@@ -17,7 +19,7 @@ Commandes :
   ps  | stats           Affiche les statistiques des images docker en cours d'exécution
   sh  | bash            Se connecter au bash d'un conteneur spécifié
   bk  | backup          Sauvegarde un conteneur spécifié. 
-                        Si aucun paramètre, copie le fichier .cron dans /etc/cron.d.
+                        Si aucun paramètre, copie le fichier .jdocker.cron dans /etc/cron.d.
                         Paramètres supplémentaires :
                             f|full      Sauvegarde full
                             i|incr      Sauvegarde incrémentielle
