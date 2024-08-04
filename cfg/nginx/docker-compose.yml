@@ -1,0 +1,27 @@
+services:
+  nginx:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: nginx
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - proxy
+    environment:
+      - PUID
+      - PGID
+      - TZ
+      - URL
+      - SUBDOMAINS
+      - VALIDATION
+      - EMAIL
+      - ONLY_SUBDOMAINS
+    volumes:
+      - ${DIRECTORY}:/config
+    ports:
+      - ${HTTPPORT}:80
+      - ${HTTPSPORT}:443
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: false

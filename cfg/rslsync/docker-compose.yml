@@ -1,0 +1,21 @@
+services:
+  rslsync:
+    image: lscr.io/linuxserver/resilio-sync:latest
+    container_name: rslsync
+    networks:
+      - nginx_proxy
+    environment:
+      - PUID
+      - PGID
+      - TZ
+    volumes:
+      - ${DIRECTORY}/config:/config
+      - ${DIRECTORY}/downloads:/downloads
+      - ${WORKDIR}:/sync
+    ports:
+      - 55555:55555
+    restart: unless-stopped
+
+networks:
+  nginx_proxy:
+    external: true

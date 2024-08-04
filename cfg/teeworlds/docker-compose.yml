@@ -1,0 +1,15 @@
+services:
+  teeworlds:
+    image: riftbit/teeworlds:latest
+    container_name: teeworlds
+    env_file: .env
+    volumes:
+      - data:/teeworlds/data
+    ports:
+      - 0.0.0.0:8303:8303/udp
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+
+volumes:
+  data:

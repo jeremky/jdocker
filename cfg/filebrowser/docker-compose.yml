@@ -1,0 +1,17 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: filebrowser
+    user: ${ID}:${ID}
+    networks:
+      - nginx_proxy
+    volumes:
+      - ${DIRECTORY}/database.db:/database.db
+      - ${HOMEDIR}:/srv
+    command: --disable-exec
+    restart: unless-stopped
+
+networks:
+  nginx_proxy:
+    external: true
+
