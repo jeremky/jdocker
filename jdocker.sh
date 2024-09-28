@@ -100,6 +100,9 @@ case $1 in
         $sudo podman attach $2
         ;;
     stats|ps)
+        $sudo podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemUsage}}"
+        ;;
+    statsall|psa)
         $sudo podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
         ;;
     bash|sh)
