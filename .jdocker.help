@@ -1,10 +1,9 @@
 Commandes :
   ls  | list            Lister les conteneurs actifs
   lsa | listall         Lister les conteneurs actifs avec les ports et l'image utilisée
-  n   | net             Lister les réseaux docker
-  v   | volume          Lister les volumes docker
+  n   | net             Lister les réseaux virtuels
+  v   | volume          Lister les volumes virtuels
   l   | logs            Consulter les logs pour un conteneur spécifié
-  e   | extract         Extraire les logs dans un fichier
   lo  | load            Charge les images présentes dans le dossier $imgdir
   lzd | lazydocker      Installer lazydocker
   it  | install         Installer un conteneur avec compose
@@ -12,11 +11,11 @@ Commandes :
   r   | restart         Redémarrer un conteneur
   pr  | purge           Purger les anciennes images
   pra | purgeall        Purge les images, les volumes et réseaux non utilisés
-  s   | search          Rechercher une image docker
+  s   | search          Rechercher une image sur le registry docker.io
   at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
-  up  | upgrade         Recherche une nouvelle version des images docker.
+  up  | upgrade         Recherche une nouvelle version des images.
                         Si un conteneur est spécifié, supprime et réinstalle ce dernier
-  ps  | stats           Affiche les statistiques des images docker en cours d'exécution
+  ps  | stats           Affiche les statistiques des conteneurs en cours d'exécution
   sh  | bash            Se connecter au bash d'un conteneur spécifié
   bk  | backup          Sauvegarde un conteneur spécifié. 
                         Si aucun paramètre, copie le fichier .jdocker.cron dans /etc/cron.d.
