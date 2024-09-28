@@ -1,6 +1,6 @@
 # jdocker.sh
 
-Script permettant une administration plus simplifiée des conteneurs Docker 
+Script permettant une administration plus simplifiée des conteneurs Podman
 
 - Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier jdocker.cfg pour remplacer votre nom d'utilisateur, et la destination des backups.
 

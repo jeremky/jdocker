@@ -1,0 +1,13 @@
+services:
+  xonotic:
+    image: docker.io/itom34/xonotic:latest
+    container_name: xonotic
+    labels:
+      - "io.containers.autoupdate=registry"
+      - "PODMAN_SYSTEMD_UNIT=container-xonotic.service"
+    volumes:
+      - ${DIRECTORY}:/root/.xonotic/
+    ports:
+      - ${PORT}:26000/tcp
+      - ${PORT}:26000/udp
+    restart: always

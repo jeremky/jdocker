@@ -1,20 +1,20 @@
 services:
   rslsync:
     image: lscr.io/linuxserver/resilio-sync:latest
+    labels:
+      - "io.containers.autoupdate=registry"
+      - "PODMAN_SYSTEMD_UNIT=container-rslsync.service"
     container_name: rslsync
     networks:
       - nginx_proxy
-    environment:
-      - PUID
-      - PGID
-      - TZ
+    env_file: ./.env
     volumes:
       - ${DIRECTORY}/config:/config
       - ${DIRECTORY}/downloads:/downloads
       - ${WORKDIR}:/sync
     ports:
       - 55555:55555
-    restart: unless-stopped
+    restart: always
 
 networks:
   nginx_proxy:

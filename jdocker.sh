@@ -18,58 +18,59 @@ if [ -f /usr/bin/sudo ] ; then
 fi
 
 ## Verification
-if [ ! -f /usr/bin/docker ] && [ -f /usr/bin/apt ] ; then
-    echo "Docker n'est pas installé. Installation..."
-    $sudo apt install docker.io docker-compose
+if [ ! -f /usr/bin/podman ] && [ -f /usr/bin/apt ] ; then
+    echo "Podman n'est pas installé. Installation..."
+    $sudo apt install podman podman-compose catatonit
     exit 0
-elif [ -f /usr/bin/docker-compose ] ; then
-    compose="docker-compose"
-else
-    compose="docker compose"
 fi
 
 ## Commandes
 case $1 in
     list|ls)
-        $sudo docker container ls -a --format "table {{.Names}} \t {{.Status}}"
+        $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}}"
         ;;
     listall|lsa)
-        $sudo docker container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
+        $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
         ;;
     install|it)
-        if [ ! -f $dir/cfg/$2/docker-compose.yml ] || [ -z "$2" ] ; then
+        if [ ! -f $dir/cfg/$2/compose.yml ] || [ -z "$2" ] ; then
             echo "Applications disponibles :"
             echo ""
             ls -1 $dir/cfg
             echo ""
             exit 0
         else
-            $sudo $compose -f $dir/cfg/$2/docker-compose.yml up -d
+            $sudo podman-compose -f $dir/cfg/$2/compose.yml up -d
+            cd /etc/systemd/system && $sudo podman generate systemd --name --files --new $2
         fi
         ;;
     remove|rm)
-        if [ ! -f $dir/cfg/$2/docker-compose.yml ] || [ -z "$2" ] ; then
+        if [ ! -f $dir/cfg/$2/compose.yml ] || [ -z "$2" ] ; then
             echo "Application non trouvée dans la liste :"
             echo ""
-            $sudo docker container ls --format "table {{.Names}}" | grep -v NAMES
+            ls -1 $dir/cfg
             echo ""
             exit 0
         else
-            $sudo $compose -f $dir/cfg/$2/docker-compose.yml down
+            $sudo podman-compose -f $dir/cfg/$2/compose.yml down
+            $sudo rm -f /etc/systemd/system/container-$2.service
         fi
         ;;
     restart|r)
-        $sudo docker restart $2
+        $sudo podman restart $2
         ;;
     purge|pr)
-        $sudo docker system prune -f
+        $sudo podman system prune -f
         ;;
     purgeall|pra)
-        $sudo docker system prune -f -a --volumes
+        $sudo podman system prune -f -a --volumes
         ;;
     load|lo)
+        if [ ! -d $imgdir/.old ] ; then
+            mkdir $imgdir/.old
+        fi
         for file in $(ls $imgdir/*.tar) ; do
-            $sudo docker load -i $file
+            $sudo podman load -i $file
             mv $file $imgdir/.old
         done
         ;;
@@ -81,39 +82,34 @@ case $1 in
                 $dir/jdocker.sh it $appup
             done
         else
-            $sudo docker images | grep -v ^REPO | grep -v none | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo docker pull
+            $sudo podman auto-update
         fi
         ;;
     logs|l)
         if [ -z "$3" ] ; then
-            $sudo docker logs -f $2
+            $sudo podman logs -f $2
         else
-            $sudo docker logs --since=$3 $2
+            $sudo podman logs --since=$3 $2
         fi
         ;;
-    extract|e)
-        logfile=$($sudo docker inspect --format='{{.LogPath}}' $2)
-        $sudo cat $logfile > $2.log
-        echo "fichier $2.log créé"
-        ;;
     search|s)
-        $sudo docker search $2
+        $sudo podman search $2
         ;;
     attach|at)
         echo "Ctrl+p, Ctrl+q pour quitter"
-        $sudo docker attach $2
+        $sudo podman attach $2
         ;;
     stats|ps)
-        $sudo docker stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
+        $sudo podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
         ;;
     bash|sh)
-        $sudo docker exec -it $2 sh
+        $sudo podman exec -it $2 sh
         ;;
     net|n)
-        $sudo docker network ls
+        $sudo podman network ls
         ;;
     volume|v)
-        $sudo docker volume ls
+        $sudo podman volume ls
         ;;
     backup|bk)
         if [ ! -z "$2" ] ; then
@@ -184,6 +180,7 @@ case $1 in
             $sudo curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
             $sudo mv /$HOME/.local/bin/lazydocker /usr/bin/lazydocker
             $sudo chown root: /usr/bin/lazydocker
+            $sudo ln -s /var/run/podman/podman.sock /var/run/docker.sock
         else
             $sudo /usr/bin/lazydocker
         fi
