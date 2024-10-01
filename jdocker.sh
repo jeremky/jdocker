@@ -33,26 +33,26 @@ case $1 in
         $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
         ;;
     install|it)
-        if [ ! -f $dir/cfg/$2/compose.yml ] || [ -z "$2" ] ; then
+        if [ ! -f $dir/cfg/$2/*compose.yml ] || [ -z "$2" ] ; then
             echo "Applications disponibles :"
             echo ""
             ls -1 $dir/cfg
             echo ""
             exit 0
         else
-            $sudo podman-compose -f $dir/cfg/$2/compose.yml up -d
+            $sudo podman-compose -f $dir/cfg/$2/*compose.yml up -d
             cd /etc/systemd/system && $sudo podman generate systemd --name --files --new $2
         fi
         ;;
     remove|rm)
-        if [ ! -f $dir/cfg/$2/compose.yml ] || [ -z "$2" ] ; then
+        if [ ! -f $dir/cfg/$2/*compose.yml ] || [ -z "$2" ] ; then
             echo "Application non trouvée dans la liste :"
             echo ""
             ls -1 $dir/cfg
             echo ""
             exit 0
         else
-            $sudo podman-compose -f $dir/cfg/$2/compose.yml down
+            $sudo podman-compose -f $dir/cfg/$2/*compose.yml down
             $sudo rm -f /etc/systemd/system/container-$2.service
         fi
         ;;
