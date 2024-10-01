@@ -8,6 +8,6 @@ services:
     volumes:
       - ${DIRECTORY}:/root/.xonotic/
     ports:
-      - ${PORT}:26000/tcp
-      - ${PORT}:26000/udp
+      - 0.0.0.0:26000:26000/tcp
+      - 0.0.0.0:26000:26000/udp
     restart: always
