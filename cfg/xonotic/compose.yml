@@ -6,7 +6,7 @@ services:
       - "io.containers.autoupdate=registry"
       - "PODMAN_SYSTEMD_UNIT=container-xonotic.service"
     volumes:
-      - ${DIRECTORY}:/root/.xonotic/
+      - ./files:/root/.xonotic/
     ports:
       - 0.0.0.0:26000:26000/tcp
       - 0.0.0.0:26000:26000/udp

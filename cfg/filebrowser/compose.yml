@@ -8,7 +8,7 @@ services:
     networks:
       - nginx_proxy
     volumes:
-      - ${DIRECTORY}/database.db:/database.db
+      - ./files/database.db:/database.db
       - ${HOMEDIR}:/srv
     command: --disable-exec
     restart: always
