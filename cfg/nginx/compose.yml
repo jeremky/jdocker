@@ -11,10 +11,10 @@ services:
       - proxy
     env_file: .env
     volumes:
-      - ${DIRECTORY}:/config
+      - /opt/nginx:/config
     ports:
-      - ${HTTPPORT}:80
-      - ${HTTPSPORT}:443
+      - 0.0.0.0:80:80
+      - 0.0.0.0:443:443
     restart: always
 
 networks:

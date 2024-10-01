@@ -9,9 +9,9 @@ services:
       - nginx_proxy
     env_file: .env
     volumes:
-      - ${DIRECTORY}/config:/config
-      - ${DIRECTORY}/downloads:/downloads
-      - ${WORKDIR}:/sync
+      - /opt/rslsync/config:/config
+      - /opt/rslsync/downloads:/downloads
+      - ${HOMEDIR}:/sync
     ports:
       - 55555:55555
     restart: always
