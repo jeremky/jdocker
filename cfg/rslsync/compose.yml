@@ -11,7 +11,7 @@ services:
     volumes:
       - /opt/rslsync/config:/config
       - /opt/rslsync/downloads:/downloads
-      - ${HOMEDIR}:/sync
+      - /home:/sync
     ports:
       - 55555:55555
     restart: always

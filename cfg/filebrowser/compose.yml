@@ -9,7 +9,7 @@ services:
       - nginx_proxy
     volumes:
       - ./files/database.db:/database.db
-      - ${HOMEDIR}:/srv
+      - /home:/srv
     command: --disable-exec
     restart: always
 
