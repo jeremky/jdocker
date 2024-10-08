@@ -9,7 +9,7 @@ services:
       - NET_ADMIN
     networks:
       - proxy
-    env_file: .env
+    env_file: nginx.env
     volumes:
       - /opt/nginx:/config
     ports:
