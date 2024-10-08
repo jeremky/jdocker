@@ -7,7 +7,7 @@ services:
     container_name: rslsync
     networks:
       - nginx_proxy
-    env_file: .env
+    env_file: rslsync.env
     volumes:
       - /opt/rslsync/config:/config
       - /opt/rslsync/downloads:/downloads
