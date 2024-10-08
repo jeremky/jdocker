@@ -2,15 +2,16 @@ services:
   filebrowser:
     image: docker.io/filebrowser/filebrowser
     container_name: filebrowser
+    user: 1000:1000
     labels:
       - "io.containers.autoupdate=registry"
       - "PODMAN_SYSTEMD_UNIT=container-filebrowser.service"
     networks:
       - nginx_proxy
     volumes:
-      - ./files/database.db:/database.db
+      - ./files/database.db:/database/filebrowser.db
+      - ./files/settings.json:/.filebrowser.json
       - /home:/srv
-    command: --disable-exec
     restart: always
 
 networks:
