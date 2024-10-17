@@ -1,10 +1,11 @@
 services:
   rslsync:
     image: lscr.io/linuxserver/resilio-sync:latest
+    container_name: rslsync
+    hostname: rslsync
     labels:
       - "io.containers.autoupdate=registry"
       - "PODMAN_SYSTEMD_UNIT=container-rslsync.service"
-    container_name: rslsync
     networks:
       - nginx_proxy
     env_file: rslsync.env

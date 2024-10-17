@@ -30,7 +30,7 @@ case $1 in
         $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}}"
         ;;
     listall|lsa)
-        $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
+        $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
         ;;
     install|it)
         if [ ! -f $dir/cfg/$2/*compose.yml ] || [ -z "$2" ] ; then
@@ -41,7 +41,9 @@ case $1 in
             exit 0
         else
             $sudo podman-compose -f $dir/cfg/$2/*compose.yml up -d
-            cd /etc/systemd/system && $sudo podman generate systemd --name --files --new $2
+            if [ ! -f /etc/systemd/system/container-$2.service ] ; then
+                cd /etc/systemd/system && $sudo podman generate systemd --name --files --new $2
+            fi
         fi
         ;;
     remove|rm)
@@ -53,7 +55,6 @@ case $1 in
             exit 0
         else
             $sudo podman-compose -f $dir/cfg/$2/*compose.yml down
-            $sudo rm -f /etc/systemd/system/container-$2.service
         fi
         ;;
     restart|r)

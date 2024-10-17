@@ -2,6 +2,7 @@ services:
   xonotic:
     image: docker.io/itom34/xonotic:latest
     container_name: xonotic
+    hostname: xonotic
     labels:
       - "io.containers.autoupdate=registry"
       - "PODMAN_SYSTEMD_UNIT=container-xonotic.service"
