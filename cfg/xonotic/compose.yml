@@ -12,3 +12,4 @@ services:
       - 26000:26000/tcp
       - 26000:26000/udp
     restart: always
+    
