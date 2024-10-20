@@ -1,0 +1,19 @@
+services:
+  vscode:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: vscode
+    hostname: vscode
+    labels:
+      - "io.containers.autoupdate=registry"
+      - "PODMAN_SYSTEMD_UNIT=container-vscode.service"
+    networks:
+      - nginx_proxy
+    env_file: vscode.env
+    volumes:
+      - /opt/vscode:/config
+      - /home:/config/workspace
+    restart: always
+
+networks:
+  nginx_proxy:
+    external: true
