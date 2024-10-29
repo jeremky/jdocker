@@ -41,9 +41,7 @@ case $1 in
             exit 0
         else
             $sudo podman-compose -f $dir/cfg/$2/*compose.yml up -d
-            if [ ! -f /etc/systemd/system/container-$2.service ] ; then
-                cd /etc/systemd/system && $sudo podman generate systemd --name --files --new $2
-            fi
+            cd /etc/systemd/system && $sudo podman generate systemd --name --files --new $2
         fi
         ;;
     remove|rm)
@@ -55,6 +53,7 @@ case $1 in
             exit 0
         else
             $sudo podman-compose -f $dir/cfg/$2/*compose.yml down
+            $sudo rm /etc/systemd/system/container-$2.service
         fi
         ;;
     restart|r)
