@@ -1,6 +1,8 @@
 services:
   vscode:
-    image: lscr.io/linuxserver/code-server:latest
+    build: .
+    context: .
+    image: localhost/vscode-hugo:latest
     container_name: vscode
     hostname: vscode
     labels:
