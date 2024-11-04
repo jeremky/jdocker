@@ -42,9 +42,8 @@ case $1 in
         else
             $sudo podman-compose -f $dir/cfg/$2/*compose.yml up -d
             if [ ! -f /etc/systemd/system/container-$2.service ] ; then
+                # cd /etc/systemd/system && $sudo podman generate systemd --name --files --new $2
                 cd /etc/systemd/system && $sudo podman generate systemd --name --files $2
-                $sudo systemctl daemon-reload
-                $sudo systemctl enable container-$2.service
             fi
         fi
         ;;
@@ -57,9 +56,6 @@ case $1 in
             exit 0
         else
             $sudo podman-compose -f $dir/cfg/$2/*compose.yml down
-            if [ -f /etc/systemd/system/container-$2.service ] ; then
-                $sudo rm /etc/systemd/system/container-$2.service
-            fi
         fi
         ;;
     restart|r)

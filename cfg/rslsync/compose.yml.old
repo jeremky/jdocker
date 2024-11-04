@@ -15,6 +15,7 @@ services:
       - /home:/sync
     ports:
       - 55555:55555
+    restart: always
 
 networks:
   nginx_proxy:

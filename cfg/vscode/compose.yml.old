@@ -14,6 +14,7 @@ services:
     volumes:
       - /opt/vscode:/config
       - /home/jeremky:/home/jeremky
+    restart: always
 
 networks:
   nginx_proxy:

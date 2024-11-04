@@ -13,6 +13,7 @@ services:
       - 8303:8303/udp
     tty: true
     stdin_open: true
+    restart: always
 
 volumes:
   data:

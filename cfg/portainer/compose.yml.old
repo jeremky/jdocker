@@ -12,6 +12,7 @@ services:
     volumes:
       - /opt/portainer:/data
       - /var/run/podman/podman.sock:/var/run/docker.sock
+    restart: always
 
 networks:
   nginx_proxy:

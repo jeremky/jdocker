@@ -13,6 +13,7 @@ services:
       - ./files/database.db:/database/filebrowser.db
       - ./files/settings.json:/.filebrowser.json
       - /home:/srv
+    restart: always
 
 networks:
   nginx_proxy:
