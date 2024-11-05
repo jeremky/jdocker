@@ -6,9 +6,9 @@ services:
     labels:
       - "io.containers.autoupdate=registry"
       - "PODMAN_SYSTEMD_UNIT=container-portainer.service"
+    privileged: true
     networks:
       - nginx_proxy
-    privileged: true
     volumes:
       - /opt/portainer:/data
       - /var/run/podman/podman.sock:/var/run/docker.sock
