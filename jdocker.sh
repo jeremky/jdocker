@@ -189,7 +189,9 @@ case $1 in
             $sudo curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
             $sudo mv /$HOME/.local/bin/lazydocker /usr/bin/lazydocker
             $sudo chown root: /usr/bin/lazydocker
-            $sudo ln -s /var/run/podman/podman.sock /var/run/docker.sock
+            if [ ! -e /var/run/docker.sock ] ; then
+                $sudo ln -s /var/run/podman/podman.sock /var/run/docker.sock
+            fi
         else
             $sudo /usr/bin/lazydocker
         fi
