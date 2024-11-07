@@ -6,6 +6,6 @@ Script permettant une administration plus simplifiée des conteneurs Podman. Ce 
 
 - Pour automatiser vos backups, il y a un fichier .cron dans ce répertoire. Modifiez le selon vos préférences. Faites ensuite ./jdocker.sh bk pour le copier dans le répertoire des cron.
 
-- Podman intègre un système de mise à jour automatique. Ce script contrôle vos conteneurs via systemd pour être compatible avec cette fonctionnalité.
+- Podman intègre un système de mise à jour automatique. Ce script contrôle vos conteneurs via systemd pour être compatible avec cette fonctionnalité. Pensez à supprimer la valeur `restart`de vos fichiers `compose.yml`.
 
 Pour consulter l'aide, lancez ./jdocker.sh sans paramètre.
