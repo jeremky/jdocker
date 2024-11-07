@@ -1,0 +1,19 @@
+services:
+  emulatorjs:
+    image: lscr.io/linuxserver/emulatorjs:latest
+    container_name: emulatorjs
+    hostname: emulatorjs
+    cpus: 2
+    labels:
+      - "io.containers.autoupdate=registry"
+      - "PODMAN_SYSTEMD_UNIT=container-emulatorjs.service"
+    networks:
+      - nginx_proxy
+    env_file: emulatorjs.env
+    volumes:
+      - /opt/emulatorjs/config:/config
+      - /opt/emulatorjs/data:/data
+
+networks:
+  nginx_proxy:
+    external: true
