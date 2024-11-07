@@ -50,7 +50,7 @@ case $1 in
         ;;
     remove|rm)
         if [ ! -f $dir/cfg/$2/*compose.yml ] || [ -z "$2" ] ; then
-            echo "Application non trouvée dans la liste :"
+            echo "Applications disponibles :"
             echo ""
             ls -1 $dir/cfg
             echo ""
