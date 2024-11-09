@@ -1,0 +1,18 @@
+services:
+  authelia:
+    image: docker.io/authelia/authelia:latest
+    container_name: authelia
+    hostname: authelia
+    user: 1004:1004
+    labels:
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-authelia.service
+    env_file: authelia.env
+    networks:
+      - nginx_proxy
+    volumes:
+      - /opt/authelia:/config
+
+networks:
+  nginx_proxy:
+    external: true
