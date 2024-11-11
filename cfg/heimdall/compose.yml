@@ -10,7 +10,7 @@ services:
       - nginx_proxy
     env_file: heimdall.env
     volumes:
-      - /opt/heimdall/config:/config
+      - /opt/heimdall:/config
 
 networks:
   nginx_proxy:
