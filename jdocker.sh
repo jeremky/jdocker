@@ -33,7 +33,7 @@ fi
 ## Commandes
 case $1 in
     list|ls)
-        $sudo $app container ls -a --sort names --format "table {{.Names}} \t {{.Status}}"
+        $sudo $app container ls -a --sort runningfor --format "table {{.Names}} \t {{.Status}}"
         ;;
     listall|lsa)
         $sudo $app container ls -a --sort names --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
