@@ -1,0 +1,30 @@
+services:
+  wireguard:
+    image: ghcr.io/wg-easy/wg-easy
+    container_name: wireguard
+    hostname: wireguard
+    labels:
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-wireguard.service
+      - flame.type=application
+      - flame.name=Wireguard
+      - flame.url=https://vpn.jeremky.fr
+      - flame.icon=lan-connect
+    networks:
+      - nginx_proxy
+    env_file: wireguard.env
+    volumes:
+      - /opt/wireguard:/etc/wireguard
+    ports:
+      - "51820:51820/udp"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+      - NET_RAW
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+
+networks:
+  nginx_proxy:
+    external: true

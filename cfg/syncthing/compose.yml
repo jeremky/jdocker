@@ -1,0 +1,26 @@
+services:
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    container_name: syncthing
+    hostname: syncthing
+    labels:
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-syncthing.service
+      - flame.type=application
+      - flame.name=Syncthing
+      - flame.url=https://sync.jeremky.fr
+      - flame.icon=cloud-sync
+    networks:
+      - nginx_proxy
+    env_file: syncthing.env
+    volumes:
+      - /opt/syncthing:/config
+      - /home/jeremky:/data
+    ports:
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
+
+networks:
+  nginx_proxy:
+    external: true

@@ -1,0 +1,24 @@
+services:
+  flame:
+    image: docker.io/pawelmalak/flame
+    container_name: flame
+    hostname: flame
+    labels:
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-flame.service
+    networks:
+      - nginx_proxy
+    env_file: flame.env
+    volumes:
+      - ./files:/app/data
+      - /var/run/podman/podman.sock:/var/run/docker.sock
+    secrets:
+      - password
+
+networks:
+  nginx_proxy:
+    external: true
+
+secrets:
+  password:
+    file: ./.password

@@ -7,6 +7,10 @@ services:
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-authelia.service
+      - flame.type=application
+      - flame.name=Authelia
+      - flame.url=https://auth.jeremky.fr
+      - flame.icon=key
     env_file: authelia.env
     networks:
       - nginx_proxy

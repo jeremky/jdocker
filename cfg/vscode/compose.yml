@@ -6,8 +6,12 @@ services:
     container_name: vscode
     hostname: vscode
     labels:
-      - "io.containers.autoupdate=registry"
-      - "PODMAN_SYSTEMD_UNIT=container-vscode.service"
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-vscode.service
+      - flame.type=application
+      - flame.name=VS Code
+      - flame.url=https://vscode.jeremky.fr
+      - flame.icon=file-code
     networks:
       - nginx_proxy
     env_file: vscode.env
