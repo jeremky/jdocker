@@ -16,7 +16,7 @@ services:
     volumes:
       - /opt/wireguard:/etc/wireguard
     ports:
-      - "51820:51820/udp"
+      - 51820:51820/udp
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
