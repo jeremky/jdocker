@@ -27,10 +27,10 @@ fi
 ## Commandes
 case $1 in
     list|ls)
-        $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}}"
+        $sudo podman container ls -a --sort runningfor --format "table {{.Names}} \t {{.Status}}"
         ;;
     listall|lsa)
-        $sudo podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
+        $sudo podman container ls -a --sort names --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
         ;;
     install|it)
         if [ ! -f $dir/cfg/$2/*compose.yml ] || [ -z "$2" ] ; then

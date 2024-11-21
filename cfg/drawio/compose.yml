@@ -12,8 +12,6 @@ services:
       - flame.icon=drawing-box
     networks:
       - nginx_proxy
-    ports:
-      - 80:80
 
 networks:
   nginx_proxy:
