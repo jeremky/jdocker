@@ -8,7 +8,7 @@ services:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-emulatorjs.service
       - flame.type=application
-      - flame.name=EmulatorJS;EmulatorJS Backend
+      - flame.name=EmulatorJS;EmuJS Backend
       - flame.url=https://emu.jeremky.fr;https://emu.jeremky.fr/backend
       - flame.icon=nintendo-game-boy;tools
     networks:
