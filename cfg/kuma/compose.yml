@@ -1,0 +1,21 @@
+services:
+  kuma:
+    image: docker.io/louislam/uptime-kuma:1
+    container_name: kuma
+    hostname: kuma
+    labels:
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-kuma.service
+      - flame.type=application
+      - flame.name=Uptime Kuma
+      - flame.url=https://kuma.jeremky.fr
+      - flame.icon=chart-line
+    networks:
+      - nginx_proxy
+    volumes:
+      - /opt/kuma:/app/data
+      - /var/run/podman/podman.sock:/var/run/docker.sock
+
+networks:
+  nginx_proxy:
+    external: true

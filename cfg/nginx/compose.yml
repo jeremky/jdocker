@@ -4,8 +4,8 @@ services:
     container_name: nginx
     hostname: nginx
     labels:
-      - "io.containers.autoupdate=registry"
-      - "PODMAN_SYSTEMD_UNIT=container-nginx.service"
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-nginx.service
     cap_add:
       - NET_ADMIN
     networks:
