@@ -1,0 +1,7 @@
+
+  USER:
+    displayname: "USER"
+    password: "HASH"
+    email: MAIL
+    groups:
+      - GROUP
