@@ -13,7 +13,7 @@ services:
     networks:
       - nginx_proxy
     volumes:
-      - /opt/kuma:/app/data
+      - /opt/uptimekuma:/app/data
       - /var/run/podman/podman.sock:/var/run/docker.sock
 
 networks:
