@@ -59,6 +59,7 @@ case $1 in
             $sudo podman-compose -f $dir/cfg/$2/*compose.yml down
             if [ -f /etc/systemd/system/container-$2.service ] ; then
                 $sudo rm /etc/systemd/system/container-$2.service
+                $sudo systemctl daemon-reload
             fi
         fi
         ;;
