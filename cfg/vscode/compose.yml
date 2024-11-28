@@ -10,7 +10,7 @@ services:
       - PODMAN_SYSTEMD_UNIT=container-vscode.service
       - flame.type=application
       - flame.name=VS Code
-      - flame.url=https://vscode.jeremky.fr
+      - flame.url=https://code.jeremky.fr
       - flame.icon=file-code
     networks:
       - nginx_proxy

@@ -1,0 +1,24 @@
+services:
+  librespeed:
+    image: lscr.io/linuxserver/librespeed:latest
+    container_name: librespeed
+    hostname: librespeed
+    labels:
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-librespeed.service
+      - flame.type=application
+      - flame.name=Librespeed
+      - flame.url=https://test.jeremky.fr
+      - flame.icon=speedometer
+    networks:
+      - nginx_proxy
+    env_file: librespeed.env
+    volumes:
+      - data:/config
+
+networks:
+  nginx_proxy:
+    external: true
+    
+volumes:
+  data:
