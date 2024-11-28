@@ -11,3 +11,9 @@ services:
     ports:
       - 26000:26000/tcp
       - 26000:26000/udp
+    healthcheck:
+      test: ["CMD", "pgrep", "xonotic"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
