@@ -4,8 +4,8 @@ services:
     container_name: teeworlds
     hostname: teeworlds
     labels:
-      - "io.containers.autoupdate=registry"
-      - "PODMAN_SYSTEMD_UNIT=container-teeworlds.service"
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-teeworlds.service
     env_file: teeworlds.env
     volumes:
       - data:/teeworlds/data

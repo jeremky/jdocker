@@ -1,11 +1,13 @@
 services:
   xonotic:
-    image: docker.io/itom34/xonotic:latest
+    build: .
+    context: .
+    image: localhost/xonotic:latest
     container_name: xonotic
     hostname: xonotic
     labels:
-      - "io.containers.autoupdate=registry"
-      - "PODMAN_SYSTEMD_UNIT=container-xonotic.service"
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-xonotic.service
     volumes:
       - ./files:/root/.xonotic/
     ports:

@@ -33,44 +33,38 @@ case $1 in
         $sudo podman container ls -a --sort names --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
         ;;
     install|it)
-        shift
-        for app in $* ; do
-            if [ ! -f $dir/cfg/$app/*compose.yml ] || [ -z "$1" ] ; then
-                echo "Application $app non trouvée"
-                echo ""
-                exit 0
-            else
-                $sudo podman-compose -f $dir/cfg/$app/*compose.yml up -d
-                if [ ! -f /etc/systemd/system/container-$app.service ] ; then
-                    cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $app
-                    $sudo systemctl daemon-reload
-                    $sudo systemctl enable container-$app.service
-                    $sudo systemctl restart container-$app.service
-                fi
+        if [ ! -f $dir/cfg/$2/*compose.yml ] || [ -z "$2" ] ; then
+            echo "Applications disponibles :"
+            echo ""
+            ls -1 $dir/cfg
+            echo ""
+            exit 0
+        else
+            $sudo podman-compose -f $dir/cfg/$2/*compose.yml up -d
+            if [ ! -f /etc/systemd/system/container-$2.service ] ; then
+                cd /etc/systemd/system && $sudo podman generate systemd --name --files $2
+                $sudo systemctl daemon-reload
+                $sudo systemctl enable container-$2.service
             fi
-        done
+        fi
         ;;
     remove|rm)
-        shift
-        for app in $* ; do
-            if [ ! -f $dir/cfg/$app/*compose.yml ] || [ -z "$1" ] ; then
-                echo "Application $app non trouvée"
-                echo ""
-                exit 0
-            else
-                $sudo sudo systemctl stop container-$app.service
-                #$sudo podman-compose -f $dir/cfg/$2/*compose.yml down
-                if [ -f /etc/systemd/system/container-$app.service ] ; then
-                    $sudo systemctl disable container-$app.service
-                    $sudo rm /etc/systemd/system/container-$app.service
-                    $sudo systemctl daemon-reload
-                fi
+        if [ ! -f $dir/cfg/$2/*compose.yml ] || [ -z "$2" ] ; then
+            echo "Applications disponibles :"
+            echo ""
+            ls -1 $dir/cfg
+            echo ""
+            exit 0
+        else
+            $sudo podman-compose -f $dir/cfg/$2/*compose.yml down
+            if [ -f /etc/systemd/system/container-$2.service ] ; then
+                $sudo rm /etc/systemd/system/container-$2.service
+                $sudo systemctl daemon-reload
             fi
-        done
+        fi
         ;;
     restart|r)
-        #$sudo podman restart $2
-        $sudo systemctl restart container-$2.service
+        $sudo podman restart $2
         ;;
     purge|pr)
         $sudo podman system prune -f

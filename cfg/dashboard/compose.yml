@@ -1,6 +1,6 @@
 services:
   dashboard:
-    image: docker.io/pawelmalak/flame
+    image: docker.io/pawelmalak/flame:latest
     container_name: dashboard
     hostname: dashboard
     labels:
@@ -12,13 +12,7 @@ services:
     volumes:
       - ./files:/app/data
       - /var/run/podman/podman.sock:/var/run/docker.sock
-    secrets:
-      - password
 
 networks:
   nginx_proxy:
     external: true
-
-secrets:
-  password:
-    file: ./.password
