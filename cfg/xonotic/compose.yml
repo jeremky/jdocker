@@ -1,8 +1,6 @@
 services:
   xonotic:
-    build: .
-    context: .
-    image: localhost/xonotic:latest
+    image: docker.io/itom34/xonotic:latest
     container_name: xonotic
     hostname: xonotic
     labels:
