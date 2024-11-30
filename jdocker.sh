@@ -59,7 +59,7 @@ case $1 in
                 exit 0
             else
                 $sudo sudo systemctl stop container-$app.service
-                #$sudo podman-compose -f $dir/cfg/$2/*compose.yml down
+                #$sudo podman-compose -f $dir/cfg/$app/*compose.yml down
                 if [ -f /etc/systemd/system/container-$app.service ] ; then
                     $sudo systemctl disable container-$app.service
                     $sudo rm /etc/systemd/system/container-$app.service
