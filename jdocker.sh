@@ -44,8 +44,7 @@ case $1 in
                 if [ ! -f /etc/systemd/system/container-$app.service ] ; then
                     cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $app
                     $sudo systemctl daemon-reload
-                    $sudo systemctl enable container-$app.service
-                    $sudo systemctl restart container-$app.service
+                    $sudo systemctl enable --now container-$app.service
                 fi
             fi
         done
@@ -58,10 +57,8 @@ case $1 in
                 echo ""
                 exit 0
             else
-                $sudo sudo systemctl stop container-$app.service
-                #$sudo podman-compose -f $dir/cfg/$app/*compose.yml down
                 if [ -f /etc/systemd/system/container-$app.service ] ; then
-                    $sudo systemctl disable container-$app.service
+                    $sudo systemctl disable --now container-$app.service
                     $sudo rm /etc/systemd/system/container-$app.service
                     $sudo systemctl daemon-reload
                 fi
@@ -69,7 +66,6 @@ case $1 in
         done
         ;;
     restart|r)
-        #$sudo podman restart $2
         $sudo systemctl restart container-$2.service
         ;;
     purge|pr)
@@ -90,9 +86,10 @@ case $1 in
     upgrade|up)
         if [ ! -z "$2" ] ; then
             shift
-            for appup in $* ; do
-                $dir/jdocker.sh rm $appup
-                $dir/jdocker.sh it $appup
+            for app in $* ; do
+                if [ -f /etc/systemd/system/container-$app.service ] ; then
+                    $sudo systemctl restart container-$app.service
+                fi
             done
         else
             $sudo podman auto-update
