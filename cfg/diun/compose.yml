@@ -10,6 +10,12 @@ services:
     volumes:
       - ./files:/data
       - /run/podman/podman.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "pgrep", "diun"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 networks:
   nginx_proxy:
