@@ -66,7 +66,14 @@ case $1 in
         done
         ;;
     restart|r)
-        $sudo systemctl restart container-$2.service
+        if [ ! -z "$2" ] ; then
+            shift
+            for app in $* ; do
+                if [ -f /etc/systemd/system/container-$app.service ] ; then
+                    $sudo systemctl restart container-$app.service
+                fi
+            done
+        fi
         ;;
     purge|pr)
         $sudo podman system prune -f
@@ -87,9 +94,8 @@ case $1 in
         if [ ! -z "$2" ] ; then
             shift
             for app in $* ; do
-                if [ -f /etc/systemd/system/container-$app.service ] ; then
-                    $sudo systemctl restart container-$app.service
-                fi
+                $dir/jdocker.sh rm $app
+                $dir/jdocker.sh it $app
             done
         else
             $sudo podman auto-update

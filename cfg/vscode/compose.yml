@@ -6,7 +6,8 @@ services:
     container_name: vscode
     hostname: vscode
     labels:
-      - io.containers.autoupdate=registry
+      - diun.enable=false
+      - io.containers.autoupdate=local
       - PODMAN_SYSTEMD_UNIT=container-vscode.service
       - flame.type=application
       - flame.name=VS Code
