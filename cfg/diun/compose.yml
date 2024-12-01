@@ -8,8 +8,8 @@ services:
       - PODMAN_SYSTEMD_UNIT=container-diun.service
     env_file: diun.env
     volumes:
-      - ./files:/data
-      - /run/podman/podman.sock:/var/run/docker.sock
+      - data:/data
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
     healthcheck:
       test: ["CMD", "pgrep", "diun"]
       interval: 30s
@@ -17,6 +17,5 @@ services:
       retries: 3
       start_period: 10s
 
-networks:
-  nginx_proxy:
-    external: true
+volumes:
+  data:

@@ -13,6 +13,7 @@ services:
       - flame.name=VS Code
       - flame.url=https://code.jeremky.fr
       - flame.icon=file-code
+    mem_limit: 1G
     networks:
       - nginx_proxy
     env_file: vscode.env
