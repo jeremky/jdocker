@@ -3,6 +3,7 @@ services:
     image: docker.io/hurlenko/aria2-ariang:latest
     container_name: ariang
     hostname: ariang
+    env_file: ariang.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-ariang.service
@@ -10,7 +11,6 @@ services:
       - flame.name=AriaNG
       - flame.url=https://aria.jeremky.fr
       - flame.icon=download
-    env_file: ariang.env
     networks:
       - nginx_proxy
     volumes:

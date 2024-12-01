@@ -3,6 +3,7 @@ services:
     image: lscr.io/linuxserver/pairdrop:latest
     container_name: pairdrop
     hostname: pairdrop
+    env_file: pairdrop.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-pairdrop.service
@@ -12,7 +13,6 @@ services:
       - flame.icon=access-point
     networks:
       - nginx_proxy
-    env_file: pairdrop.env
 
 networks:
   nginx_proxy:

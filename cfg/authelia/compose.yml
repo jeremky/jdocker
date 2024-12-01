@@ -3,6 +3,7 @@ services:
     image: docker.io/authelia/authelia:latest
     container_name: authelia
     hostname: authelia
+    env_file: authelia.env
     user: 1000:1000
     labels:
       - io.containers.autoupdate=registry
@@ -11,7 +12,6 @@ services:
       - flame.name=Authelia
       - flame.url=https://auth.jeremky.fr
       - flame.icon=key
-    env_file: authelia.env
     networks:
       - nginx_proxy
     volumes:

@@ -3,6 +3,7 @@ services:
     image: lscr.io/linuxserver/emulatorjs:latest
     container_name: emulatorjs
     hostname: emulatorjs
+    env_file: emulatorjs.env
     cpus: 2
     labels:
       - io.containers.autoupdate=registry
@@ -13,7 +14,6 @@ services:
       - flame.icon=nintendo-game-boy
     networks:
       - nginx_proxy
-    env_file: emulatorjs.env
     volumes:
       - /opt/emulatorjs/config:/config
       - /opt/emulatorjs/data:/data

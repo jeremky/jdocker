@@ -3,10 +3,10 @@ services:
     image: docker.io/riftbit/teeworlds:latest
     container_name: teeworlds
     hostname: teeworlds
+    env_file: teeworlds.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-teeworlds.service
-    env_file: teeworlds.env
     volumes:
       - data:/teeworlds/data
     ports:

@@ -5,6 +5,7 @@ services:
     image: localhost/vscode-hugo:latest
     container_name: vscode
     hostname: vscode
+    env_file: vscode.env
     labels:
       - diun.enable=false
       - io.containers.autoupdate=local
@@ -16,7 +17,6 @@ services:
     mem_limit: 1G
     networks:
       - nginx_proxy
-    env_file: vscode.env
     volumes:
       - /opt/vscode:/config
       - /home/jeremky:/home/jeremky

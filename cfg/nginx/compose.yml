@@ -3,6 +3,7 @@ services:
     image: lscr.io/linuxserver/swag:latest
     container_name: nginx
     hostname: nginx
+    env_file: nginx.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-nginx.service
@@ -10,7 +11,6 @@ services:
       - NET_ADMIN
     networks:
       - proxy
-    env_file: nginx.env
     volumes:
       - /opt/nginx:/config
     ports:

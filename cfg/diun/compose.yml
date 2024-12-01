@@ -3,10 +3,10 @@ services:
     image: docker.io/crazymax/diun:latest
     container_name: diun
     hostname: diun
+    env_file: diun.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-diun.service
-    env_file: diun.env
     volumes:
       - data:/data
       - /run/podman/podman.sock:/var/run/docker.sock:ro

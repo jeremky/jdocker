@@ -3,6 +3,7 @@ services:
     image: lscr.io/linuxserver/librespeed:latest
     container_name: librespeed
     hostname: librespeed
+    env_file: librespeed.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-librespeed.service
@@ -12,7 +13,6 @@ services:
       - flame.icon=speedometer
     networks:
       - nginx_proxy
-    env_file: librespeed.env
     volumes:
       - data:/config
 

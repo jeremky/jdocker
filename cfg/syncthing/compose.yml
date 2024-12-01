@@ -3,6 +3,7 @@ services:
     image: lscr.io/linuxserver/syncthing:latest
     container_name: syncthing
     hostname: syncthing
+    env_file: syncthing.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-syncthing.service
@@ -12,7 +13,6 @@ services:
       - flame.icon=cloud-sync
     networks:
       - nginx_proxy
-    env_file: syncthing.env
     volumes:
       - /opt/syncthing:/config
       - /home/jeremky:/data

@@ -3,12 +3,12 @@ services:
     image: docker.io/pawelmalak/flame:latest
     container_name: dashboard
     hostname: dashboard
+    env_file: dashboard.env
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-dashboard.service
     networks:
       - nginx_proxy
-    env_file: dashboard.env
     volumes:
       - ./files:/app/data
       - /var/run/podman/podman.sock:/var/run/docker.sock:ro
