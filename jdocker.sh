@@ -42,9 +42,11 @@ case $1 in
             else
                 $sudo podman-compose -f $dir/cfg/$app/*compose.yml up -d
                 if [ ! -f /etc/systemd/system/container-$app.service ] ; then
-                    cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $app
+                    for serv in $(cat $dir/cfg/$app/*compose.yml | grep hostname | cut -d' ' -f6); do
+                        cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $serv
                     $sudo systemctl daemon-reload
-                    $sudo systemctl enable --now container-$app.service
+                    $sudo systemctl enable --now container-$serv.service
+                    done
                 fi
             fi
         done
@@ -58,9 +60,11 @@ case $1 in
                 exit 0
             else
                 if [ -f /etc/systemd/system/container-$app.service ] ; then
-                    $sudo systemctl disable --now container-$app.service
-                    $sudo rm /etc/systemd/system/container-$app.service
-                    $sudo systemctl daemon-reload
+                    for serv in $(cat $dir/cfg/$app/*compose.yml | grep hostname | cut -d' ' -f6); do
+                        $sudo systemctl disable --now container-$serv.service
+                        $sudo rm /etc/systemd/system/container-$serv.service
+                        $sudo systemctl daemon-reload
+                    done
                 fi
             fi
         done
