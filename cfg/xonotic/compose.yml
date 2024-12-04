@@ -6,6 +6,8 @@ services:
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-xonotic.service
+    cpus: 2
+    mem_limit: 1G
     volumes:
       - ./files:/root/.xonotic/
     ports:
