@@ -4,7 +4,6 @@ services:
     container_name: emulatorjs
     hostname: emulatorjs
     env_file: emulatorjs.env
-    cpus: 2
     labels:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-emulatorjs.service
@@ -12,6 +11,7 @@ services:
       - flame.name=EmulatorJS
       - flame.url=https://emu.jeremky.fr
       - flame.icon=nintendo-game-boy
+    cpus: 2
     networks:
       - nginx_proxy
     volumes:

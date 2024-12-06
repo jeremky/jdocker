@@ -1,0 +1,28 @@
+services:
+  webtop:
+    image: lscr.io/linuxserver/webtop:latest
+    container_name: webtop
+    hostname: webtop
+    env_file: webtop.env
+    labels:
+      - io.containers.autoupdate=registry
+      - PODMAN_SYSTEMD_UNIT=container-webtop.service
+      - flame.type=application
+      - flame.name=Webtop
+      - flame.url=https://linux.jeremky.fr
+      - flame.icon=penguin
+    cpus: 2
+    mem_limit: 2G
+    networks:
+      - nginx_proxy
+    volumes:
+      - data:/config
+      - /home/jeremky:/home/abc
+    shm_size: "1gb"
+
+networks:
+  nginx_proxy:
+    external: true
+
+volumes:
+  data:
