@@ -14,7 +14,7 @@ services:
     networks:
       - nginx_proxy
     volumes:
-      - /home/jeremky/Downloads:/aria2/data
+      - /home/jeremky/downloads:/aria2/data
       - ./files:/aria2/conf
 
 networks:
