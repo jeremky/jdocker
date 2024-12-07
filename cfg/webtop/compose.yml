@@ -16,13 +16,10 @@ services:
     networks:
       - nginx_proxy
     volumes:
-      - data:/config
-      - /opt/webtop:/home/abc
+      - /opt/webtop:/config
+      - /home/jeremky:/home/jeremky
     shm_size: "1gb"
 
 networks:
   nginx_proxy:
     external: true
-
-volumes:
-  data:
