@@ -47,7 +47,7 @@ case $1 in
                 exit 0
             else
                 $sudo $dockerapp-compose -f $dir/cfg/$app/*compose.yml up -d
-                if [ ! -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "podman" ] ; then
+                if [ ! -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "/usr/bin/podman" ] ; then
                     for serv in $(cat $dir/cfg/$app/*compose.yml | grep hostname | cut -d' ' -f6); do
                         cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $serv
                         $sudo systemctl daemon-reload
@@ -81,7 +81,7 @@ case $1 in
         if [ ! -z "$2" ] ; then
             shift
             for app in $* ; do
-                if [ -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "podman" ] ; then
+                if [ -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "/usr/bin/podman" ] ; then
                     $sudo systemctl restart container-$app.service
                 else
                     $sudo $dockerapp restart $app
