@@ -16,8 +16,8 @@ services:
     networks:
       - nginx_proxy
     volumes:
-      - /opt/webtop:/config
-      - /home/jeremky:/home/jeremky
+      - /home/jeremky:/config
+      - /var/run/podman/podman.sock:/var/run/docker.sock
     shm_size: "1gb"
 
 networks:

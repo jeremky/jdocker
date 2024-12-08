@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/bash
 
 ## Variables
 dir=$(dirname "$0")
@@ -18,8 +18,14 @@ if [ -f /usr/bin/sudo ] ; then
 fi
 
 ## Verification
-if [ ! -f /usr/bin/podman ] && [ -f /usr/bin/apt ] ; then
-    echo "Podman n'est pas installé. Installation..."
+if [ -f /usr/bin/podman ] ; then
+    dockerapp=/usr/bin/podman
+else
+    dockerapp=/usr/bin/docker
+fi
+
+if [ ! -f $dockerapp ] && [ -f /usr/bin/apt ] ; then
+    echo "Docker n'est pas installé. Installation de Podman..."
     $sudo apt install podman podman-compose catatonit
     exit 0
 fi
@@ -27,10 +33,10 @@ fi
 ## Commandes
 case $1 in
     list|ls)
-        $sudo podman container ls -a --sort runningfor --format "table {{.Names}} \t {{.Status}}"
+        $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}}"
         ;;
     listall|lsa)
-        $sudo podman container ls -a --sort names --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
+        $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
         ;;
     install|it)
         shift
@@ -40,12 +46,12 @@ case $1 in
                 echo ""
                 exit 0
             else
-                $sudo podman-compose -f $dir/cfg/$app/*compose.yml up -d
-                if [ ! -f /etc/systemd/system/container-$app.service ] ; then
+                $sudo $dockerapp-compose -f $dir/cfg/$app/*compose.yml up -d
+                if [ ! -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "podman" ] ; then
                     for serv in $(cat $dir/cfg/$app/*compose.yml | grep hostname | cut -d' ' -f6); do
                         cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $serv
-                    $sudo systemctl daemon-reload
-                    $sudo systemctl enable --now container-$serv.service
+                        $sudo systemctl daemon-reload
+                        $sudo systemctl enable --now container-$serv.service
                     done
                 fi
             fi
@@ -65,6 +71,8 @@ case $1 in
                         $sudo rm /etc/systemd/system/container-$serv.service
                         $sudo systemctl daemon-reload
                     done
+                else
+                    $sudo $dockerapp-compose -f $dir/cfg/$app/*compose.yml down
                 fi
             fi
         done
@@ -73,24 +81,26 @@ case $1 in
         if [ ! -z "$2" ] ; then
             shift
             for app in $* ; do
-                if [ -f /etc/systemd/system/container-$app.service ] ; then
+                if [ -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "podman" ] ; then
                     $sudo systemctl restart container-$app.service
+                else
+                    $sudo $dockerapp restart $app
                 fi
             done
         fi
         ;;
     purge|pr)
-        $sudo podman system prune -f
+        $sudo $dockerapp system prune -f
         ;;
     purgeall|pra)
-        $sudo podman system prune -f -a --volumes
+        $sudo $dockerapp ystem prune -f -a --volumes
         ;;
     load|lo)
         if [ ! -d $imgdir/.old ] ; then
             mkdir $imgdir/.old
         fi
         for file in $(ls $imgdir/*.tar) ; do
-            $sudo podman load -i $file
+            $sudo $dockerapp load -i $file
             mv $file $imgdir/.old
         done
         ;;
@@ -102,37 +112,37 @@ case $1 in
                 $dir/jdocker.sh it $app
             done
         else
-            $sudo podman auto-update
+            $sudo $dockerapp auto-update
         fi
         ;;
     logs|l)
         if [ -z "$3" ] ; then
-            $sudo podman logs -f $2
+            $sudo $dockerapp logs -f $2
         else
-            $sudo podman logs --since=$3 $2
+            $sudo $dockerapp logs --since=$3 $2
         fi
         ;;
     search|s)
-        $sudo podman search $2
+        $sudo $dockerapp search $2
         ;;
     attach|at)
         echo "Ctrl+p, Ctrl+q pour quitter"
-        $sudo podman attach $2
+        $sudo $dockerapp attach $2
         ;;
     stats|ps)
-        $sudo podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemUsage}}"
+        $sudo $dockerapp stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemUsage}}"
         ;;
     statsall|psa)
-        $sudo podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
+        $sudo $dockerapp stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
         ;;
     bash|sh)
-        $sudo podman exec -it $2 sh
+        $sudo $dockerapp exec -it $2 sh
         ;;
     net|n)
-        $sudo podman network ls
+        $sudo $dockerapp network ls
         ;;
     volume|v)
-        $sudo podman volume ls
+        $sudo $dockerapp volume ls
         ;;
     backup|bk)
         if [ ! -z "$2" ] ; then
