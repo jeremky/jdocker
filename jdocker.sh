@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/dash
 
 ## Variables
 dir=$(dirname "$0")
@@ -93,7 +93,7 @@ case $1 in
         $sudo $dockerapp system prune -f
         ;;
     purgeall|pra)
-        $sudo $dockerapp ystem prune -f -a --volumes
+        $sudo $dockerapp system prune -f -a --volumes
         ;;
     load|lo)
         if [ ! -d $imgdir/.old ] ; then
@@ -112,7 +112,11 @@ case $1 in
                 $dir/jdocker.sh it $app
             done
         else
-            $sudo $dockerapp auto-update
+            if [ $dockerapp = "/usr/bin/podman" ] ; then
+                $sudo $dockerapp auto-update
+            else
+                $sudo $dockerapp images | grep -v ^REPO | grep -v none | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo $dockerapp pull
+            fi
         fi
         ;;
     logs|l)
@@ -202,7 +206,7 @@ case $1 in
             if [ -f $dir/.jdocker.cron ] ; then
                 $sudo cp -v $dir/.jdocker.cron /etc/cron.d/jdocker
                 $sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
-            else 
+            else
                 echo "Fichier $dir/.jdocker.cron absent"
                 exit 0
             fi
