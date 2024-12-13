@@ -8,7 +8,7 @@ services:
       - io.containers.autoupdate=registry
       - PODMAN_SYSTEMD_UNIT=container-pairdrop.service
       - flame.type=application
-      - flame.name=pairdrop
+      - flame.name=Pairdrop
       - flame.url=https://drop.jeremky.fr
       - flame.icon=access-point
     networks:
