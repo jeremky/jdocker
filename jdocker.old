@@ -24,13 +24,6 @@ else
   dockerapp=/usr/bin/docker
 fi
 
-## Docker CE
-if [ ! -f /usr/bin/docker-compose ] && [ $dockerapp = "/usr/bin/docker" ] ; then
-  compose="$dockerapp compose"
-else
-  compose="$dockerapp-compose"
-fi
-
 if [ ! -f $dockerapp ] && [ -f /usr/bin/apt ] ; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-compose catatonit
@@ -53,7 +46,7 @@ case $1 in
         echo ""
         exit 0
       else
-        $sudo $compose -f $dir/cfg/$app/*compose.yml up -d
+        $sudo $dockerapp-compose -f $dir/cfg/$app/*compose.yml up -d
         if [ ! -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "/usr/bin/podman" ] ; then
           for serv in $(cat $dir/cfg/$app/*compose.yml | grep hostname | cut -d' ' -f6); do
             cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $serv
@@ -79,7 +72,7 @@ case $1 in
             $sudo systemctl daemon-reload
           done
         else
-          $sudo $compose -f $dir/cfg/$app/*compose.yml down
+          $sudo $dockerapp-compose -f $dir/cfg/$app/*compose.yml down
         fi
       fi
     done
@@ -119,7 +112,11 @@ case $1 in
         $dir/jdocker.sh it $app
       done
     else
-      $sudo $dockerapp auto-update
+      if [ $dockerapp = "/usr/bin/podman" ] ; then
+        $sudo $dockerapp auto-update
+      else
+        $sudo $dockerapp images | grep -v ^REPO | grep -v none | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo $dockerapp pull
+      fi
     fi
     ;;
   logs|l)
