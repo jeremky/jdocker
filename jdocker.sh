@@ -24,7 +24,7 @@ else
   dockerapp=/usr/bin/docker
 fi
 
-## Docker CE
+## Patch Docker CE
 if [ ! -f /usr/bin/docker-compose ] && [ $dockerapp = "/usr/bin/docker" ] ; then
   compose="$dockerapp compose"
 else
