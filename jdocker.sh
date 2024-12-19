@@ -17,7 +17,7 @@ if [ -f /usr/bin/sudo ] ; then
   sudo=/usr/bin/sudo
 fi
 
-## Verification
+## Vérification
 if [ -f /usr/bin/podman ] ; then
   dockerapp=/usr/bin/podman
 else
