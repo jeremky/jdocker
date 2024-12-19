@@ -4,7 +4,7 @@
 dir=$(dirname "$0")
 cfg="$dir/$(basename -s .sh $0).cfg"
 
-## Config
+## Configuration
 if [ -f $cfg ] ; then
   . $cfg
 else
