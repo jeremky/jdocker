@@ -17,6 +17,7 @@ services:
       - nginx_proxy
     volumes:
       - /opt/webtop:/config
+      - /home/jeremky:/config/jeremky
     shm_size: "1gb"
 
 networks:
