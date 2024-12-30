@@ -1,0 +1,13 @@
+_jdocker_completion()
+{
+    # Récupération de la liste des commandes disponibles
+    _script_commands=$(DIR/jdocker.sh completion)
+
+    # Complétion du mot actuel
+    local current_word="${COMP_WORDS[COMP_CWORD]}"
+
+    # Création de la liste des paramètres
+    #COMPREPLY=($(compgen -W "${options}" -- "$current_word"))
+    COMPREPLY=($(compgen -W "${_script_commands}" -- "$current_word"))
+}
+complete -F _jdocker_completion jdocker

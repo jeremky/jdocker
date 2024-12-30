@@ -31,10 +31,18 @@ else
   compose="$dockerapp-compose"
 fi
 
+## Installation de Podman si Docker n'est pas trouvé
 if [ ! -f $dockerapp ] && [ -f /usr/bin/apt ] ; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-compose catatonit
   exit 0
+fi
+
+## Installation de la complétion
+if [ ! -f /etc/bash_completion.d/jdocker ] && [ -f $dir/.jdocker.comp ] ; then
+  echo "Installation de l'auto complétion..."
+  $sudo cp -v $dir/.jdocker.comp /etc/bash_completion.d/jdocker
+  $sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
 fi
 
 ## Commandes
@@ -145,10 +153,10 @@ case $1 in
   bash|sh)
     $sudo $dockerapp exec -it $2 sh
     ;;
-  net|n)
+  networks|n)
     $sudo $dockerapp network ls
     ;;
-  volume|v)
+  volumes|v)
     $sudo $dockerapp volume ls
     ;;
   backup|bk)
@@ -226,6 +234,9 @@ case $1 in
     else
       $sudo /usr/bin/lazydocker
     fi
+    ;;
+  completion)
+    echo list listall networks volumes logs load lazydocker install remove restart purge purgeall search attach upgrade stats statsall bash backup
     ;;
   *)
     cat $dir/.jdocker.help

@@ -1,8 +1,8 @@
 Commandes :
   ls  | list            Lister les conteneurs actifs
   lsa | listall         Lister les conteneurs actifs avec les ports et l'image utilisée
-  n   | net             Lister les réseaux virtuels
-  v   | volume          Lister les volumes virtuels
+  n   | networks        Lister les réseaux virtuels
+  v   | volumes         Lister les volumes virtuels
   l   | logs            Consulter les logs pour un conteneur spécifié
   lo  | load            Charge les images présentes dans le dossier $imgdir
   lzd | lazydocker      Installer lazydocker
