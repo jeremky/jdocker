@@ -4,7 +4,7 @@ Script permettant une administration plus simplifiée des conteneurs Docker/Podm
 
 - Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier jdocker.cfg pour remplacer votre nom d'utilisateur, et la destination des backups.
 
-- Lancez le script une première fois pour installer l'autocomplétion. Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez-le.
+- Lancez le script une première fois pour installer l'auto complétion. Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez-le.
 
 - Pour automatiser vos backups, il y a un fichier .cron dans ce répertoire. Modifiez le selon vos préférences. Faites ensuite ./jdocker.sh bk pour le copier dans le répertoire des cron.
 
