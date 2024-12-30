@@ -19,20 +19,20 @@ fi
 
 ## Vérification
 if [ -f /usr/bin/podman ] ; then
-  dockerapp=/usr/bin/podman
+  dockerapp=podman
 else
-  dockerapp=/usr/bin/docker
+  dockerapp=docker
 fi
 
 ## Patch Docker CE
-if [ ! -f /usr/bin/docker-compose ] && [ $dockerapp = "/usr/bin/docker" ] ; then
+if [ ! -f /usr/bin/docker-compose ] && [ $dockerapp = "docker" ] ; then
   compose="$dockerapp compose"
 else
   compose="$dockerapp-compose"
 fi
 
 ## Installation de Podman si Docker n'est pas trouvé
-if [ ! -f $dockerapp ] && [ -f /usr/bin/apt ] ; then
+if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-compose catatonit
   exit 0
@@ -40,9 +40,11 @@ fi
 
 ## Installation de la complétion
 if [ ! -f /etc/bash_completion.d/jdocker ] && [ -f $dir/.jdocker.comp ] ; then
-  echo "Installation de l'auto complétion..."
-  $sudo cp -v $dir/.jdocker.comp /etc/bash_completion.d/jdocker
+  $sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   $sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
+  $sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
+  echo "Auto complétion installée. Redémarrez votre session"
+  exit 0
 fi
 
 ## Commandes
@@ -236,9 +238,9 @@ case $1 in
     fi
     ;;
   completion)
-    echo list listall networks volumes logs load lazydocker install remove restart purge purgeall search attach upgrade stats statsall bash backup
+    echo list listall networks volumes logs load lazydocker install remove restart purge purgeall search attach upgrade stats statsall bash backup help
     ;;
-  *)
+  *|help)
     cat $dir/.jdocker.help
     ;;
 esac
