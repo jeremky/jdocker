@@ -1,13 +1,38 @@
-_jdocker_completion()
-{
-    # Récupération de la liste des commandes disponibles
-    _script_commands=$(DIR/jdocker.sh completion)
+_jdocker_completion() {
 
-    # Complétion du mot actuel
-    local current_word="${COMP_WORDS[COMP_CWORD]}"
+# Préparation des éléments
+local cur prev _commands containers applications
+COMPREPLY=()
+cur="${COMP_WORDS[COMP_CWORD]}"
+prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Création de la liste des paramètres
-    #COMPREPLY=($(compgen -W "${options}" -- "$current_word"))
-    COMPREPLY=($(compgen -W "${_script_commands}" -- "$current_word"))
+# Liste des commandes
+_commands=$(DIR/jdocker.sh completion)
+
+# Traitement des sous commandes
+case $prev in
+  l|logs|r|restart|sh|bash|at|attach)
+    containers=$(DOCKERAPP ps --format "{{.Names}}")
+    COMPREPLY=($(compgen -W "$containers" -- "$cur"))
+    return 0
+    ;;
+  it|install|rm|remove|up|upgrade)
+    applications=$(ls DIR/cfg)
+    COMPREPLY=($(compgen -W "$applications" -- "$cur"))
+    return 0
+    ;;
+  bk|backup)
+    dockerdir=$(ls /opt)
+    COMPREPLY=($(compgen -W "$dockerdir" -- "$cur"))
+    return 0
+    ;;
+esac
+
+# Autocomplétion pour les commandes de base
+if [[ "$COMP_CWORD" -eq 1 ]] ; then
+  COMPREPLY=($(compgen -W "${_commands}" -- "$cur"))
+fi
+
 }
+
 complete -F _jdocker_completion jdocker
