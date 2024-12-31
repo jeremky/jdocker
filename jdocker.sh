@@ -38,12 +38,15 @@ if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
   exit 0
 fi
 
-## Installation de la complétion
-if [ ! -f /etc/bash_completion.d/jdocker ] && [ -f $dir/.jdocker.comp ] ; then
+## Installation de la complétion et des droits sudo
+if [ ! -f /etc/bash_completion.d/jdocker ] ; then
   $sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   $sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
   $sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
-  echo "Auto complétion installée. Redémarrez votre session"
+  $sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
+  $sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
+  $sudo chmod 600 /etc/sudoers.d/jdocker
+  echo "Droits sudo et auto complétion installés. Redémarrez votre session"
   exit 0
 fi
 
