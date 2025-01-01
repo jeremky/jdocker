@@ -1,0 +1,1 @@
+USER ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose, /usr/bin/podman, /usr/bin/podman-compose, /usr/bin/lazydocker, /usr/bin/systemctl restart container-*
