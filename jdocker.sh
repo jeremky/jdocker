@@ -113,7 +113,7 @@ case $1 in
         $dir/jdocker.sh it $app
       done
     else
-      $sudo $dockerapp images | grep -v ^REPO | cut -d" " -f1,2 | xargs -L1 $sudo $dockerapp pull
+      $sudo $dockerapp images | grep -v ^REPO | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo $dockerapp pull
     fi
     ;;
   logs|l)
