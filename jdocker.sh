@@ -34,7 +34,7 @@ fi
 ## Installation de Podman si Docker n'est pas trouvé
 if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
   echo "Docker n'est pas installé. Installation de Podman..."
-  $sudo apt install podman podman-compose catatonit
+  $sudo apt install podman podman-compose
   exit 0
 fi
 
