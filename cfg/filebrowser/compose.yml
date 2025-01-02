@@ -5,8 +5,6 @@ services:
     hostname: filebrowser
     user: 1000:1000
     labels:
-      - io.containers.autoupdate=registry
-      - PODMAN_SYSTEMD_UNIT=container-filebrowser.service
       - flame.type=application
       - flame.name=File Browser
       - flame.url=https://files.jeremky.fr
@@ -17,6 +15,7 @@ services:
       - ./files/database.db:/database/filebrowser.db
       - ./files/settings.json:/.filebrowser.json
       - /home:/srv
+    restart: always
 
 networks:
   nginx_proxy:

@@ -4,8 +4,6 @@ services:
     container_name: uptimekuma
     hostname: uptimekuma
     labels:
-      - io.containers.autoupdate=registry
-      - PODMAN_SYSTEMD_UNIT=container-uptimekuma.service
       - flame.type=application
       - flame.name=Uptime Kuma
       - flame.url=https://kuma.jeremky.fr
@@ -15,6 +13,7 @@ services:
     volumes:
       - /opt/uptimekuma:/app/data
       - /var/run/podman/podman.sock:/var/run/docker.sock:ro
+    restart: always
 
 networks:
   nginx_proxy:

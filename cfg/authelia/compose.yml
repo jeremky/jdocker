@@ -5,13 +5,11 @@ services:
     hostname: authelia
     env_file: authelia.env
     user: 1000:1000
-    labels:
-      - io.containers.autoupdate=registry
-      - PODMAN_SYSTEMD_UNIT=container-authelia.service
     networks:
       - nginx_proxy
     volumes:
       - ./files:/config
+    restart: always
 
 networks:
   nginx_proxy:

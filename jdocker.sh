@@ -67,13 +67,6 @@ case $1 in
         exit 0
       else
         $sudo $compose -f $dir/cfg/$app/*compose.yml up -d
-        if [ ! -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "/usr/bin/podman" ] ; then
-          for serv in $(cat $dir/cfg/$app/*compose.yml | grep hostname | cut -d' ' -f6); do
-            cd /etc/systemd/system && $sudo podman generate systemd --new --name --files $serv
-            $sudo systemctl daemon-reload
-            $sudo systemctl enable --now container-$serv.service
-          done
-        fi
       fi
     done
     ;;
@@ -85,15 +78,7 @@ case $1 in
         echo ""
         exit 0
       else
-        if [ -f /etc/systemd/system/container-$app.service ] ; then
-          for serv in $(cat $dir/cfg/$app/*compose.yml | grep hostname | cut -d' ' -f6); do
-            $sudo systemctl disable --now container-$serv.service
-            $sudo rm /etc/systemd/system/container-$serv.service
-            $sudo systemctl daemon-reload
-          done
-        else
-          $sudo $compose -f $dir/cfg/$app/*compose.yml down
-        fi
+        $sudo $compose -f $dir/cfg/$app/*compose.yml down
       fi
     done
     ;;
@@ -101,11 +86,7 @@ case $1 in
     if [ ! -z "$2" ] ; then
       shift
       for app in $* ; do
-        if [ -f /etc/systemd/system/container-$app.service ] && [ $dockerapp = "/usr/bin/podman" ] ; then
-          $sudo systemctl restart container-$app.service
-        else
           $sudo $dockerapp restart $app
-        fi
       done
     fi
     ;;
@@ -132,7 +113,7 @@ case $1 in
         $dir/jdocker.sh it $app
       done
     else
-      $sudo $dockerapp auto-update
+      $sudo $dockerapp images | grep -v ^REPO | cut -d" " -f1,2 | xargs -L1 $sudo $dockerapp pull
     fi
     ;;
   logs|l)

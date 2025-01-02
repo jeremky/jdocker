@@ -4,9 +4,6 @@ services:
     container_name: nginx
     hostname: nginx
     env_file: nginx.env
-    labels:
-      - io.containers.autoupdate=registry
-      - PODMAN_SYSTEMD_UNIT=container-nginx.service
     cap_add:
       - NET_ADMIN
     networks:
@@ -16,6 +13,7 @@ services:
     ports:
       - 80:80
       - 443:443
+    restart: always
 
 networks:
   proxy:

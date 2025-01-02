@@ -4,15 +4,13 @@ services:
     container_name: teeworlds
     hostname: teeworlds
     env_file: teeworlds.env
-    labels:
-      - io.containers.autoupdate=registry
-      - PODMAN_SYSTEMD_UNIT=container-teeworlds.service
     volumes:
       - data:/teeworlds/data
     ports:
       - 8303:8303/udp
     tty: true
     stdin_open: true
+    restart: always
 
 volumes:
   data:

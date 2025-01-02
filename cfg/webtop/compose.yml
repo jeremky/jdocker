@@ -5,8 +5,6 @@ services:
     hostname: webtop
     env_file: webtop.env
     labels:
-      - io.containers.autoupdate=registry
-      - PODMAN_SYSTEMD_UNIT=container-webtop.service
       - flame.type=application
       - flame.name=Webtop
       - flame.url=https://linux.jeremky.fr
@@ -19,6 +17,7 @@ services:
       - /opt/webtop:/config
       - /home/jeremky:/config/jeremky
     shm_size: "1gb"
+    restart: always
 
 networks:
   nginx_proxy:
