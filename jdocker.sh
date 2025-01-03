@@ -1,10 +1,10 @@
 #!/bin/dash
+set -e
 
-## Variables
 dir=$(dirname "$0")
-cfg="$dir/$(basename -s .sh $0).cfg"
 
-## Configuration
+## Chargement du fichier de config
+cfg="$dir/$(basename -s .sh $0).cfg"
 if [ -f $cfg ] ; then
   . $cfg
 else
@@ -12,12 +12,12 @@ else
   exit 0
 fi
 
-## Sudo
+## Vérification de sudo
 if [ -f /usr/bin/sudo ] ; then
   sudo=/usr/bin/sudo
 fi
 
-## Vérification
+## Docker / Podman
 if [ -f /usr/bin/podman ] ; then
   dockerapp=podman
 else
