@@ -35,7 +35,6 @@ fi
 if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-compose
-  exit 0
 fi
 
 ## Installation de la complétion et des droits sudo
@@ -64,7 +63,6 @@ case $1 in
       if [ ! -f $dir/cfg/$app/*compose.yml ] || [ -z "$1" ] ; then
         echo "Application $app non trouvée"
         echo ""
-        exit 0
       else
         $sudo $compose -f $dir/cfg/$app/*compose.yml up -d
       fi
@@ -76,7 +74,6 @@ case $1 in
       if [ ! -f $dir/cfg/$app/*compose.yml ] || [ -z "$1" ] ; then
         echo "Application $app non trouvée"
         echo ""
-        exit 0
       else
         $sudo $compose -f $dir/cfg/$app/*compose.yml down
       fi
@@ -98,7 +95,7 @@ case $1 in
     ;;
   load|lo)
     if [ ! -d $imgdir/.old ] ; then
-      mkdir $imgdir/.old
+      mkdir -p $imgdir/.old
     fi
     for file in $(ls $imgdir/*.tar) ; do
       $sudo $dockerapp load -i $file
@@ -205,7 +202,6 @@ case $1 in
         $sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
       else
         echo "Fichier $dir/.jdocker.cron absent"
-        exit 0
       fi
     fi
     ;;
@@ -220,9 +216,6 @@ case $1 in
     else
       $sudo /usr/bin/lazydocker
     fi
-    ;;
-  completion)
-    echo list listall networks volumes logs load lazydocker install remove restart purge purgeall search attach upgrade stats statsall bash backup help
     ;;
   *|help)
     cat $dir/.jdocker.help
