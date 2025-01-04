@@ -7,12 +7,12 @@ cur="${COMP_WORDS[COMP_CWORD]}"
 prev="${COMP_WORDS[COMP_CWORD-1]}"
 
 # Liste des commandes
-_commands=$(DIR/jdocker.sh completion)
+_commands="list listall networks volumes logs load lazydocker install remove restart purge purgeall search attach upgrade stats statsall bash backup help"
 
 # Traitement des sous commandes
 case $prev in
   l|logs|r|restart|sh|bash|at|attach)
-    containers=$(DOCKERAPP ps --format "{{.Names}}")
+    containers=$(sudo DOCKERAPP ps --format "{{.Names}}")
     COMPREPLY=($(compgen -W "$containers" -- "$cur"))
     return 0
     ;;
