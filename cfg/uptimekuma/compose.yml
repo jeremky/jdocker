@@ -12,7 +12,7 @@ services:
       - nginx_proxy
     volumes:
       - /opt/uptimekuma:/app/data
-      - /var/run/podman/podman.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: always
 
 networks:
