@@ -4,7 +4,7 @@ set -e
 dir=$(dirname "$0")
 
 ## Chargement du fichier de config
-cfg="$dir/$(basename -s .sh $0).cfg"
+cfg="$dir/jdocker.cfg"
 if [ -f $cfg ] ; then
   . $cfg
 else
@@ -17,13 +17,6 @@ if [ -f /usr/bin/sudo ] ; then
   sudo=/usr/bin/sudo
 fi
 
-## Docker / Podman
-if [ -f /usr/bin/podman ] ; then
-  dockerapp=podman
-else
-  dockerapp=docker
-fi
-
 ## Patch Docker CE
 if [ ! -f /usr/bin/docker-compose ] ; then
   compose="docker compose"
@@ -32,16 +25,16 @@ else
 fi
 
 ## Installation de Podman si Docker n'est pas trouvé
-if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
+if [ ! -f /usr/bin/docker ] && [ -f /usr/bin/apt ] ; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-docker
+  $sudo touch /etc/containers/nodocker
 fi
 
 ## Installation de la complétion et des droits sudo
 if [ ! -f /etc/bash_completion.d/jdocker ] ; then
   $sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   $sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
-  $sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
   $sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
   $sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
   $sudo chmod 600 /etc/sudoers.d/jdocker
@@ -52,10 +45,10 @@ fi
 ## Commandes
 case $1 in
   list|ls)
-    $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}}"
+    $sudo docker container ls -a --format "table {{.Names}} \t {{.Status}}"
     ;;
   listall|lsa)
-    $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
+    $sudo docker container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
     ;;
   install|it)
     shift
@@ -83,22 +76,22 @@ case $1 in
     if [ ! -z "$2" ] ; then
       shift
       for app in $* ; do
-        $sudo $dockerapp restart $app
+        $sudo docker restart $app
       done
     fi
     ;;
   purge|pr)
-    $sudo $dockerapp system prune -f
+    $sudo docker system prune -f
     ;;
   purgeall|pra)
-    $sudo $dockerapp system prune -f -a --volumes
+    $sudo docker system prune -f -a --volumes
     ;;
   load|lo)
     if [ ! -d $imgdir/.old ] ; then
       mkdir -p $imgdir/.old
     fi
     for file in $(ls $imgdir/*.tar) ; do
-      $sudo $dockerapp load -i $file
+      $sudo docker load -i $file
       mv $file $imgdir/.old
     done
     ;;
@@ -110,37 +103,37 @@ case $1 in
         $dir/jdocker.sh it $app
       done
     else
-      $sudo $dockerapp images | grep -v ^REPO | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo $dockerapp pull
+      $sudo docker images | grep -v ^REPO | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo docker pull
     fi
     ;;
   logs|l)
     if [ -z "$3" ] ; then
-      $sudo $dockerapp logs -f $2
+      $sudo docker logs -f $2
     else
-      $sudo $dockerapp logs --since=$3 $2
+      $sudo docker logs --since=$3 $2
     fi
     ;;
   search|s)
-    $sudo $dockerapp search $2
+    $sudo docker search $2
     ;;
   attach|at)
     echo "Ctrl+p, Ctrl+q pour quitter"
-    $sudo $dockerapp attach $2
+    $sudo docker attach $2
     ;;
   stats|ps)
-    $sudo $dockerapp stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemUsage}}"
+    $sudo docker stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemUsage}}"
     ;;
   statsall|psa)
-    $sudo $dockerapp stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
+    $sudo docker stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
     ;;
   bash|sh)
-    $sudo $dockerapp exec -it $2 sh
+    $sudo docker exec -it $2 sh
     ;;
   networks|n)
-    $sudo $dockerapp network ls
+    $sudo docker network ls
     ;;
   volumes|v)
-    $sudo $dockerapp volume ls
+    $sudo docker volume ls
     ;;
   backup|bk)
     if [ ! -z "$2" ] ; then
@@ -211,9 +204,6 @@ case $1 in
       $sudo mv /$HOME/.local/bin/lazydocker /usr/bin/lazydocker
       $sudo chown root: /usr/bin/lazydocker
     else
-      if [ ! -h /var/run/docker.sock ] ; then
-        $sudo ln -s /var/run/podman/podman.sock /var/run/docker.sock
-      fi
       $sudo /usr/bin/lazydocker
     fi
     ;;
