@@ -3,7 +3,7 @@ set -e
 
 dir=$(dirname "$0")
 
-## Chargement du fichier de config
+# Chargement du fichier de config
 cfg="$dir/$(basename -s .sh $0).cfg"
 if [ -f $cfg ] ; then
   . $cfg
@@ -12,32 +12,32 @@ else
   exit 0
 fi
 
-## Vérification de sudo
+# Vérification de sudo
 if [ -f /usr/bin/sudo ] ; then
   sudo=/usr/bin/sudo
 fi
 
-## Docker / Podman
+# Docker / Podman
 if [ -f /usr/bin/podman ] ; then
   dockerapp=podman
 else
   dockerapp=docker
 fi
 
-## Patch Docker CE
+# Patch Docker CE
 if [ ! -f /usr/bin/docker-compose ] ; then
   compose="docker compose"
 else
   compose="docker-compose"
 fi
 
-## Installation de Podman si Docker n'est pas trouvé
+# Installation de Podman si Docker n'est pas trouvé
 if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-docker
 fi
 
-## Installation de la complétion et des droits sudo
+# Installation de la complétion et des droits sudo
 if [ ! -f /etc/bash_completion.d/jdocker ] ; then
   $sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   $sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
@@ -49,7 +49,7 @@ if [ ! -f /etc/bash_completion.d/jdocker ] ; then
   exit 0
 fi
 
-## Commandes
+# Commandes
 case $1 in
   list|ls)
     $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}}"
@@ -211,9 +211,6 @@ case $1 in
       $sudo mv /$HOME/.local/bin/lazydocker /usr/bin/lazydocker
       $sudo chown root: /usr/bin/lazydocker
     else
-      if [ ! -h /var/run/docker.sock ] ; then
-        $sudo ln -s /var/run/podman/podman.sock /var/run/docker.sock
-      fi
       $sudo /usr/bin/lazydocker
     fi
     ;;
