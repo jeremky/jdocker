@@ -210,13 +210,9 @@ case $1 in
     fi
     ;;
   lzd|lazydocker)
-    if [ ! -f /usr/bin/lazydocker ] ; then
-      $sudo curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
-      $sudo mv /$HOME/.local/bin/lazydocker /usr/bin/lazydocker
-      $sudo chown root: /usr/bin/lazydocker
-    else
-      $sudo /usr/bin/lazydocker
-    fi
+    $sudo curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+    $sudo mv /$HOME/.local/bin/lazydocker /usr/bin/lazydocker
+    $sudo chown root: /usr/bin/lazydocker
     ;;
   *|help)
     cat $dir/.jdocker.help
