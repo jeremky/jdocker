@@ -24,11 +24,13 @@ else
   dockerapp=docker
 fi
 
-# Patch Docker CE
-if [ ! -f /usr/bin/docker-compose ] ; then
-  compose="docker compose"
-else
+# Compose
+if [ -f /usr/bin/podman-compose ] ; then
+  compose="podman-compose"
+elif [ -f /usr/bin/docker-compose ] ; then
   compose="docker-compose"
+else
+  compose="docker compose"
 fi
 
 # Installation de Podman si Docker n'est pas trouvé
