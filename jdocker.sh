@@ -59,7 +59,7 @@ case $1 in
     $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}}"
     ;;
   listall|lsa)
-    $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}}"
+    $sudo $dockerapp container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
     ;;
   install|it)
     shift
