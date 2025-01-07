@@ -9,6 +9,9 @@ services:
       - nginx_proxy
     volumes:
       - ./files:/config
+    command:
+      - 'authelia'
+      - '--config=/config/configuration.yml'
     restart: always
 
 networks:
