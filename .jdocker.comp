@@ -11,12 +11,12 @@ _commands="list listall networks volumes logs load lazydocker install remove res
 
 # Traitement des sous commandes
 case $prev in
-  l|logs|r|restart|sh|bash|at|attach|rm|remove|up|upgrade)
+  l|logs|r|restart|sh|bash|at|attach)
     containers=$(sudo DOCKERAPP ps --format "{{.Names}}")
     COMPREPLY=($(compgen -W "$containers" -- "$cur"))
     return 0
     ;;
-  it|install)
+  it|install|rm|remove|up|upgrade)
     applications=$(ls DIR/cfg)
     COMPREPLY=($(compgen -W "$applications" -- "$cur"))
     return 0
