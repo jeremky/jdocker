@@ -3,6 +3,7 @@ services:
     image: docker.io/louislam/uptime-kuma:latest
     container_name: uptimekuma
     hostname: uptimekuma
+    env_file: uptimekuma.env
     labels:
       - flame.type=application
       - flame.name=Uptime Kuma
@@ -12,7 +13,6 @@ services:
       - nginx_proxy
     volumes:
       - /opt/uptimekuma:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: always
 
 networks:
