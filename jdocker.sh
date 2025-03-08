@@ -1,5 +1,5 @@
 #!/bin/dash
-set -e
+#set -e
 
 dir=$(dirname "$0")
 
