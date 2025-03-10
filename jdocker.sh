@@ -5,7 +5,7 @@ dir=$(dirname "$0")
 
 # Chargement du fichier de config
 cfg="$dir/$(basename -s .sh $0).cfg"
-if [ -f $cfg ] ; then
+if [[ -f $cfg ]]; then
   . $cfg
 else
   echo "Fichier $cfg introuvable"
@@ -13,28 +13,28 @@ else
 fi
 
 # Vérification de sudo
-if [ -f /usr/bin/sudo ] ; then
+if [[ -f /usr/bin/sudo ]]; then
   sudo=/usr/bin/sudo
 fi
 
 # Docker / Podman
-if [ -f /usr/bin/podman ] ; then
+if [[ -f /usr/bin/podman ]]; then
   dockerapp=podman
 else
   dockerapp=docker
 fi
 
 # Compose
-if [ -f /usr/bin/podman-compose ] ; then
+if [[ -f /usr/bin/podman-compose ]]; then
   compose="podman-compose"
-elif [ -f /usr/bin/docker-compose ] ; then
+elif [[ -f /usr/bin/docker-compose ]]; then
   compose="docker-compose"
 else
   compose="docker compose"
 fi
 
 # Installation de Podman si Docker n'est pas trouvé
-if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
+if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-docker
   $sudo touch /etc/containers/nodocker
@@ -42,7 +42,7 @@ if [ ! -f /usr/bin/$dockerapp ] && [ -f /usr/bin/apt ] ; then
 fi
 
 # Installation de la complétion et des droits sudo
-if [ ! -f /etc/bash_completion.d/jdocker ] ; then
+if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   $sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   $sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
   $sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
@@ -64,7 +64,7 @@ case $1 in
   install|it)
     shift
     for app in $* ; do
-      if [ ! -f $dir/cfg/$app/*compose.yml ] || [ -z "$1" ] ; then
+      if [[ ! -f $dir/cfg/$app/*compose.yml ]] || [[ -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else
@@ -75,7 +75,7 @@ case $1 in
   remove|rm)
     shift
     for app in $* ; do
-      if [ ! -f $dir/cfg/$app/*compose.yml ] || [ -z "$1" ] ; then
+      if [[ ! -f $dir/cfg/$app/*compose.yml ]] || [[ -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else
@@ -84,7 +84,7 @@ case $1 in
     done
     ;;
   restart|r)
-    if [ ! -z "$2" ] ; then
+    if [[ ! -z "$2" ]]; then
       shift
       for app in $* ; do
         $sudo $dockerapp restart $app
@@ -98,7 +98,7 @@ case $1 in
     $sudo $dockerapp system prune -f -a --volumes
     ;;
   load|lo)
-    if [ ! -d $imgdir/.old ] ; then
+    if [[ ! -d $imgdir/.old ]]; then
       mkdir -p $imgdir/.old
     fi
     for file in $(ls $imgdir/*.tar) ; do
@@ -107,7 +107,7 @@ case $1 in
     done
     ;;
   upgrade|up)
-    if [ ! -z "$2" ] ; then
+    if [[ ! -z "$2" ]]; then
       shift
       for app in $* ; do
         $dir/jdocker.sh rm $app
@@ -118,7 +118,7 @@ case $1 in
     fi
     ;;
   logs|l)
-    if [ -z "$3" ] ; then
+    if [[ -z "$3" ]]; then
       $sudo $dockerapp logs -f $2
     else
       $sudo $dockerapp logs --since=$3 $2
@@ -147,9 +147,9 @@ case $1 in
     $sudo $dockerapp volume ls
     ;;
   backup|bk)
-    if [ ! -z "$2" ] ; then
-      if [ -d /opt/$2 ] ; then
-        if [ ! -d $destbackup/$2/.old ] ; then
+    if [[ ! -z "$2" ]]; then
+      if [[ -d /opt/$2 ]]; then
+        if [[ ! -d $destbackup/$2/.old ]]; then
           $sudo mkdir -p $destbackup/$2/.old
           $sudo chown -R $user: $destbackup
         fi
@@ -160,10 +160,10 @@ case $1 in
         tarname=$2.$num.tar.gz
         case $3 in
           f|full)
-            if [ -f .$2.0.list ] ; then
+            if [[ -f .$2.0.list ]]; then
               $sudo rm -f .$2.*.list
             fi
-            if [ -f $destbackup/$2/$2.0.tar.gz ] ; then
+            if [[ -f $destbackup/$2/$2.0.tar.gz ]]; then
               $sudo mv $destbackup/$2/$2.*.gz $destbackup/$2/.old
             fi
             echo "Sauvegarde full de $2..."
@@ -172,7 +172,7 @@ case $1 in
             $sudo mv $tarname $destbackup/$2
             ;;
           i|incr)
-            if [ ! -f .$2.0.list ] ; then
+            if [[ ! -f .$2.0.list ]]; then
               echo "Sauvegarde full introuvable. Arrêt"
               exit 0
             fi
@@ -201,7 +201,7 @@ case $1 in
         echo "Dossier /opt/$2 non trouvé"
       fi
     else
-      if [ -f $dir/.jdocker.cron ] ; then
+      if [[ -f $dir/.jdocker.cron ]]; then
         $sudo cp -v $dir/.jdocker.cron /etc/cron.d/jdocker
         $sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
       else
