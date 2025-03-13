@@ -64,22 +64,22 @@ listall | lsa)
 install | it)
   shift
   for app in $*; do
-    if [ ! -f $dir/cfg/$app/*compose.yml ]; then
+    if [[ ! -f $dir/cfg/$app/compose.yml ]] || [[ -z "$1" ]]; then
       echo "Application $app non trouvée"
       echo ""
     else
-      $sudo $compose -f $dir/cfg/$app/*compose.yml up -d
+      $sudo $compose -f $dir/cfg/$app/compose.yml up -d
     fi
   done
   ;;
 remove | rm)
   shift
   for app in $*; do
-    if [ ! -f $dir/cfg/$app/*compose.yml ]; then
+    if [[ ! -f $dir/cfg/$app/compose.yml ]] || [[ -z "$1" ]]; then
       echo "Application $app non trouvée"
       echo ""
     else
-      $sudo $compose -f $dir/cfg/$app/*compose.yml down
+      $sudo $compose -f $dir/cfg/$app/compose.yml down
     fi
   done
   ;;
