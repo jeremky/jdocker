@@ -1,0 +1,28 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    hostname: ollama
+    tty: true
+    networks:
+      - nginx_proxy
+    volumes:
+      - /opt/ollama/ollama:/root/.ollama
+    restart: always
+
+  ollama-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: ollama-webui
+    hostname: ollama-webui
+    env_file: ollama.env
+    depends_on:
+      - ollama
+    networks:
+      - nginx_proxy
+    volumes:
+      - /opt/ollama/webui:/app/backend/data
+    restart: always
+
+networks:
+  nginx_proxy:
+    external: true
