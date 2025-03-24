@@ -3,6 +3,8 @@ services:
     image: ollama/ollama:latest
     container_name: ollama
     hostname: ollama
+    cpus: 3
+    mem_limit: 2G
     tty: true
     networks:
       - nginx_proxy
