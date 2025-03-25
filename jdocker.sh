@@ -211,8 +211,8 @@ backup | bk)
   ;;
 lzd | lazydocker)
   $sudo curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
-  $sudo mv /$HOME/.local/bin/lazydocker /usr/bin/lazydocker
-  $sudo chown root: /usr/bin/lazydocker
+  $sudo mv /$HOME/.local/bin/lazydocker /usr/local/bin/lazydocker
+  $sudo chown root: /usr/local/bin/lazydocker
   ;;
 * | help)
   cat $dir/.jdocker.help
