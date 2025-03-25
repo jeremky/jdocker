@@ -17,6 +17,11 @@ services:
     container_name: ollama-webui
     hostname: ollama-webui
     env_file: ollama.env
+    labels:
+      - flame.type=application
+      - flame.name=Open WebUI
+      - flame.url=https://ollama.jeremky.fr
+      - flame.icon=chat-alert
     depends_on:
       - ollama
     networks:
