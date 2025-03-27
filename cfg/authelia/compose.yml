@@ -10,8 +10,8 @@ services:
     volumes:
       - ./files:/config
     command:
-      - 'authelia'
-      - '--config=/config/configuration.yml'
+      - "authelia"
+      - "--config=/config/configuration.yml"
     restart: always
 
 networks:
