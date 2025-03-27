@@ -4,7 +4,7 @@ services:
     container_name: ollama
     hostname: ollama
     cpus: 3
-    mem_limit: 2G
+    mem_limit: 3G
     tty: true
     networks:
       - nginx_proxy
