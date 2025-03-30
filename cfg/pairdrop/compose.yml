@@ -8,7 +8,7 @@ services:
       - flame.type=application
       - flame.name=PairDrop
       - flame.url=https://drop.jeremky.fr
-      - flame.icon=wifi-sync
+      - flame.icon=access-point
     networks:
       - nginx_proxy
     restart: always
