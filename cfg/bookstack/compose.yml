@@ -1,0 +1,36 @@
+services:
+  bookstack-db:
+    image: lscr.io/linuxserver/mariadb
+    container_name: bookstack-db
+    hostname: bookstack-db
+    env_file: bookstack-db.env
+    networks:
+      - default
+    volumes:
+      - /opt/bookstack/mysql:/config
+    restart: always
+
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    container_name: bookstack
+    hostname: bookstack
+    env_file: bookstack.env
+    #    labels:
+    #      - flame.type=application
+    #      - flame.name=Bookstack
+    #      - flame.url=https://book.jeremky.fr
+    #      - flame.icon=book-multiple
+    networks:
+      - default
+      - nginx_proxy
+    volumes:
+      - /opt/bookstack/app:/config
+    depends_on:
+      - bookstack-db
+    restart: always
+
+networks:
+  nginx_proxy:
+    external: true
+  default:
+    external: false
