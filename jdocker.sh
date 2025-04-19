@@ -35,19 +35,21 @@ fi
 
 # Installation de Podman si Docker n'est pas trouvé
 if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
-  echo "Docker n'est pas installé. Installation de Podman..."
-  $sudo apt install podman podman-docker
-  $sudo touch /etc/containers/nodocker
+  echo "Installation de Podman..."
+  sudo apt install podman podman-compose
+  sudo mkdir -p $containersdir
+  sudo chown $user: $containersdir
 fi
 
 # Installation de la complétion et des droits sudo
 if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
-  $sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
-  $sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
-  $sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
-  $sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
-  $sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
-  $sudo chmod 600 /etc/sudoers.d/jdocker
+  sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
+  sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
+  sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
+  sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
+  sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
+  sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
+  sudo chmod 600 /etc/sudoers.d/jdocker
   echo "Installation des droits sudo et de l'auto complétion effectuée. Redémarrez votre session"
   exit 0
 fi
@@ -144,28 +146,28 @@ volumes | v)
   ;;
 backup | bk)
   if [[ ! -z "$2" ]]; then
-    if [[ -d /opt/$2 ]]; then
+    if [[ -d $containersdir/$2 ]]; then
       if [[ ! -d $destbackup/$2/.old ]]; then
-        $sudo mkdir -p $destbackup/$2/.old
-        $sudo chown -R $user: $destbackup
+        sudo mkdir -p $destbackup/$2/.old
+        sudo chown -R $user: $destbackup
       fi
       $dir/jdocker.sh rm $2
-      cd /opt
+      cd $containersdir
       num=0
       tarlist=.$2.$num.list
       tarname=$2.$num.tar.gz
       case $3 in
       f | full)
         if [[ -f .$2.0.list ]]; then
-          $sudo rm -f .$2.*.list
+          sudo rm -f .$2.*.list
         fi
         if [[ -f $destbackup/$2/$2.0.tar.gz ]]; then
-          $sudo mv $destbackup/$2/$2.*.gz $destbackup/$2/.old
+          sudo mv $destbackup/$2/$2.*.gz $destbackup/$2/.old
         fi
         echo "Sauvegarde full de $2..."
-        $sudo tar czg $tarlist -f $tarname $2
-        $sudo chown $user: $tarname
-        $sudo mv $tarname $destbackup/$2
+        sudo tar czg $tarlist -f $tarname $2
+        sudo chown $user: $tarname
+        sudo mv $tarname $destbackup/$2
         ;;
       i | incr)
         if [[ ! -f .$2.0.list ]]; then
@@ -177,38 +179,33 @@ backup | bk)
           tarlist=.$2.$num.list
           tarname=$2.$num.tar.gz
         done
-        $sudo cp .$2.$(($num - 1)).list $tarlist
+        sudo cp .$2.$(($num - 1)).list $tarlist
         echo "Sauvegarde incrémentielle de $2..."
-        $sudo tar czg $tarlist -f $tarname $2
-        $sudo chown $user: $tarname
-        $sudo mv $tarname $destbackup/$2
+        sudo tar czg $tarlist -f $tarname $2
+        sudo chown $user: $tarname
+        sudo mv $tarname $destbackup/$2
         ;;
       *)
         echo "Sauvegarde de $2..."
-        $sudo tar czf $2.$(date '+%Y%m%d').tar.gz $2
-        $sudo chown $user: $2.$(date '+%Y%m%d').tar.gz
-        $sudo mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
-        $sudo find $destbackup/$2 -name $2.*.gz -mtime +7 -exec rm {} \;
+        sudo tar czf $2.$(date '+%Y%m%d').tar.gz $2
+        sudo chown $user: $2.$(date '+%Y%m%d').tar.gz
+        sudo mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
+        sudo find $destbackup/$2 -name $2.*.gz -mtime +7 -exec rm {} \;
         ;;
       esac
       echo "Sauvegarde terminée. Relance..."
       $dir/jdocker.sh it $2
     else
-      echo "Dossier /opt/$2 non trouvé"
+      echo "Dossier $containersdir/$2 non trouvé"
     fi
   else
     if [[ -f $dir/.jdocker.cron ]]; then
-      $sudo cp -v $dir/.jdocker.cron /etc/cron.d/jdocker
-      $sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
+      sudo cp -v $dir/.jdocker.cron /etc/cron.d/jdocker
+      sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
     else
       echo "Fichier $dir/.jdocker.cron absent"
     fi
   fi
-  ;;
-lzd | lazydocker)
-  $sudo curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
-  $sudo mv /$HOME/.local/bin/lazydocker /usr/local/bin/lazydocker
-  $sudo chown root: /usr/local/bin/lazydocker
   ;;
 * | help)
   cat $dir/.jdocker.help
