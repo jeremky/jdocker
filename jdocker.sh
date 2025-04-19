@@ -36,7 +36,7 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   sudo chown $user: $containersdir
 fi
 
-# Rootless
+# Configuration selon le mode root
 if [[ $rootless = "off" ]]; then
   sudo=/usr/bin/sudo
   if [[ ! -f /etc/sudoers.d/jdocker ]]; then
@@ -54,16 +54,13 @@ else
   fi
 fi
 
-# Installation de la complétion et des droits sudo
+# Installation de la complétion
 if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
-  sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
-  sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
-  sudo chmod 600 /etc/sudoers.d/jdocker
-  echo "Installation des droits sudo et de l'auto complétion effectuée. Redémarrez votre session"
+  echo "Installation de l'auto complétion effectuée. Redémarrez votre session"
   exit 0
 fi
 
