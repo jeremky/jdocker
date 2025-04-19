@@ -18,24 +18,17 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
   sudo chown $user: $containersdir
-  if [[ $rootless = "off" ]]; then
+  if [[ $rootless = "on" ]]; then
+    systemctl enable --user podman-restart.service
+    systemctl enable --user podman.socket
+    sudo cp $dir/.jdocker.ctl /etc/sysctl.d/10-podman.conf
+  else
     sudo systemctl enable podman-restart.service
     sudo systemctl enable podman.socket
     sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
     sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
     sudo chmod 600 /etc/sudoers.d/jdocker
   fi
-fi
-
-# Configuration selon le mode root
-if [[ $rootless = "on" ]]; then
-  if [[ ! -f /etc/sysctl.d/10-podman.conf ]]; then
-    systemctl enable --user podman-restart.service
-    systemctl enable --user podman.socket
-    sudo cp $dir/.jdocker.ctl /etc/sysctl.d/10-podman.conf
-  fi
-else
-  sudo=/usr/bin/sudo
 fi
 
 # Installation de la complétion
@@ -46,6 +39,11 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   echo "Installation de l'auto complétion effectuée. Redémarrez votre session"
   exit 0
+fi
+
+# Configuration selon le mode root
+if [[ $rootless = "off" ]]; then
+  sudo=/usr/bin/sudo
 fi
 
 # Commandes
