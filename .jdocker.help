@@ -11,7 +11,6 @@ Commandes :
   r   | restart         Redémarrer un conteneur
   pr  | purge           Purger les anciennes images
   pra | purgeall        Purge les images, les volumes et réseaux non utilisés
-  s   | search          Rechercher une image sur le registry docker.io
   at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
   up  | upgrade         Recherche des nouvelles versions d'image
                         Si un ou plusieurs conteneurs sont spécifiés, supprime et réinstalle ces derniers
