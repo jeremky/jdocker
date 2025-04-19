@@ -12,46 +12,30 @@ else
   exit 0
 fi
 
-# Docker / Podman
-if [[ -f /usr/bin/podman ]]; then
-  dockerapp=podman
-else
-  dockerapp=docker
-fi
-
-# Compose
-if [[ -f /usr/bin/podman-compose ]]; then
-  compose="podman-compose"
-elif [[ -f /usr/bin/docker-compose ]]; then
-  compose="docker-compose"
-else
-  compose="docker compose"
-fi
-
 # Installation de Podman
 if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   echo "Installation de Podman..."
-  sudo apt install podman podman-compose
+  sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
   sudo chown $user: $containersdir
-fi
-
-# Configuration selon le mode root
-if [[ $rootless = "off" ]]; then
-  sudo=/usr/bin/sudo
-  if [[ ! -f /etc/sudoers.d/jdocker ]]; then
+  if [[ $rootless = "off" ]]; then
     sudo systemctl enable podman-restart.service
     sudo systemctl enable podman.socket
     sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
     sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
     sudo chmod 600 /etc/sudoers.d/jdocker
   fi
-else
+fi
+
+# Configuration selon le mode root
+if [[ $rootless = "on" ]]; then
   if [[ ! -f /etc/sysctl.d/10-podman.conf ]]; then
     systemctl enable --user podman-restart.service
     systemctl enable --user podman.socket
     sudo cp $dir/.jdocker.ctl /etc/sysctl.d/10-podman.conf
   fi
+else
+  sudo=/usr/bin/sudo
 fi
 
 # Installation de la complétion
