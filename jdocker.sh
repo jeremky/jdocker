@@ -39,7 +39,7 @@ fi
 # Rootless
 if [[ $rootless = "off" ]]; then
   sudo=/usr/bin/sudo
-  if [[ -f /etc/sudoers.d/jdocker ]]; then
+  if [[ ! -f /etc/sudoers.d/jdocker ]]; then
     sudo systemctl enable podman-restart.service
     sudo systemctl enable podman.socket
     sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
