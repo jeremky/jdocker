@@ -124,9 +124,6 @@ logs | l)
     $sudo $dockerapp logs --since=$3 $2
   fi
   ;;
-search | s)
-  $sudo $dockerapp search $2
-  ;;
 attach | at)
   echo "Ctrl+p, Ctrl+q pour quitter"
   $sudo $dockerapp attach $2
