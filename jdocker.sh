@@ -38,7 +38,6 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   echo "Docker n'est pas installé. Installation de Podman..."
   $sudo apt install podman podman-docker
   $sudo touch /etc/containers/nodocker
-  $sudo echo 'unqualified-search-registries = ["docker.io"]' | $sudo tee /etc/containers/registries.conf >>/dev/null
 fi
 
 # Installation de la complétion et des droits sudo
