@@ -15,7 +15,7 @@ fi
 if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   echo "Installation de Podman..."
   sudo apt install -y podman podman-compose
-  if [[ -d $containersdir ]]; then
+  if [[ ! -d $containersdir ]]; then
   sudo mkdir -p $containersdir
   sudo chown $user: $containersdir
   fi
@@ -93,7 +93,8 @@ case $1 in
     ;;
   load | lo)
     if [[ ! -d $imgdir/.old ]]; then
-      mkdir -p $imgdir/.old
+      sudo mkdir -p $imgdir/.old
+      sudo chown -R user: $imgdir
     fi
     for file in $(ls $imgdir/*.tar); do
       $sudo $dockerapp load -i $file
@@ -133,6 +134,9 @@ case $1 in
     ;;
   networks | n)
     $sudo $dockerapp network ls
+    ;;
+  images | i)
+    $sudo $dockerapp images
     ;;
   volumes | v)
     $sudo $dockerapp volume ls
