@@ -2,5 +2,4 @@
 jdocksh=DIR/jdocker.sh
 
 # Exemple
-#0 4 * * 0   root $jdocksh bk exemple f >/dev/null 2>&1
-#0 4 * * 1-6 root $jdocksh bk exemple i >/dev/null 2>&1
+#0 4 * * 0   root $jdocksh bk exemple >/dev/null 2>&1

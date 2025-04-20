@@ -16,8 +16,4 @@ Commandes :
   ps  | stats           Affiche les statistiques des conteneurs en cours d'exécution
   psa | statsall        Affiche davantage de statistiques des conteneurs
   sh  | bash            Se connecter au bash d'un conteneur spécifié
-  bk  | backup          Sauvegarde un conteneur spécifié. 
-                        Si aucun paramètre, copie le fichier .jdocker.cron dans /etc/cron.d.
-                        Paramètres supplémentaires :
-                            f|full      Sauvegarde full
-                            i|incr      Sauvegarde incrémentielle
+  bk  | backup          Sauvegarde un conteneur spécifié
