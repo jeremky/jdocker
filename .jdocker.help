@@ -3,6 +3,7 @@ Commandes :
   lsa | listall         Lister les conteneurs actifs avec les ports et l'image utilisée
   n   | networks        Lister les réseaux virtuels
   v   | volumes         Lister les volumes virtuels
+  i   | images          Lister les images
   l   | logs            Consulter les logs pour un conteneur spécifié
   lo  | load            Charge les images présentes dans le dossier $imgdir
   it  | install         Installer un conteneur avec compose
