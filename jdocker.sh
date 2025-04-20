@@ -1,10 +1,9 @@
 #!/bin/bash
-#set -e
 
 dir=$(dirname "$0")
 
 # Chargement du fichier de config
-cfg="$dir/$(basename -s .sh $0).cfg"
+cfg="$dir/jdocker.cfg"
 if [[ -f $cfg ]]; then
   . $cfg
 else
@@ -155,7 +154,7 @@ case $1 in
         echo "Sauvegarde terminée. Relance..."
         $dir/jdocker.sh it $2
       else
-        echo "Dossier $containersdir/$2 non trouvé"
+        echo "Dossier $containersdir/$2 introuvable"
       fi
     else
       if [[ -f $dir/.jdocker.cron ]]; then
