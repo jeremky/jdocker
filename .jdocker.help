@@ -5,7 +5,6 @@ Commandes :
   v   | volumes         Lister les volumes virtuels
   l   | logs            Consulter les logs pour un conteneur spécifié
   lo  | load            Charge les images présentes dans le dossier $imgdir
-  lzd | lazydocker      Installer lazydocker
   it  | install         Installer un conteneur avec compose
   rm  | remove          Supprimer un conteneur avec compose
   r   | restart         Redémarrer un conteneur

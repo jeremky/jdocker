@@ -7,7 +7,7 @@ cur="${COMP_WORDS[COMP_CWORD]}"
 prev="${COMP_WORDS[COMP_CWORD-1]}"
 
 # Liste des commandes
-_commands="list listall networks volumes logs load lazydocker install remove restart purge purgeall attach upgrade stats statsall bash backup help"
+_commands="list listall networks volumes logs load install remove restart purge purgeall attach upgrade stats statsall bash backup help"
 
 # Traitement des sous commandes
 case $prev in
@@ -22,7 +22,7 @@ case $prev in
     return 0
     ;;
   bk|backup)
-    dockerdir=$(ls /opt)
+    dockerdir=$(ls CONTDIR)
     COMPREPLY=($(compgen -W "$dockerdir" -- "$cur"))
     return 0
     ;;
