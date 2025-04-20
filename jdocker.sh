@@ -141,52 +141,17 @@ case $1 in
   backup | bk)
     if [[ ! -z "$2" ]]; then
       if [[ -d $containersdir/$2 ]]; then
-        if [[ ! -d $destbackup/$2/.old ]]; then
-          sudo mkdir -p $destbackup/$2/.old
-          sudo chown -R $user: $destbackup
+        if [[ ! -d $destbackup/$2 ]]; then
+          $sudo mkdir -p $destbackup/$2
+          $sudo chown $user: $destbackup/$2
         fi
         $dir/jdocker.sh rm $2
         cd $containersdir
-        num=0
-        tarlist=.$2.$num.list
-        tarname=$2.$num.tar.gz
-        case $3 in
-          f | full)
-            if [[ -f .$2.0.list ]]; then
-              sudo rm -f .$2.*.list
-            fi
-            if [[ -f $destbackup/$2/$2.0.tar.gz ]]; then
-              sudo mv $destbackup/$2/$2.*.gz $destbackup/$2/.old
-            fi
-            echo "Sauvegarde full de $2..."
-            sudo tar czg $tarlist -f $tarname $2
-            sudo chown $user: $tarname
-            sudo mv $tarname $destbackup/$2
-            ;;
-          i | incr)
-            if [[ ! -f .$2.0.list ]]; then
-              echo "Sauvegarde full introuvable. Arrêt"
-              exit 0
-            fi
-            while [ -f $tarlist ]; do
-              num=$(($num + 1))
-              tarlist=.$2.$num.list
-              tarname=$2.$num.tar.gz
-            done
-            sudo cp .$2.$(($num - 1)).list $tarlist
-            echo "Sauvegarde incrémentielle de $2..."
-            sudo tar czg $tarlist -f $tarname $2
-            sudo chown $user: $tarname
-            sudo mv $tarname $destbackup/$2
-            ;;
-          *)
-            echo "Sauvegarde de $2..."
-            sudo tar czf $2.$(date '+%Y%m%d').tar.gz $2
-            sudo chown $user: $2.$(date '+%Y%m%d').tar.gz
-            sudo mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
-            sudo find $destbackup/$2 -name $2.*.gz -mtime +7 -exec rm {} \;
-            ;;
-        esac
+        echo "Sauvegarde de $2..."
+        $sudo tar czf $2.$(date '+%Y%m%d').tar.gz $2
+        $sudo chown $user: $2.$(date '+%Y%m%d').tar.gz
+        $sudo mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
+        $sudo find $destbackup/$2 -name $2.*.gz -mtime +7 -exec rm {} \;
         echo "Sauvegarde terminée. Relance..."
         $dir/jdocker.sh it $2
       else
