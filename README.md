@@ -4,7 +4,7 @@ Script permettant une administration plus simplifiée des conteneurs Docker/Podm
 
 - Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker.cfg` pour remplacer votre nom d'utilisateur, l'outil de conteneurisation à utiliser, et les différents répertoires.
 
-- Un paramètre, spécifique à Podman, permet de choisir de l'utiliser en mode rootless ou non. Modifiez ce paramètre avant tout lancement, car il va modifier le comportement de l'installation.
+- Un paramètre, spécifique à Podman, permet de choisir de l'utiliser en mode rootless ou non. Modifiez ce paramètre avant tout lancement, car il va modifier le comportement de l'installation. Modifiez également le port minimal à autoriser.
 
 - Lancez le script une première fois pour installer l'auto complétion. Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez le.
 
