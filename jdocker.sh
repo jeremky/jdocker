@@ -15,6 +15,10 @@ fi
 if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   echo "Installation de Podman..."
   sudo apt install -y podman podman-compose
+  if [[ -f /usr/sbin/ufw ]]; then
+    sudo ufw allow in on podman1
+    sudo ufw default allow FORWARD
+  fi
   if [[ ! -d $containersdir ]]; then
     sudo mkdir -p $containersdir
     sudo chown $user: $containersdir
