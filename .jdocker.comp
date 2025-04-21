@@ -12,7 +12,7 @@ _commands="list listall networks images volumes logs load install remove restart
 # Traitement des sous commandes
 case $prev in
   l|logs|r|restart|sh|bash|at|attach)
-    containers=$(sudo DOCKERAPP ps --format "{{.Names}}")
+    containers=$(DOCKERAPP ps --format "{{.Names}}")
     COMPREPLY=($(compgen -W "$containers" -- "$cur"))
     return 0
     ;;
