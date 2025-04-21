@@ -37,7 +37,7 @@ fi
 # Installation de la complétion
 if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
-  sudo sed -i "s,DIR,$dir," /etc/bash_completion.d/jdocker
+  sudo sed -i "s,SCRIPTDIR,$dir," /etc/bash_completion.d/jdocker
   if [[ $rootless = "on" ]]; then
     sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
   else

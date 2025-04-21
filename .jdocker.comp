@@ -17,7 +17,7 @@ case $prev in
     return 0
     ;;
   it|install|rm|remove|up|upgrade)
-    applications=$(ls DIR/cfg)
+    applications=$(ls SCRIPTDIR/cfg)
     COMPREPLY=($(compgen -W "$applications" -- "$cur"))
     return 0
     ;;
