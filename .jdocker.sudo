@@ -1,1 +1,1 @@
-USER ALL=(ALL) NOPASSWD: /usr/bin/podman, /usr/bin/docker, /usr/bin/docker-compose, /usr/local/bin/lazydocker
+USER ALL=(ALL) NOPASSWD: /usr/bin/podman, /usr/bin/docker, /usr/bin/podman-compose, /usr/bin/docker-compose
