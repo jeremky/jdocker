@@ -6,7 +6,7 @@ services:
     cpus: 2
     mem_limit: 1G
     volumes:
-      - ./files:/root/.xonotic/
+      - /opt/xonotic:/root/.xonotic/
     ports:
       - 26000:26000/tcp
       - 26000:26000/udp
