@@ -34,23 +34,19 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   fi
 fi
 
+# Configuration selon le mode root
+if [[ $rootless = "off" ]]; then
+  sudo=/usr/bin/sudo
+fi
+
 # Installation de la complétion
 if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   sudo sed -i "s,SCRIPTDIR,$dir," /etc/bash_completion.d/jdocker
-  if [[ $rootless = "on" ]]; then
-    sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
-  else
-    sudo sed -i "s,DOCKERAPP,sudo $dockerapp," /etc/bash_completion.d/jdocker
-  fi
+  sudo sed -i "s,DOCKERAPP,$sudo $dockerapp," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   echo "Installation de l'auto complétion effectuée. Redémarrez votre session"
   exit 0
-fi
-
-# Configuration selon le mode root
-if [[ $rootless = "off" ]]; then
-  sudo=/usr/bin/sudo
 fi
 
 # Commandes
