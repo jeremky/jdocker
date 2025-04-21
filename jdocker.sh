@@ -156,7 +156,7 @@ case $1 in
         $sudo tar czf $2.$(date '+%Y%m%d').tar.gz $2
         $sudo chown $user: $2.$(date '+%Y%m%d').tar.gz
         $sudo mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
-        $sudo find $destbackup/$2 -name $2.*.gz -mtime +7 -exec rm {} \;
+        find $destbackup/$2 -name $2.*.gz -mtime +7 -exec rm {} \;
         echo "Sauvegarde terminée. Relance..."
         $dir/jdocker.sh it $2
       else
