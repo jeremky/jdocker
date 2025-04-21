@@ -16,8 +16,8 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   echo "Installation de Podman..."
   sudo apt install -y podman podman-compose
   if [[ ! -d $containersdir ]]; then
-  sudo mkdir -p $containersdir
-  sudo chown $user: $containersdir
+    sudo mkdir -p $containersdir
+    sudo chown $user: $containersdir
   fi
   if [[ $rootless = "on" ]]; then
     systemctl enable --user podman-restart.service
