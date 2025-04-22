@@ -12,8 +12,7 @@ Commandes :
   pr  | purge           Purger les anciennes images
   pra | purgeall        Purge les images, les volumes et réseaux non utilisés
   at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
-  up  | upgrade         Recherche des nouvelles versions d'image
-                        Si un ou plusieurs conteneurs sont spécifiés, supprime et réinstalle ces derniers
+  up  | upgrade         Recherche des nouvelles versions d'image ou upgrade un conteneur spécifié
   ps  | stats           Affiche les statistiques des conteneurs en cours d'exécution
   psa | statsall        Affiche davantage de statistiques des conteneurs
   sh  | bash            Se connecter au bash d'un conteneur spécifié
