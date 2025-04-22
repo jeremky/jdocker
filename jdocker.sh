@@ -100,7 +100,7 @@ case $1 in
   load | lo)
     if [[ ! -d $imgdir/.old ]]; then
       sudo mkdir -p $imgdir/.old
-      sudo chown -R user: $imgdir
+      sudo chown -R $user: $imgdir
     fi
     for file in $(ls $imgdir/*.tar); do
       $sudo $dockerapp load -i $file
