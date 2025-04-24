@@ -22,6 +22,7 @@ Pour automatiser vos backups, il y a un fichier `jdocker.cron` dans ce répertoi
 
 Pour consulter l'aide, lancez `./jdocker.sh` sans paramètre :
 
+```txt
 Commandes disponibles :
   ls  | list            Lister les conteneurs actifs
   lsa | listall         Lister les conteneurs actifs avec les ports et l'image utilisée
@@ -41,3 +42,4 @@ Commandes disponibles :
   psa | statsall        Affiche davantage de statistiques des conteneurs
   sh  | bash            Se connecter au bash d'un conteneur spécifié
   bk  | backup          Sauvegarde un conteneur spécifié
+```
