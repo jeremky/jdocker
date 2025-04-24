@@ -37,9 +37,8 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo sed -i "s,SCRIPTDIR,$dir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,DOCKERAPP,$sudo $dockerapp," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
-  echo "Installation de l'auto complétion effectuée. Charger la complétion avec :"
+  echo "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
-  echo "Ou redémarrez la session"
   exit 0
 fi
 
