@@ -24,15 +24,15 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
     sudo chown $user: $containersdir
   fi
   if [[ $rootless = "on" ]]; then
-    systemctl enable --user podman-restart.service
-    systemctl enable --user podman.socket
+    systemctl enable --user --now podman-restart.service
+    systemctl enable --user --now podman.socket
     sudo loginctl enable-linger $user
     sudo sysctl net.ipv4.ip_unprivileged_port_start=$port
     sudo cp $dir/.jdocker.ctl /etc/sysctl.d/10-podman.conf
     sudo sed -i "s,PORT,$port," /etc/sysctl.d/10-podman.conf
   else
-    sudo systemctl enable podman-restart.service
-    sudo systemctl enable podman.socket
+    sudo systemctl enable --now podman-restart.service
+    sudo systemctl enable --now podman.socket
     sudo cp $dir/.jdocker.sudo /etc/sudoers.d/jdocker
     sudo sed -i "s,USER,$user," /etc/sudoers.d/jdocker
     sudo chmod 600 /etc/sudoers.d/jdocker
