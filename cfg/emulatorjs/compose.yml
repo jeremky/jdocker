@@ -13,8 +13,8 @@ services:
     networks:
       - nginx_proxy
     volumes:
-      - /opt/emulatorjs/config:/config
-      - /opt/emulatorjs/data:/data
+      - /opt/containers/emulatorjs/config:/config
+      - /opt/containers/emulatorjs/data:/data
     restart: always
 
 networks:

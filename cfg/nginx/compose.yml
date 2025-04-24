@@ -9,7 +9,7 @@ services:
     networks:
       - proxy
     volumes:
-      - /opt/nginx:/config
+      - /opt/containers/nginx:/config
     ports:
       - 80:80
       - 443:443

@@ -16,20 +16,11 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   echo "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
-  if [[ -f /usr/sbin/ufw ]]; then
-    sudo ufw allow in on podman1
-    sudo ufw default allow FORWARD
-  fi
   if [[ $rootless = "on" ]]; then
     systemctl enable --user --now podman-restart.service
     systemctl enable --user --now podman.socket
-    sudo chown $user: $containersdir
     sudo loginctl enable-linger $user
-    echo "net.ipv4.ip_unprivileged_port_start=$port" | sudo tee /etc/sysctl.d/10-podman.conf
-  else
-    sudo systemctl enable --now podman-restart.service
-    sudo systemctl enable --now podman.socket
-    echo "$user ALL=(ALL) NOPASSWD: /usr/bin/$dockerapp, /usr/bin/$compose" | sudo tee /etc/sudoers.d/jdocker
+    sudo chown $user: $containersdir
   fi
 fi
 
@@ -162,11 +153,11 @@ case $1 in
         echo "Dossier $containersdir/$2 introuvable"
       fi
     else
-      if [[ -f $dir/.jdocker.cron ]]; then
-        sudo cp -v $dir/.jdocker.cron /etc/cron.d/jdocker
+      if [[ -f $dir/jdocker.cron ]]; then
+        sudo cp -v $dir/jdocker.cron /etc/cron.d/jdocker
         sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
       else
-        echo "Fichier $dir/.jdocker.cron absent"
+        echo "Fichier $dir/jdocker.cron absent"
       fi
     fi
     ;;

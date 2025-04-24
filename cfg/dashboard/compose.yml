@@ -7,7 +7,7 @@ services:
       - nginx_proxy
     volumes:
       - ./files:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
     secrets:
       - password
     restart: always

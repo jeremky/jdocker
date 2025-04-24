@@ -3,7 +3,6 @@ services:
     image: docker.io/filebrowser/filebrowser
     container_name: filebrowser
     hostname: filebrowser
-    user: 1000:1000
     labels:
       - flame.type=application
       - flame.name=File Browser
