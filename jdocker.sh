@@ -17,6 +17,8 @@ if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
   if [[ $rootless = "on" ]]; then
+    sudo sysctl net.ipv4.ip_unprivileged_port_start=$port
+    echo "net.ipv4.ip_unprivileged_port_start=$port" | sudo tee /etc/sysctl.d/10-podman.conf
     systemctl enable --user --now podman-restart.service
     systemctl enable --user --now podman.socket
     sudo loginctl enable-linger $user
