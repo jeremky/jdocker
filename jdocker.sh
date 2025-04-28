@@ -12,7 +12,7 @@ else
 fi
 
 # Installation de Podman
-if [[ ! -f /usr/bin/$dockerapp ]] && [[ -f /usr/bin/apt ]]; then
+if [[ ! -f /usr/bin/$dockerapp && -f /usr/bin/apt ]]; then
   echo "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
@@ -53,7 +53,7 @@ case $1 in
   install | it)
     shift
     for app in $*; do
-      if [[ ! -f $dir/cfg/$app/compose.yml ]] || [[ -z "$1" ]]; then
+      if [[ ! -f $dir/cfg/$app/compose.yml || -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else
@@ -64,7 +64,7 @@ case $1 in
   remove | rm)
     shift
     for app in $*; do
-      if [[ ! -f $dir/cfg/$app/compose.yml ]] || [[ -z "$1" ]]; then
+      if [[ ! -f $dir/cfg/$app/compose.yml || -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else
