@@ -1,0 +1,7 @@
+# Fichiers
+*.env
+.password
+
+# Répertoires
+files/
+.notused/
