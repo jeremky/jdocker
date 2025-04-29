@@ -1,6 +1,6 @@
 services:
   dashboard:
-    image: docker.io/pawelmalak/flame:latest
+    image: localhost/flame:latest
     container_name: dashboard
     hostname: dashboard
     env_file: dashboard.env
