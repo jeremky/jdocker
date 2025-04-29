@@ -14,7 +14,7 @@ Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker
 
 - Le port minimal autorisé utilisé par vos conteneurs. Nécessaire pour le mode rootless
 
-```bash
+```txt
 # jdocker config
 user=votre_user
 
