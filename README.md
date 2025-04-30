@@ -51,7 +51,7 @@ Commandes disponibles :
   v   | volumes         Lister les volumes virtuels
   i   | images          Lister les images
   l   | logs            Consulter les logs pour un conteneur spécifié
-  lo  | load            Charger les images présentes dans le dossier $imgdir
+  lo  | load            Charger les images présentes dans le dossier dédié
   it  | install         Installer un conteneur avec compose
   rm  | remove          Supprimer un conteneur avec compose
   r   | restart         Redémarrer un conteneur
