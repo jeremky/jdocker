@@ -10,9 +10,11 @@ Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker
 
 - Les applications de conteneurisation à utiliser. Si vous n'en avez pas déjà, laissez `podman`. Il sera automatiquement installé lors du premier lancement du script.
 
-- Le mode rootless, à passer à `off` seulement si là encore, vous avez déjà un environnement en place avec Docker ou Podman en rootfull
+- Le mode rootless, à passer à `off` seulement si là encore, vous avez déjà un environnement en place avec Docker ou Podman en rootful
 
 - Le port minimal autorisé utilisé par vos conteneurs. Nécessaire pour le mode rootless
+
+- Les différents répertoires où sont stockées les données
 
 ```txt
 # jdocker config
@@ -27,6 +29,7 @@ rootless=on
 port=80
 
 # répertoires
+configdir=$dir/cfg
 containersdir=/opt/containers
 destbackup=/home/votre_user/backups
 imgdir=/opt/dockerimg
