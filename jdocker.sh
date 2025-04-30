@@ -88,13 +88,17 @@ case $1 in
     ;;
   load | lo)
     if [[ ! -d $imgdir/.old ]]; then
-      sudo mkdir -p $imgdir/.old
-      sudo chown -R $user: $imgdir
+      mkdir -p $imgdir/.old
+      chown -R $user: $imgdir
     fi
-    for file in $(ls $imgdir/*.tar); do
-      $sudo $dockerapp load -i $file
-      mv $file $imgdir/.old
-    done
+    if [ ! -z "$(ls $imgdir | grep .tar)" ]; then
+      for file in $(ls $imgdir/*.tar); do
+        $sudo $dockerapp load -i $file
+        mv $file $imgdir/.old
+      done
+    else
+      echo "Pas de fichier trouvé dans $imgdir"
+    fi
     ;;
   upgrade | up)
     if [[ ! -z "$2" ]]; then
