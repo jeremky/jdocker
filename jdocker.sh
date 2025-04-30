@@ -34,7 +34,7 @@ fi
 # Installation de la complétion
 if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
-  sudo sed -i "s,SCRIPTDIR,$dir," /etc/bash_completion.d/jdocker
+  sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,DOCKERAPP,$sudo $dockerapp," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   echo "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
@@ -53,22 +53,22 @@ case $1 in
   install | it)
     shift
     for app in $*; do
-      if [[ ! -f $dir/cfg/$app/compose.yml || -z "$1" ]]; then
+      if [[ ! -f $configdir/$app/compose.yml || -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else
-        $sudo $compose -f $dir/cfg/$app/compose.yml up -d
+        $sudo $compose -f $configdir/$app/compose.yml up -d
       fi
     done
     ;;
   remove | rm)
     shift
     for app in $*; do
-      if [[ ! -f $dir/cfg/$app/compose.yml || -z "$1" ]]; then
+      if [[ ! -f $configdir/$app/compose.yml || -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else
-        $sudo $compose -f $dir/cfg/$app/compose.yml down
+        $sudo $compose -f $configdir/$app/compose.yml down
       fi
     done
     ;;
@@ -89,9 +89,8 @@ case $1 in
   load | lo)
     if [[ ! -d $imgdir/.old ]]; then
       mkdir -p $imgdir/.old
-      chown -R $user: $imgdir
     fi
-    if [ ! -z "$(ls $imgdir | grep .tar)" ]; then
+    if [[ ! -z "$(ls $imgdir | grep .tar)" ]]; then
       for file in $(ls $imgdir/*.tar); do
         $sudo $dockerapp load -i $file
         mv $file $imgdir/.old

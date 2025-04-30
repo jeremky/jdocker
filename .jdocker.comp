@@ -27,7 +27,7 @@ _jdocker_completion() {
   case "${words[1]}" in
     install|it|remove|rm|upgrade|up)
       local all_apps
-      all_apps=$(ls SCRIPTDIR/cfg)
+      all_apps=$(ls CONFIGDIR)
 
       # Arguments déjà utilisés (sauf jdocker et la sous-commande)
       local used=()
