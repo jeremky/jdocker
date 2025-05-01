@@ -35,7 +35,7 @@ destbackup=/home/votre_user/backups
 imgdir=/opt/dockerimg
 ```
 
-> le dossier `configdir` doit contenir un dossier pour chaque application, avec les fichiers `compose.yml` et `env`
+> le dossier `configdir` doit contenir un dossier pour chaque application, avec un fichier `compose.yml` et un fichier `.env`
 
 ## Utilisation
 
