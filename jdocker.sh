@@ -143,8 +143,7 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       if [[ -d $containersdir/$2 ]]; then
         if [[ ! -d $destbackup/$2 ]]; then
-          $sudo mkdir -p $destbackup/$2
-          $sudo chown $user: $destbackup/$2
+          mkdir -p $destbackup/$2
         fi
         $dir/jdocker.sh rm $2
         cd $containersdir
