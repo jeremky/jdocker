@@ -1,6 +1,5 @@
 # jdocker cron
-user=USER
 jdocksh=DIR/jdocker.sh
 
-# Exemple
-0 4 * * *  $user $jdocksh bk exemple >/dev/null 2>&1
+# emulatorjs
+18 23 * * *  USER $jdocksh bk emulatorjs >/dev/null 2>&1
