@@ -1,6 +1,6 @@
 # jdocker.sh
 
-Ce script permet une administration plus simplifiée des conteneurs Docker/Podman. Les fichiers `compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, où que vous soyez.
+Ce script permet une administration plus simplifiée des conteneurs Docker/Podman. Les fichiers `compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier du fichier `compose.yml`.
 
 ## Configuration
 
