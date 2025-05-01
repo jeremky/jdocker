@@ -35,6 +35,8 @@ destbackup=/home/votre_user/backups
 imgdir=/opt/dockerimg
 ```
 
+> le dossier `configdir` doit contenir un dossier pour chaque application, avec les fichiers `compose.yml` et `env`
+
 ## Utilisation
 
 Lancez le script une première fois pour installer l'auto complétion. Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez-le.
