@@ -3,5 +3,6 @@
 .password
 
 # Répertoires
+cfg/
 files/
 .notused/
