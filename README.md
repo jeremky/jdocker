@@ -29,7 +29,7 @@ rootless=on
 port=80
 
 # répertoires
-configdir=$dir/cfg
+configdir=/chemin/vers/compose
 containersdir=/opt/containers
 destbackup=/home/votre_user/backups
 imgdir=/opt/dockerimg
