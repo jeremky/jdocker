@@ -53,7 +53,7 @@ case $1 in
   install | it)
     shift
     for app in $*; do
-      if [ ! -f $configdir/$app/*compose.yml ] || [ -z "$1" ]; then
+      if [[ ! -d $configdir/$app || -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else
@@ -64,7 +64,7 @@ case $1 in
   remove | rm)
     shift
     for app in $*; do
-      if [ ! -f $configdir/$app/*compose.yml ] || [ -z "$1" ]; then
+      if [[ ! -d $configdir/$app || -z "$1" ]]; then
         echo "Application $app non trouvée"
         echo ""
       else

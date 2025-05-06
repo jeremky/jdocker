@@ -1,6 +1,6 @@
-# jdocker.sh
+# jdocker.sg
 
-Ce script permet une administration plus simplifiée des conteneurs Docker/Podman. Les fichiers `compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier du fichier `compose.yml`.
+Ce script permet une administration plus simplifiée des conteneurs Docker/Podman. Les fichiers `docker-compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier du fichier `compose.yml`.
 
 ## Configuration
 
@@ -14,7 +14,7 @@ Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker
 
 - Le port minimal autorisé utilisé par vos conteneurs. Nécessaire pour le mode rootless
 
-- Les différents répertoires où sont stockées les données (fichiers `compose.yml`, les backups, les volumes...)
+- Les différents répertoires où sont stockées les données (fichiers `docker-compose.yml`, les backups, les volumes...)
 
 ```txt
 # jdocker config
@@ -35,7 +35,7 @@ destbackup=/home/votre_user/backups
 imgdir=/opt/dockerimg
 ```
 
-> le dossier `configdir` doit contenir un dossier pour chaque application, avec un fichier `compose.yml` et un fichier `.env`
+> le dossier `configdir` doit contenir un sous dossier pour chaque application, avec un fichier `compose.yml` et un fichier `.env`
 
 ## Utilisation
 
