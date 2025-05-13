@@ -20,15 +20,20 @@ if [[ ! -f /usr/bin/$dockerapp && -f /usr/bin/apt ]]; then
   if [[ $rootless = "on" ]]; then
     sudo sysctl net.ipv4.ip_unprivileged_port_start=$port
     echo "net.ipv4.ip_unprivileged_port_start=$port" | sudo tee /etc/sysctl.d/10-podman.conf
+    sudo loginctl enable-linger $user
     systemctl enable --user --now podman-restart.service
     systemctl enable --user --now podman.socket
-    sudo loginctl enable-linger $user
   fi
 fi
 
 # Configuration selon le mode root
 if [[ $rootless = "off" ]]; then
   sudo=/usr/bin/sudo
+else
+  if [[ $USER != $user ]]; then
+    echo "Ne peut être lancé que par $user !"
+    exit 0
+  fi
 fi
 
 # Installation de la complétion
