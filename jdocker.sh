@@ -26,6 +26,17 @@ if [[ ! -f /usr/bin/$dockerapp && -f /usr/bin/apt ]]; then
   fi
 fi
 
+# Installation de la complétion
+if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
+  sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
+  sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
+  sudo sed -i "s,DOCKERAPP,$dockerapp," /etc/bash_completion.d/jdocker
+  sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
+  echo "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
+  echo "  source /etc/bash_completion"
+  exit 0
+fi
+
 # Configuration selon le mode root
 if [[ $rootless = "off" ]]; then
   sudo=/usr/bin/sudo
@@ -34,17 +45,6 @@ else
     echo "Ne peut être lancé que par $user !"
     exit 0
   fi
-fi
-
-# Installation de la complétion
-if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
-  sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
-  sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
-  sudo sed -i "s,DOCKERAPP,$sudo $dockerapp," /etc/bash_completion.d/jdocker
-  sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
-  echo "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
-  echo "  source /etc/bash_completion"
-  exit 0
 fi
 
 # Commandes
