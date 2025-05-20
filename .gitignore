@@ -1,7 +1,2 @@
-# Fichiers
-*.env
-.password
-
 # Répertoires
 cfg/
-files/
