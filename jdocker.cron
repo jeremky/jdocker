@@ -1,5 +1,5 @@
 # jdocker cron
 jdocksh=DIR/jdocker.sh
 
-# nginx
-56 20 * * *  root $jdocksh bk nginx >/dev/null 2>&1
+# exemple
+ 0 0 * * *  root $jdocksh bk exemple >/dev/null 2>&1
