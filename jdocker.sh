@@ -40,11 +40,6 @@ fi
 # Configuration selon le mode root
 if [[ $rootless = "off" ]]; then
   sudo=/usr/bin/sudo
-else
-  if [[ $USER != $user ]]; then
-    echo "Ne peut être lancé que par $user !"
-    exit 0
-  fi
 fi
 
 # Commandes
@@ -148,24 +143,24 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       if [[ -d $containersdir/$2 ]]; then
         if [[ ! -d $destbackup/$2 ]]; then
-          mkdir -p $destbackup/$2
+          sudo mkdir -p $destbackup/$2
+          sudo chown -R $user: $destbackup
         fi
-        $dir/jdocker.sh rm $2
+        sudo su - $user -c "$dir/jdocker.sh rm $2"
         cd $containersdir
         echo "Sauvegarde de $2..."
-        $sudo tar czf $2.$(date '+%Y%m%d').tar.gz $2
-        $sudo chown $user: $2.$(date '+%Y%m%d').tar.gz
-        $sudo mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
-        find $destbackup/$2 -name $2.*.gz -mtime +7 -exec rm {} \;
+        sudo tar czf $2.$(date '+%Y%m%d').tar.gz $2
+        sudo chown $user: $2.$(date '+%Y%m%d').tar.gz
+        sudo mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
+        find $destbackup/$2 -name $2.*.gz -mtime +$retention -exec rm {} \;
         echo "Sauvegarde terminée. Relance..."
-        $dir/jdocker.sh it $2
+        sudo su - $user -c "$dir/jdocker.sh it $2"
       else
         echo "Dossier $containersdir/$2 introuvable"
       fi
     else
       if [[ -f $dir/jdocker.cron ]]; then
         sudo cp -v $dir/jdocker.cron /etc/cron.d/jdocker
-        sudo sed -i "s,USER,$user," /etc/cron.d/jdocker
         sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
       else
         echo "Fichier $dir/jdocker.cron absent"
