@@ -1,5 +1,5 @@
 # jdocker cron
-jdocksh=DIR/jdocker.sh
+jdocksh=SCR
 
 # exemple
 0 0 * * *  root $jdocksh bk exemple >/dev/null 2>&1

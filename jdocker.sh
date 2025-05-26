@@ -161,7 +161,7 @@ case $1 in
     else
       if [[ -f $dir/jdocker.cron ]]; then
         sudo cp -v $dir/jdocker.cron /etc/cron.d/jdocker
-        sudo sed -i "s,DIR,$dir," /etc/cron.d/jdocker
+        sudo sed -i "s,SCR,$(realpath "$0")," /etc/cron.d/jdocker
       else
         echo "Fichier $dir/jdocker.cron absent"
       fi
