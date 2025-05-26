@@ -65,4 +65,5 @@ Commandes disponibles :
   psa | statsall        Afficher les statistiques des conteneurs détaillées
   sh  | bash            Se connecter au bash d'un conteneur spécifié
   bk  | backup          Sauvegarder un conteneur spécifié (droits root nécessaires)
+  h   | help            Afficher cette aide
 ```
