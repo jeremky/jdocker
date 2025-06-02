@@ -8,7 +8,7 @@ _jdocker_completion() {
   cword=$COMP_CWORD
 
   # Liste des commandes principales
-  _commands="list listall networks images volumes logs load install remove restart purge purgeall attach upgrade stats statsall bash backup help"
+  _commands="list listall networks images volumes logs load install remove restart purge purgeall attach pull upgrade stats statsall bash backup help"
 
   case "$prev" in
     l|logs|r|restart|sh|bash|at|attach)
@@ -25,7 +25,7 @@ _jdocker_completion() {
 
   # Gestion des sous-commandes avec plusieurs conteneurs
   case "${words[1]}" in
-    install|it|remove|rm|upgrade|up)
+    install|it|remove|rm|pull|p|upgrade|up)
       local all_apps
       all_apps=$(ls CONFIGDIR)
 

@@ -110,6 +110,14 @@ case $1 in
       $sudo $dockerapp images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo $dockerapp pull
     fi
     ;;
+  pull | p)
+    if [[ ! -z "$2" ]]; then
+      shift
+      for app in $*; do
+        $sudo $dockerapp pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
+      done
+    fi
+    ;;
   logs | l)
     if [[ -z "$3" ]]; then
       $sudo $dockerapp logs -f $2
