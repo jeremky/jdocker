@@ -103,6 +103,9 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
+        if [[ -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
+          $dir/jdocker.sh p $app
+        fi
         $dir/jdocker.sh rm $app
         $dir/jdocker.sh it $app
       done
