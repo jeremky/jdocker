@@ -139,6 +139,10 @@ case $1 in
   images | i)
     podman images
     ;;
+  unshare | u)
+    shift
+    podman unshare $*
+    ;;
   volumes | v)
     podman volume ls
     ;;
