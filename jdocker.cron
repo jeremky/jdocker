@@ -1,5 +1,8 @@
 # jdocker cron
 jdocksh=SCR
 
-# mcserver
-0 7 * * *  USER $jdocksh bk mcserver >/dev/null 2>&1
+# exemple1
+0 0 * * *  USER $jdocksh bk exemple1 >/dev/null 2>&1
+
+# exemple2
+0 1 * * *  USER $jdocksh bk exemple2 >/dev/null 2>&1

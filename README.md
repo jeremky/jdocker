@@ -12,7 +12,7 @@ Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker
 
 - Le port minimal autorisé utilisé par vos conteneurs.
 
-- Les différents répertoires où sont stockées les données (fichiers `docker-compose.yml`, les backups, les volumes...)
+- Les différents répertoires où sont stockées les données (les fichiers `compose.yml`, les backups, les volumes...)
 
 ```txt
 # jdocker config
@@ -45,9 +45,7 @@ imgdir=/tmp/dockerimg
 
 ## Utilisation
 
-Lancez le script une première fois pour installer l'auto complétion. Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez-le.
-
-Pour automatiser vos backups, il y a un fichier `jdocker.cron` dans ce répertoire. Modifiez le selon vos préférences. Exécutez ensuite `./jdocker.sh bk` pour le copier dans le répertoire `/etc/cron.d`
+Lancez le script une première fois pour installer Podman et l'auto complétion. Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez-le.
 
 Pour consulter l'aide, lancez `./jdocker.sh` sans paramètre :
 
@@ -73,4 +71,20 @@ Commandes disponibles :
   sh  | bash            Se connecter au bash d'un conteneur spécifié
   bk  | backup          Sauvegarder un conteneur spécifié
   h   | help            Afficher cette aide
+```
+
+## Sauvegarde
+
+`jdocker.sh` propose un système de sauvegarde des volumes. Pour automatiser vos sauvegardes, modifiez le fichier `jdocker.cron` selon vos préférences. 
+Exécutez ensuite `./jdocker.sh bk` pour le copier automatiquement dans le répertoire `/etc/cron.d`.
+
+```txt
+# jdocker cron
+jdocksh=SCR
+
+# exemple1
+0 0 * * *  USER $jdocksh bk exemple1 >/dev/null 2>&1
+
+# exemple2
+0 1 * * *  USER $jdocksh bk exemple2 >/dev/null 2>&1
 ```
