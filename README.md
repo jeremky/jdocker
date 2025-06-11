@@ -1,6 +1,6 @@
 # jdocker.sh
 
-Ce script permet une administration plus simplifiée des conteneurs Docker/Podman. Les fichiers `docker-compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `docker-compose.yml`.
+Ce script permet une administration plus simplifiée des conteneurs Podman. Les fichiers `docker-compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `docker-compose.yml`.
 
 ## Configuration
 
@@ -8,11 +8,9 @@ Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker
 
 - Votre nom d'utilisateur, utilisé pour la création des dossiers nécessaires au bon fonctionnement du script
 
-- Les applications de conteneurisation à utiliser. Si vous n'en avez pas déjà, laissez `podman`. Il sera automatiquement installé lors du premier lancement du script.
+- L'application de composition à utiliser. Si vous n'en avez pas déjà, laissez `podman-compose`. Il sera automatiquement installé lors du premier lancement du script.
 
-- Le mode rootless, à passer à `off` seulement si là encore, vous avez déjà un environnement en place avec Docker ou Podman en rootful
-
-- Le port minimal autorisé utilisé par vos conteneurs. Nécessaire pour le mode rootless
+- Le port minimal autorisé utilisé par vos conteneurs.
 
 - Les différents répertoires où sont stockées les données (fichiers `docker-compose.yml`, les backups, les volumes...)
 
@@ -20,19 +18,27 @@ Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker
 # jdocker config
 user=votre_user
 
-# applications à utiliser (podman/docker)
-dockerapp=podman
+# applications compose à utiliser (selon si le paquet podman-docker est installé)
 compose=podman-compose
 
-# rootless (si podman est utilisé)
-rootless=on
+# port minimal à autoriser
 port=80
 
-# répertoires
-configdir=/chemin/vers/compose
+# dossier des fichiers compose
+configdir=$dir/cfg
+
+# dossier des volumes
 containersdir=/opt/containers
-destbackup=/home/votre_user/backups
-imgdir=/opt/dockerimg
+
+# dossier des sauvegardes
+destbackup=/home/$user/backups
+
+# rétention des sauvegardes (en jours)
+retention=7
+
+# dossier des images
+imgdir=/tmp/dockerimg
+
 ```
 
 > le dossier `configdir` doit contenir un sous dossier pour chaque application, avec un fichier `compose.yml` et un fichier `.env`
