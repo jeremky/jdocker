@@ -70,7 +70,7 @@ Commandes disponibles :
   psa | statsall        Afficher les statistiques des conteneurs détaillées
   sh  | bash            Se connecter au bash d'un conteneur spécifié
   bk  | backup          Sauvegarder un conteneur spécifié
-  u   | unshare         Basculer l'ID via podman unshare
+  u   | unshare         Basculer l'ID via la commande podman unshare
   h   | help            Afficher cette aide
 ```
 
