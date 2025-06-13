@@ -27,13 +27,13 @@ _jdocker_completion() {
   local all_apps
   case "${words[1]}" in
     install|it|remove|rm|pull|p|upgrade|up)
-      all_apps=$(ls CONFIGDIR)
+      all_apps=$(ls CONFIGDIR 2>/dev/null)
       ;;
     bk|backup)
-      all_apps=$(ls CONTDIR)
+      all_apps=$(ls CONTDIR 2>/dev/null)
       ;;
     load|lo)
-      all_apps=$(ls IMGDIR)
+      all_apps=$(ls IMGDIR 2>/dev/null)
       ;;
   esac
 
