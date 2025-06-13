@@ -138,7 +138,7 @@ case $1 in
     fi
     ;;
   attach | at)
-    echo "Ctrl+p, Ctrl+q pour quitter"
+    echo -e "${GREEN}Ctrl+p, Ctrl+q pour quitter${RESET}"
     podman attach $2
     ;;
   stats | ps)
