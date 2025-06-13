@@ -35,8 +35,8 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,IMGDIR,$imgdir," /etc/bash_completion.d/jdocker
-  echo -e "${GREEN}Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
-  echo "  source /etc/bash_completion${RESET}"
+  echo -e "${GREEN}Auto complétion installée. Redémarrez la session ou chargez la complétion avec :${RESET}"
+  echo "  source /etc/bash_completion"
   exit 0
 fi
 
