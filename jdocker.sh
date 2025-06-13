@@ -49,26 +49,34 @@ case $1 in
     podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
     ;;
   install | it)
-    shift
-    for app in $*; do
-      if [[ ! -d $configdir/$app || -z "$1" ]]; then
-        echo -e "${RED}Application $app non trouvée${RESET}"
-      else
-        $compose -f $configdir/$app/*compose.yml up -d
-        echo -e "${GREEN}Application $app déployée${RESET}"
-      fi
-    done
+    if [[ ! -z "$2" ]]; then
+      shift
+      for app in $*; do
+        if [[ ! -d $configdir/$app || -z "$1" ]]; then
+          echo -e "${RED}Application $app introuvable${RESET}"
+        else
+          $compose -f $configdir/$app/*compose.yml up -d
+          echo -e "${GREEN}Application $app déployée${RESET}"
+        fi
+      done
+    else
+      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
+    fi
     ;;
   remove | rm)
-    shift
-    for app in $*; do
-      if [[ ! -d $configdir/$app || -z "$1" ]]; then
-        echo -e "${RED}Application $app non trouvée${RESET}"
-      else
-        $compose -f $configdir/$app/*compose.yml down
-        echo -e "${GREEN}Application $app supprimée${RESET}"
-      fi
-    done
+    if [[ ! -z "$2" ]]; then
+      shift
+      for app in $*; do
+        if [[ ! -d $configdir/$app || -z "$1" ]]; then
+          echo -e "${RED}Application $app introuvable${RESET}"
+        else
+          $compose -f $configdir/$app/*compose.yml down
+          echo -e "${GREEN}Application $app supprimée${RESET}"
+        fi
+      done
+    else
+      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
+    fi
     ;;
   restart | r)
     if [[ ! -z "$2" ]]; then
