@@ -54,7 +54,8 @@ case $1 in
       if [[ ! -d $configdir/$app || -z "$1" ]]; then
         echo -e "${RED}Application $app non trouvée${RESET}"
       else
-        $compose -f $configdir/$app/*compose.yml up -d
+        $compose -f $configdir/$app/*compose.yml up -d 1> /dev/null
+        echo -e "${GREEN}Application $app déployée${RESET}"
       fi
     done
     ;;
@@ -64,7 +65,8 @@ case $1 in
       if [[ ! -d $configdir/$app || -z "$1" ]]; then
         echo -e "${RED}Application $app non trouvée${RESET}"
       else
-        $compose -f $configdir/$app/*compose.yml down
+        $compose -f $configdir/$app/*compose.yml down 1> /dev/null
+        echo -e "${GREEN}Application $app supprimée${RESET}"
       fi
     done
     ;;
@@ -96,11 +98,13 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
-        if [[ -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
+        if [[ -d $configdir/$app ]]; then
           $dir/jdocker.sh p $app
+          $dir/jdocker.sh rm $app
+          $dir/jdocker.sh it $app
+        else
+          echo -e "${RED}Application $app introuvable${RESET}"
         fi
-        $dir/jdocker.sh rm $app
-        $dir/jdocker.sh it $app
       done
     else
       echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
@@ -110,7 +114,9 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
-        podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
+        if [[ -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
+          podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
+        fi
       done
     else
       podman images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo podman pull
