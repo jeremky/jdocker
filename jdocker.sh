@@ -2,6 +2,11 @@
 
 dir=$(dirname "$0")
 
+# Couleurs
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+RESET='\033[0m'
+
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
 if [[ -f $cfg ]]; then
@@ -13,7 +18,7 @@ fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
-  echo "Installation de Podman..."
+  echo -e "${GREEN}Installation de Podman...${RESET}"
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
   sudo chown $user: $containersdir
@@ -30,8 +35,8 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,IMGDIR,$imgdir," /etc/bash_completion.d/jdocker
-  echo "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
-  echo "  source /etc/bash_completion"
+  echo -e "${GREEN}Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
+  echo "  source /etc/bash_completion${RESET}"
   exit 0
 fi
 
@@ -47,8 +52,7 @@ case $1 in
     shift
     for app in $*; do
       if [[ ! -d $configdir/$app || -z "$1" ]]; then
-        echo "Application $app non trouvée"
-        echo ""
+        echo -e "${RED}Application $app non trouvée${RESET}"
       else
         $compose -f $configdir/$app/*compose.yml up -d
       fi
@@ -58,8 +62,7 @@ case $1 in
     shift
     for app in $*; do
       if [[ ! -d $configdir/$app || -z "$1" ]]; then
-        echo "Application $app non trouvée"
-        echo ""
+        echo -e "${RED}Application $app non trouvée${RESET}"
       else
         $compose -f $configdir/$app/*compose.yml down
       fi
@@ -83,7 +86,7 @@ case $1 in
     shift
     for img in $*; do
       if [[ ! -f $imgdir/$img ]]; then
-        echo "Fichier $img non trouvé dans $imgdir"
+        echo -e "${RED}Fichier $img non trouvé dans $imgdir${RESET}"
       else
         podman load -i $imgdir/$img
       fi
@@ -100,7 +103,7 @@ case $1 in
         $dir/jdocker.sh it $app
       done
     else
-      echo "Aucune application spécifiée en paramètre"
+      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
     fi
     ;;
   pull | p)
@@ -162,7 +165,7 @@ case $1 in
         echo "Sauvegarde terminée. Relance..."
         $dir/jdocker.sh it $2
       else
-        echo "Dossier $containersdir/$2 introuvable"
+        echo -e "${RED}Dossier $containersdir/$2 introuvable${RESET}"
       fi
     else
       if [[ -f $dir/jdocker.cron ]]; then
@@ -170,11 +173,12 @@ case $1 in
         sudo sed -i "s,SCR,$(realpath "$0")," /etc/cron.d/jdocker
         sudo sed -i "s,USER,$user," /etc/cron.d/jdocker
       else
-        echo "Fichier $dir/jdocker.cron absent"
+        echo -e "{$RED}Fichier $dir/jdocker.cron absent${RESET}"
       fi
     fi
     ;;
   * | help)
+    echo -e "${GREEN}Commandes disponibles :${RESET}"
     cat $dir/.jdocker.help
     ;;
 esac
