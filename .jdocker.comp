@@ -24,17 +24,15 @@ _jdocker_completion() {
   esac
 
   # Gestion des sous-commandes avec plusieurs conteneurs
+  local all_apps
   case "${words[1]}" in
     install|it|remove|rm|pull|p|upgrade|up)
-      local all_apps
       all_apps=$(ls CONFIGDIR)
       ;;
     bk|backup)
-      local all_apps
       all_apps=$(ls CONTDIR)
       ;;
     load|lo)
-      local all_apps
       all_apps=$(ls IMGDIR)
       ;;
   esac
