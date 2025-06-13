@@ -54,7 +54,7 @@ case $1 in
       if [[ ! -d $configdir/$app || -z "$1" ]]; then
         echo -e "${RED}Application $app non trouvée${RESET}"
       else
-        $compose -f $configdir/$app/*compose.yml up -d 1> /dev/null
+        $compose -f $configdir/$app/*compose.yml up -d
         echo -e "${GREEN}Application $app déployée${RESET}"
       fi
     done
@@ -65,7 +65,7 @@ case $1 in
       if [[ ! -d $configdir/$app || -z "$1" ]]; then
         echo -e "${RED}Application $app non trouvée${RESET}"
       else
-        $compose -f $configdir/$app/*compose.yml down 1> /dev/null
+        $compose -f $configdir/$app/*compose.yml down
         echo -e "${GREEN}Application $app supprimée${RESET}"
       fi
     done
