@@ -84,6 +84,8 @@ case $1 in
       for app in $*; do
         podman restart $app
       done
+    else
+      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
     fi
     ;;
   purge | pr)
