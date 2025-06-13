@@ -12,7 +12,7 @@ cfg="$dir/jdocker.cfg"
 if [[ -f $cfg ]]; then
   . $cfg
 else
-  echo "Fichier $cfg introuvable"
+  echo -e "${RED}Fichier $cfg introuvable${RESET}"
   exit 0
 fi
 
