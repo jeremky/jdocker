@@ -122,7 +122,7 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
-        if [[ -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
+        if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
         fi
       done
