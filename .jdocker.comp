@@ -45,6 +45,28 @@ _jdocker_completion() {
       ;;
   esac
 
+  # Gestion des sous-commandes avec plusieurs images
+  case "${words[1]}" in
+    load|lo)
+      local all_img
+      all_img=$(ls IMGDIR)
+
+      # Arguments déjà utilisés (sauf jdocker et la sous-commande)
+      local used=()
+      for ((i = 2; i < cword; i++)); do
+        used+=("${words[i]}")
+      done
+
+      # On retire les images déjà utilisées
+      for img in "${used[@]}"; do
+        all_img=$(echo "$all_img" | grep -vx "$img")
+      done
+
+      COMPREPLY=($(compgen -W "$all_img" -- "$cur"))
+      return 0
+      ;;
+  esac
+
   # Complétion de la commande principale
   if [[ "$cword" -eq 1 ]]; then
     COMPREPLY=($(compgen -W "$_commands" -- "$cur"))

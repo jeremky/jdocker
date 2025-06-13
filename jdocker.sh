@@ -29,6 +29,7 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
+  sudo sed -i "s,IMGDIR,$imgdir," /etc/bash_completion.d/jdocker
   echo "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
   exit 0
@@ -79,17 +80,14 @@ case $1 in
     podman system prune -f -a --volumes
     ;;
   load | lo)
-    if [[ ! -d $imgdir/.old ]]; then
-      mkdir -p $imgdir/.old
-    fi
-    if [[ ! -z "$(ls $imgdir | grep .tar)" ]]; then
-      for file in $(ls $imgdir/*.tar); do
-        podman load -i $file
-        mv $file $imgdir/.old
-      done
-    else
-      echo "Pas de fichier trouvé dans $imgdir"
-    fi
+    shift
+    for img in $*; do
+      if [[ ! -f $imgdir/$img ]]; then
+        echo "Fichier $img non trouvé dans $imgdir"
+      else
+        podman load -i $imgdir/$img
+      fi
+    done
     ;;
   upgrade | up)
     if [[ ! -z "$2" ]]; then
