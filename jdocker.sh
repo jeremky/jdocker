@@ -168,22 +168,25 @@ case $1 in
     ;;
   backup | bk)
     if [[ ! -z "$2" ]]; then
-      if [[ -d $containersdir/$2 ]]; then
-        if [[ ! -d $destbackup/$2 ]]; then
-          mkdir -p $destbackup/$2
+      shift
+      for app in $*; do
+        if [[ -d $containersdir/$app ]]; then
+          if [[ ! -d $destbackup/$app ]]; then
+            mkdir -p $destbackup/$app
+          fi
+          $dir/jdocker.sh rm $app
+          cd $containersdir
+          echo -e "${GREEN}Sauvegarde de $app...${RESET}"
+          podman unshare tar czf $app.$(date '+%Y%m%d').tar.gz $app
+          podman unshare chown root: $app.$(date '+%Y%m%d').tar.gz
+          mv $app.$(date '+%Y%m%d').tar.gz $destbackup/$app
+          find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
+          echo -e "${GREEN}Sauvegarde terminée. Relance...${RESET}"
+          $dir/jdocker.sh it $app
+        else
+          echo -e "${RED}Dossier $containersdir/$app introuvable${RESET}"
         fi
-        $dir/jdocker.sh rm $2
-        cd $containersdir
-        echo "Sauvegarde de $2..."
-        podman unshare tar czf $2.$(date '+%Y%m%d').tar.gz $2 
-        podman unshare chown root: $2.$(date '+%Y%m%d').tar.gz
-        mv $2.$(date '+%Y%m%d').tar.gz $destbackup/$2
-        find $destbackup/$2 -name $2.*.gz -mtime +$retention -exec rm {} \;
-        echo "Sauvegarde terminée. Relance..."
-        $dir/jdocker.sh it $2
-      else
-        echo -e "${RED}Dossier $containersdir/$2 introuvable${RESET}"
-      fi
+      done
     else
       if [[ -f $dir/jdocker.cron ]]; then
         sudo cp -v $dir/jdocker.cron /etc/cron.d/jdocker

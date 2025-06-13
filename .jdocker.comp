@@ -10,15 +10,15 @@ _jdocker_completion() {
   # Liste des commandes principales
   _commands="list listall networks images volumes logs load install remove restart purge purgeall attach pull upgrade stats statsall bash backup unshare help"
 
+   if [[ "$cword" -eq 1 ]]; then
+    COMPREPLY=($(compgen -W "$_commands" -- "$cur"))
+    return 0
+   fi
+
   case "$prev" in
     l|logs|r|restart|sh|bash|at|attach)
       containers=$(podman ps --format "{{.Names}}")
       COMPREPLY=($(compgen -W "$containers" -- "$cur"))
-      return 0
-      ;;
-    bk|backup)
-      dockerdir=$(ls CONTDIR)
-      COMPREPLY=($(compgen -W "$dockerdir" -- "$cur"))
       return 0
       ;;
   esac
@@ -28,49 +28,30 @@ _jdocker_completion() {
     install|it|remove|rm|pull|p|upgrade|up)
       local all_apps
       all_apps=$(ls CONFIGDIR)
-
-      # Arguments déjà utilisés (sauf jdocker et la sous-commande)
-      local used=()
-      for ((i = 2; i < cword; i++)); do
-        used+=("${words[i]}")
-      done
-
-      # On retire les apps déjà utilisées
-      for app in "${used[@]}"; do
-        all_apps=$(echo "$all_apps" | grep -vx "$app")
-      done
-
-      COMPREPLY=($(compgen -W "$all_apps" -- "$cur"))
-      return 0
       ;;
-  esac
-
-  # Gestion des sous-commandes avec plusieurs images
-  case "${words[1]}" in
+    bk|backup)
+      local all_apps
+      all_apps=$(ls CONTDIR)
+      ;;
     load|lo)
-      local all_img
-      all_img=$(ls IMGDIR)
-
-      # Arguments déjà utilisés (sauf jdocker et la sous-commande)
-      local used=()
-      for ((i = 2; i < cword; i++)); do
-        used+=("${words[i]}")
-      done
-
-      # On retire les images déjà utilisées
-      for img in "${used[@]}"; do
-        all_img=$(echo "$all_img" | grep -vx "$img")
-      done
-
-      COMPREPLY=($(compgen -W "$all_img" -- "$cur"))
-      return 0
+      local all_apps
+      all_apps=$(ls IMGDIR)
       ;;
   esac
 
-  # Complétion de la commande principale
-  if [[ "$cword" -eq 1 ]]; then
-    COMPREPLY=($(compgen -W "$_commands" -- "$cur"))
-  fi
+  # Arguments déjà utilisés (sauf jdocker et la sous-commande)
+  local used=()
+  for ((i = 2; i < cword; i++)); do
+    used+=("${words[i]}")
+  done
+
+  # On retire les apps déjà utilisées
+  for app in "${used[@]}"; do
+    all_apps=$(echo "$all_apps" | grep -vx "$app")
+  done
+
+  COMPREPLY=($(compgen -W "$all_apps" -- "$cur"))
+  return 0
 }
 
 complete -F _jdocker_completion jdocker
