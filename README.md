@@ -57,15 +57,15 @@ Commandes disponibles :
   v   | volumes         Lister les volumes virtuels
   i   | images          Lister les images
   l   | logs            Consulter les logs pour un conteneur spécifié
-  lo  | load            Charger les images présentes dans le dossier dédié
+  lo  | load            Charger une ou plusieurs images locales spécifiées
   it  | install         Installer un conteneur avec compose
   rm  | remove          Supprimer un conteneur avec compose
   r   | restart         Redémarrer un conteneur
   pr  | purge           Purger les anciennes images
   pra | purgeall        Purger les images, les volumes et réseaux non utilisés
   at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
-  p   | pull            Télécharger l'image d'un conteneur spécifié
-  up  | upgrade         Rechercher des nouvelles versions d'image ou mettre à jour un conteneur spécifié
+  p   | pull            Récupère la dernière version de l'image d'un conteneur spécifié
+  up  | upgrade         Télécharge la dernière image et met à jour un conteneur spécifié
   ps  | stats           Afficher les statistiques des conteneurs en cours d'exécution
   psa | statsall        Afficher les statistiques des conteneurs détaillées
   sh  | bash            Se connecter au bash d'un conteneur spécifié

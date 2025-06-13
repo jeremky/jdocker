@@ -100,7 +100,7 @@ case $1 in
         $dir/jdocker.sh it $app
       done
     else
-      podman images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo podman pull
+      echo "Aucune application spécifiée en paramètre"
     fi
     ;;
   pull | p)
@@ -109,6 +109,8 @@ case $1 in
       for app in $*; do
         podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
       done
+    else
+      podman images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo podman pull
     fi
     ;;
   logs | l)
