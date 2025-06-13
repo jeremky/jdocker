@@ -27,6 +27,7 @@ if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
   sudo loginctl enable-linger $user
   systemctl enable --user --now podman-restart.service
   systemctl enable --user --now podman.socket
+  echo -e "${GREEN}Installation de Podman terminée${RESET}"
 fi
 
 # Installation de la complétion

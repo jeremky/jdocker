@@ -1,6 +1,6 @@
 # jdocker.sh
 
-Ce script permet une administration plus simplifiée des conteneurs Podman. Les fichiers `docker-compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `docker-compose.yml`.
+Ce script permet une administration plus simplifiée des conteneurs Podman en mode rootless. Les fichiers `docker-compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `docker-compose.yml`.
 
 ## Configuration
 
@@ -18,7 +18,7 @@ Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker
 # jdocker config
 user=votre_user
 
-# applications compose à utiliser (selon si le paquet podman-docker est installé)
+# applications compose à utiliser (remplacez par docker-compose si podman-docker est installé)
 compose=podman-compose
 
 # port minimal à autoriser
@@ -36,7 +36,7 @@ destbackup=/home/$user/backups
 # rétention des sauvegardes (en jours)
 retention=7
 
-# dossier des images
+# dossier des images locales
 imgdir=/tmp/dockerimg
 
 ```
