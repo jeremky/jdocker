@@ -2,24 +2,23 @@
 
 dir=$(dirname "$0")
 
-# Couleurs
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-YELLOW='\033[0;33m'
-RESET='\033[0m'
+# Messages colorisés
+error()    { echo -e "\033[0;31m$*\033[0m"; }
+message()  { echo -e "\033[0;32m$*\033[0m"; }
+warning()  { echo -e "\033[0;33m$*\033[0m"; }
 
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
 if [[ -f $cfg ]]; then
   . $cfg
 else
-  echo -e "${RED}Fichier $cfg introuvable${RESET}"
+  error "Fichier $cfg introuvable"
   exit 0
 fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
-  echo -e "${GREEN}Installation de Podman...${RESET}"
+  warning "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
   sudo chown $user: $containersdir
@@ -28,7 +27,7 @@ if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
   sudo loginctl enable-linger $user
   systemctl enable --user --now podman-restart.service
   systemctl enable --user --now podman.socket
-  echo -e "${GREEN}Installation de Podman terminée${RESET}"
+  message "Installation de Podman terminée"
 fi
 
 # Installation de la complétion
@@ -37,7 +36,7 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,IMGDIR,$imgdir," /etc/bash_completion.d/jdocker
-  echo -e "${GREEN}Auto complétion installée. Redémarrez la session ou chargez la complétion avec :${RESET}"
+  message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
   exit 0
 fi
@@ -55,14 +54,14 @@ case $1 in
       shift
       for app in $*; do
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
-          echo -e "${RED}Application $app introuvable${RESET}"
+          error "Application $app introuvable"
         else
           $compose -f $configdir/$app/*compose.yml up -d
-          echo -e "${GREEN}Application $app déployée${RESET}"
+          message "Application $app déployée"
         fi
       done
     else
-      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
+      error "Aucune application spécifiée en paramètre"
     fi
     ;;
   remove | rm)
@@ -70,14 +69,14 @@ case $1 in
       shift
       for app in $*; do
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
-          echo -e "${RED}Application $app introuvable${RESET}"
+          error "Application $app introuvable"
         else
           $compose -f $configdir/$app/*compose.yml down
-          echo -e "${GREEN}Application $app supprimée${RESET}"
+          warning "Application $app supprimée"
         fi
       done
     else
-      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
+      error "Aucune application spécifiée en paramètre"
     fi
     ;;
   restart | r)
@@ -87,7 +86,7 @@ case $1 in
         podman restart $app
       done
     else
-      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
+      error "Aucune application spécifiée en paramètre"
     fi
     ;;
   purge | pr)
@@ -100,7 +99,7 @@ case $1 in
     shift
     for img in $*; do
       if [[ ! -f $imgdir/$img ]]; then
-        echo -e "${RED}Fichier $img non trouvé dans $imgdir${RESET}"
+        error "Fichier $img non trouvé dans $imgdir"
       else
         podman load -i $imgdir/$img
       fi
@@ -115,11 +114,11 @@ case $1 in
           $dir/jdocker.sh rm $app
           $dir/jdocker.sh it $app
         else
-          echo -e "${RED}Application $app introuvable${RESET}"
+          error "Application $app introuvable"
         fi
       done
     else
-      echo -e "${RED}Aucune application spécifiée en paramètre${RESET}"
+      error "Aucune application spécifiée en paramètre"
     fi
     ;;
   pull | p)
@@ -128,7 +127,7 @@ case $1 in
       for app in $*; do
         if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
-          echo -e "${GREEN}Nouvelle image récupérée${RESET}"
+          message "Nouvelle image récupérée"
         fi
       done
     else
@@ -143,7 +142,7 @@ case $1 in
     fi
     ;;
   attach | at)
-    echo -e "${YELLOW}Ctrl+p, Ctrl+q pour quitter${RESET}"
+    warning "Ctrl+p, Ctrl+q pour quitter"
     podman attach $2
     ;;
   stats | ps)
@@ -178,12 +177,12 @@ case $1 in
           fi
           $dir/jdocker.sh rm $app
           cd $containersdir
-          echo -e "${GREEN}Sauvegarde de $app...${RESET}"
+          message "Sauvegarde de $app..."
           podman unshare tar czf $app.$(date '+%Y%m%d').tar.gz $app
           podman unshare chown root: $app.$(date '+%Y%m%d').tar.gz
           mv $app.$(date '+%Y%m%d').tar.gz $destbackup/$app
           find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
-          echo -e "${GREEN}Sauvegarde terminée. Relance...${RESET}"
+          message "Sauvegarde terminée. Relance..."
           $dir/jdocker.sh it $app
         else
           echo -e "${RED}Dossier $containersdir/$app introuvable${RESET}"
@@ -195,12 +194,12 @@ case $1 in
         sudo sed -i "s,SCR,$(realpath "$0")," /etc/cron.d/jdocker
         sudo sed -i "s,USER,$user," /etc/cron.d/jdocker
       else
-        echo -e "{$RED}Fichier $dir/jdocker.cron absent${RESET}"
+        error "Fichier $dir/jdocker.cron absent"
       fi
     fi
     ;;
   * | help)
-    echo -e "${GREEN}Commandes disponibles :${RESET}"
+    warning "Commandes disponibles :"
     cat $dir/.jdocker.help
     ;;
 esac
