@@ -127,6 +127,7 @@ case $1 in
       for app in $*; do
         if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
+          echo -e "${GREEN}Nouvelle image récupérée${RESET}"
         fi
       done
     else
