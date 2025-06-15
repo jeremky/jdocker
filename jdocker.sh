@@ -56,6 +56,7 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
+          echo ""
           warning "Déploiement de $app..."
           $compose -f $configdir/$app/*compose.yml up -d
           message "Application $app déployée"
@@ -72,6 +73,7 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
+          echo ""
           warning "Suppression de $app..."
           $compose -f $configdir/$app/*compose.yml down
           message "Application $app supprimée"
@@ -128,6 +130,7 @@ case $1 in
       shift
       for app in $*; do
         if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
+          echo ""
           warning "Récupération de la nouvelle image $app..."
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
           message "Nouvelle image $app récupérée"
@@ -180,6 +183,7 @@ case $1 in
           fi
           $dir/jdocker.sh rm $app
           cd $containersdir
+          echo ""
           message "Sauvegarde de $app..."
           podman unshare tar czf $app.$(date '+%Y%m%d').tar.gz $app
           podman unshare chown root: $app.$(date '+%Y%m%d').tar.gz
@@ -202,6 +206,7 @@ case $1 in
     fi
     ;;
   * | help)
+    echo ""
     warning "Commandes disponibles :"
     cat $dir/.jdocker.help
     ;;
