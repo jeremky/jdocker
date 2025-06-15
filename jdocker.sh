@@ -5,6 +5,7 @@ dir=$(dirname "$0")
 # Couleurs
 GREEN='\033[0;32m'
 RED='\033[0;31m'
+YELLOW='\033[0;33m'
 RESET='\033[0m'
 
 # Chargement du fichier de config
@@ -142,7 +143,7 @@ case $1 in
     fi
     ;;
   attach | at)
-    echo -e "${GREEN}Ctrl+p, Ctrl+q pour quitter${RESET}"
+    echo -e "${YELLOW}Ctrl+p, Ctrl+q pour quitter${RESET}"
     podman attach $2
     ;;
   stats | ps)
