@@ -3,9 +3,9 @@
 dir=$(dirname "$0")
 
 # Messages colorisés
-error()    { echo -e "\033[0;31m$*\033[0m"; }
-message()  { echo -e "\033[0;32m$*\033[0m"; }
-warning()  { echo -e "\033[0;33m$*\033[0m"; }
+error()    { echo -e "\033[0;31m$*\033[0m" ;}
+message()  { echo -e "\033[0;32m$*\033[0m" ;}
+warning()  { echo -e "\033[0;33m$*\033[0m" ;}
 
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
@@ -56,6 +56,7 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
+          warning "Déploiement de $app..."
           $compose -f $configdir/$app/*compose.yml up -d
           message "Application $app déployée"
         fi
@@ -71,8 +72,9 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
+          warning "Suppression de $app..."
           $compose -f $configdir/$app/*compose.yml down
-          warning "Application $app supprimée"
+          message "Application $app supprimée"
         fi
       done
     else
@@ -126,8 +128,9 @@ case $1 in
       shift
       for app in $*; do
         if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
+          warning "Récupération de la nouvelle image $app..."
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
-          message "Nouvelle image récupérée"
+          message "Nouvelle image $app récupérée"
         fi
       done
     else
@@ -182,10 +185,10 @@ case $1 in
           podman unshare chown root: $app.$(date '+%Y%m%d').tar.gz
           mv $app.$(date '+%Y%m%d').tar.gz $destbackup/$app
           find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
-          message "Sauvegarde terminée. Relance..."
+          message "Sauvegarde terminée"
           $dir/jdocker.sh it $app
         else
-          echo -e "${RED}Dossier $containersdir/$app introuvable${RESET}"
+          error "Dossier $containersdir/$app introuvable"
         fi
       done
     else
