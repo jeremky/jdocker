@@ -207,7 +207,7 @@ case $1 in
     ;;
   * | help)
     echo ""
-    warning "Commandes disponibles :"
+    message "Commandes disponibles :"
     cat $dir/.jdocker.help
     echo ""
     ;;
