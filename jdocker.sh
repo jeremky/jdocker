@@ -198,6 +198,7 @@ case $1 in
     ;;
   u | unshare)
     shift
+    echo ""
     podman unshare $*
     ;;
   v | volumes)
