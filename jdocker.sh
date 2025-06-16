@@ -133,7 +133,7 @@ case $1 in
     done
     echo ""
     ;;
-  u | upgrade)
+  up | upgrade)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
