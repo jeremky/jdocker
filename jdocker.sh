@@ -63,6 +63,7 @@ case $1 in
       shift
       for app in $*; do
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
+          echo ""
           error "Application $app introuvable"
         else
           echo ""
