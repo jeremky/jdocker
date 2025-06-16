@@ -4,8 +4,8 @@ dir=$(dirname "$0")
 
 # Messages colorisés
 error()    { echo -e "\033[0;31m====> $*\033[0m" ;}
-message()  { echo -e "\033[0;32m====> $*\033[0m" ;}
-warning()  { echo -e "\033[0;33m====> $*\033[0m" ;}
+message()  { echo -e "\033[0;32m====> $*\033[0m" ; echo "" ;}
+warning()  { echo "" ; echo -e "\033[0;33m====> $*\033[0m" ;}
 
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
@@ -18,7 +18,6 @@ fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
-  echo ""
   warning "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
@@ -28,9 +27,7 @@ if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
   sudo loginctl enable-linger $user
   systemctl enable --user --now podman-restart.service
   systemctl enable --user --now podman.socket
-  echo ""
   message "Installation de Podman terminée"
-  echo ""
 fi
 
 # Installation de la complétion
@@ -42,37 +39,29 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   echo ""
   message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
-  echo ""
   exit 0
 fi
 
 # Commandes
 case $1 in
   ls | list)
-    echo ""
     podman container ls -a --format "table {{.Names}} \t {{.Status}}"
-    echo ""
     ;;
   lsa | listall)
-    echo ""
     podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
-    echo ""
     ;;
   it | install)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
-          echo ""
           error "Application $app introuvable"
         else
-          echo ""
           warning "Déploiement de $app..."
           $compose -f $configdir/$app/*compose.yml up -d
           message "Application $app déployée"
         fi
       done
-      echo ""
     else
       error "Aucune application spécifiée en paramètre"
     fi
@@ -84,13 +73,11 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
-          echo ""
           warning "Suppression de $app..."
           $compose -f $configdir/$app/*compose.yml down
           message "Application $app supprimée"
         fi
       done
-      echo ""
     else
       error "Aucune application spécifiée en paramètre"
     fi
@@ -100,32 +87,25 @@ case $1 in
       shift
       for app in $*; do
         if podman container exists $app; then
-          echo ""
           warning "Redémarrage du conteneur $app"
           podman restart $app
         else
-          echo ""
           error "Conteneur $app introuvable"
         fi
       done
-      echo ""
     else
       error "Aucune application spécifiée en paramètre"
     fi
     ;;
   pr | purge)
-    echo ""
     warning "Suppression dans images non utilisées..."
     podman system prune -f
     message "Nettoyage terminé"
-    echo ""
     ;;
   pra | purgeall)
-    echo ""
     warning "Suppression des images et des volumes non utilisés..."
     podman system prune -f -a --volumes
     message "Nettoyage terminé"
-    echo ""
     ;;
   lo | load)
     shift
@@ -136,7 +116,6 @@ case $1 in
         podman load -i $imgdir/$img
       fi
     done
-    echo ""
     ;;
   up | upgrade)
     if [[ ! -z "$2" ]]; then
@@ -159,13 +138,11 @@ case $1 in
       shift
       for app in $*; do
         if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
-          echo ""
           warning "Récupération de la nouvelle image $app..."
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
           message "Nouvelle image $app récupérée"
         fi
       done
-      echo ""
     else
       podman images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo podman pull
     fi
@@ -178,7 +155,6 @@ case $1 in
     fi
     ;;
   at | attach)
-    echo ""
     warning "Ctrl+p, Ctrl+q pour quitter"
     podman attach $2
     ;;
@@ -192,24 +168,17 @@ case $1 in
     podman exec -it $2 sh
     ;;
   n | networks)
-    echo ""
     podman network ls
-    echo ""
     ;;
   i | images)
-    echo ""
     podman images
-    echo ""
     ;;
   u | unshare)
     shift
-    echo ""
     podman unshare $*
     ;;
   v | volumes)
-    echo ""
     podman volume ls
-    echo ""
     ;;
   bk | backup)
     if [[ ! -z "$2" ]]; then
@@ -226,8 +195,8 @@ case $1 in
           podman unshare chown root: $app.$(date '+%Y%m%d').tar.gz
           mv $app.$(date '+%Y%m%d').tar.gz $destbackup/$app
           find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
-          message "Sauvegarde terminée"
           ls $destbackup/$app/$app.$(date '+%Y%m%d').tar.gz
+          message "Sauvegarde terminée"
           $dir/jdocker.sh it $app
         else
           error "Dossier $containersdir/$app introuvable"
@@ -238,19 +207,15 @@ case $1 in
         sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
         sudo sed -i "s,SCR,$(realpath "$0")," /etc/cron.d/jdocker
         sudo sed -i "s,USER,$user," /etc/cron.d/jdocker
-        echo ""
         message "Fichier /etc/cron.d/jdocker en place"
         cat /etc/cron.d/jdocker
-        echo ""
       else
         error "Fichier $dir/jdocker.cron absent"
       fi
     fi
     ;;
   * | help)
-    echo ""
     message "Commandes disponibles :"
     cat $dir/.jdocker.help
-    echo ""
     ;;
 esac
