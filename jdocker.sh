@@ -102,11 +102,13 @@ case $1 in
     fi
     ;;
   pr | purge)
+    echo ""
     warning "Suppression dans images non utilisées..."
     podman system prune -f
     message "Nettoyage terminé"
     ;;
   pra | purgeall)
+    echo ""
     warning "Suppression des images et des volumes non utilisés..."
     podman system prune -f -a --volumes
     message "Nettoyage terminé"
