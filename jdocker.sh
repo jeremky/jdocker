@@ -48,13 +48,17 @@ fi
 
 # Commandes
 case $1 in
-  list | ls)
+  ls | list)
+    echo ""
     podman container ls -a --format "table {{.Names}} \t {{.Status}}"
+    echo ""
     ;;
-  listall | lsa)
+  lsa | listall)
+    echo ""
     podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
+    echo ""
     ;;
-  install | it)
+  it | install)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
@@ -72,7 +76,7 @@ case $1 in
       error "Aucune application spécifiée en paramètre"
     fi
     ;;
-  remove | rm)
+  rm | remove)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
@@ -90,7 +94,7 @@ case $1 in
       error "Aucune application spécifiée en paramètre"
     fi
     ;;
-  restart | r)
+  r | restart)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
@@ -108,13 +112,17 @@ case $1 in
       error "Aucune application spécifiée en paramètre"
     fi
     ;;
-  purge | pr)
+  pr | purge)
+    echo ""
     podman system prune -f
+    echo ""
     ;;
-  purgeall | pra)
+  pra | purgeall)
+    echo ""
     podman system prune -f -a --volumes
+    echo ""
     ;;
-  load | lo)
+  lo | load)
     shift
     for img in $*; do
       if [[ ! -f $imgdir/$img ]]; then
@@ -123,8 +131,9 @@ case $1 in
         podman load -i $imgdir/$img
       fi
     done
+    echo ""
     ;;
-  upgrade | up)
+  u | upgrade)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
@@ -140,7 +149,7 @@ case $1 in
       error "Aucune application spécifiée en paramètre"
     fi
     ;;
-  pull | p)
+  p | pull)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
@@ -151,44 +160,52 @@ case $1 in
           message "Nouvelle image $app récupérée"
         fi
       done
+      echo ""
     else
       podman images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo podman pull
     fi
     ;;
-  logs | l)
+  l | logs)
     if [[ -z "$3" ]]; then
       podman logs -f $2
     else
       podman logs --since=$3 $2
     fi
     ;;
-  attach | at)
+  at | attach)
+    echo ""
     warning "Ctrl+p, Ctrl+q pour quitter"
     podman attach $2
     ;;
-  stats | ps)
+  ps | stats)
     podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemUsage}}"
     ;;
-  statsall | psa)
+  psa | statsall)
     podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
     ;;
-  bash | sh)
+  sh | bash)
     podman exec -it $2 sh
     ;;
-  networks | n)
+  n | networks)
+    echo ""
     podman network ls
+    echo ""
     ;;
-  images | i)
+  i | images)
+    echo ""
     podman images
+    echo ""
     ;;
-  unshare | u)
+  u | unshare)
     shift
     podman unshare $*
     ;;
-  volumes | v)
+  v | volumes)
+    echo ""
     podman volume ls
+    echo ""
     ;;
-  backup | bk)
+  bk | backup)
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
@@ -198,13 +215,13 @@ case $1 in
           fi
           $dir/jdocker.sh rm $app
           cd $containersdir
-          echo ""
-          message "Sauvegarde de $app..."
+          warning "Sauvegarde de $app..."
           podman unshare tar czf $app.$(date '+%Y%m%d').tar.gz $app
           podman unshare chown root: $app.$(date '+%Y%m%d').tar.gz
           mv $app.$(date '+%Y%m%d').tar.gz $destbackup/$app
           find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
           message "Sauvegarde terminée"
+          ls $destbackup/$app/$app.$(date '+%Y%m%d').tar.gz
           $dir/jdocker.sh it $app
         else
           error "Dossier $containersdir/$app introuvable"
@@ -212,9 +229,13 @@ case $1 in
       done
     else
       if [[ -f $dir/jdocker.cron ]]; then
-        sudo cp -v $dir/jdocker.cron /etc/cron.d/jdocker
+        sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
         sudo sed -i "s,SCR,$(realpath "$0")," /etc/cron.d/jdocker
         sudo sed -i "s,USER,$user," /etc/cron.d/jdocker
+        echo ""
+        message "Fichier /etc/cron.d/jdocker en place"
+        cat /etc/cron.d/jdocker
+        echo ""
       else
         error "Fichier $dir/jdocker.cron absent"
       fi
