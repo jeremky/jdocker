@@ -16,7 +16,7 @@ _jdocker_completion() {
    fi
 
   case "$prev" in
-    l|logs|r|restart|sh|bash|at|attach)
+    l|logs|sh|bash|at|attach)
       containers=$(podman ps --format "{{.Names}}")
       COMPREPLY=($(compgen -W "$containers" -- "$cur"))
       return 0
@@ -32,8 +32,11 @@ _jdocker_completion() {
     bk|backup)
       all_apps=$(ls CONTDIR 2>/dev/null)
       ;;
-    load|lo)
+    lo|load)
       all_apps=$(ls IMGDIR 2>/dev/null)
+      ;;
+    r|restart)
+      all_apps=$(podman ps --format "{{.Names}}")
       ;;
   esac
 

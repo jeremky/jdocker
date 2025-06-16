@@ -94,7 +94,14 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
-        podman restart $app
+        if podman container exists $app; then
+          podman restart $app
+          message "Application $app redémarrée"
+          echo ""
+        else
+          error "Application $app introuvable"
+          echo ""
+        fi
       done
     else
       error "Aucune application spécifiée en paramètre"
