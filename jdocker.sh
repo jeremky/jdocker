@@ -4,8 +4,8 @@ dir=$(dirname "$0")
 
 # Messages colorisés
 error()    { echo -e "\033[0;31m====> $*\033[0m" ;}
-message()  { echo -e "\033[0;32m====> $*\033[0m" ; echo "" ;}
-warning()  { echo "" ; echo -e "\033[0;33m====> $*\033[0m" ;}
+message()  { echo -e "\033[0;32m====> $*\033[0m" ;}
+warning()  { echo -e "\033[0;33m====> $*\033[0m" ;}
 
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
@@ -13,11 +13,12 @@ if [[ -f $cfg ]]; then
   . $cfg
 else
   error "Fichier $cfg introuvable"
-  exit 0
+  exit 1
 fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
+  echo ""
   warning "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
@@ -39,6 +40,7 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   echo ""
   message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
+  echo ""
   exit 0
 fi
 
@@ -57,6 +59,7 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
+          echo ""
           warning "Déploiement de $app..."
           $compose -f $configdir/$app/*compose.yml up -d
           message "Application $app déployée"
@@ -73,6 +76,7 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
+          echo ""
           warning "Suppression de $app..."
           $compose -f $configdir/$app/*compose.yml down
           message "Application $app supprimée"
@@ -138,6 +142,7 @@ case $1 in
       shift
       for app in $*; do
         if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
+          echo ""
           warning "Récupération de la nouvelle image $app..."
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
           message "Nouvelle image $app récupérée"
@@ -215,7 +220,9 @@ case $1 in
     fi
     ;;
   * | help)
+    echo ""
     message "Commandes disponibles :"
     cat $dir/.jdocker.help
+    echo ""
     ;;
 esac
