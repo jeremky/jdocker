@@ -96,11 +96,11 @@ case $1 in
       for app in $*; do
         if podman container exists $app; then
           echo ""
+          message "Redémarrage de $app"
           podman restart $app
-          message "Application $app redémarrée"
         else
           echo ""
-          error "Application $app introuvable"
+          error "Conteneur $app introuvable"
         fi
       done
       echo ""
