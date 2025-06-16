@@ -18,7 +18,7 @@ fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
-  echo ""
+  echo
   warning "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
@@ -37,10 +37,10 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,IMGDIR,$imgdir," /etc/bash_completion.d/jdocker
-  echo ""
+  echo
   message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
-  echo ""
+  echo
   exit 0
 fi
 
@@ -59,7 +59,7 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
-          echo ""
+          echo
           warning "Déploiement de $app..."
           $compose -f $configdir/$app/*compose.yml up -d
           message "Application $app déployée"
@@ -76,7 +76,7 @@ case $1 in
         if [[ ! -d $configdir/$app || -z "$1" ]]; then
           error "Application $app introuvable"
         else
-          echo ""
+          echo
           warning "Suppression de $app..."
           $compose -f $configdir/$app/*compose.yml down
           message "Application $app supprimée"
@@ -90,6 +90,7 @@ case $1 in
     if [[ ! -z "$2" ]]; then
       shift
       for app in $*; do
+        echo
         if podman container exists $app; then
           warning "Redémarrage du conteneur $app"
           podman restart $app
@@ -102,16 +103,18 @@ case $1 in
     fi
     ;;
   pr | purge)
-    echo ""
+    echo
     warning "Suppression dans images non utilisées..."
     podman system prune -f
     message "Nettoyage terminé"
+    echo
     ;;
   pra | purgeall)
-    echo ""
+    echo
     warning "Suppression des images et des volumes non utilisés..."
     podman system prune -f -a --volumes
     message "Nettoyage terminé"
+    echo
     ;;
   lo | load)
     shift
@@ -144,7 +147,7 @@ case $1 in
       shift
       for app in $*; do
         if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
-          echo ""
+          echo
           warning "Récupération de la nouvelle image $app..."
           podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
           message "Nouvelle image $app récupérée"
@@ -222,9 +225,9 @@ case $1 in
     fi
     ;;
   * | help)
-    echo ""
+    echo
     message "Commandes disponibles :"
     cat $dir/.jdocker.help
-    echo ""
+    echo
     ;;
 esac
