@@ -95,14 +95,15 @@ case $1 in
       shift
       for app in $*; do
         if podman container exists $app; then
+          echo ""
           podman restart $app
           message "Application $app redémarrée"
-          echo ""
         else
-          error "Application $app introuvable"
           echo ""
+          error "Application $app introuvable"
         fi
       done
+      echo ""
     else
       error "Aucune application spécifiée en paramètre"
     fi
