@@ -18,6 +18,7 @@ fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
+  echo ""
   warning "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
@@ -27,7 +28,9 @@ if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
   sudo loginctl enable-linger $user
   systemctl enable --user --now podman-restart.service
   systemctl enable --user --now podman.socket
+  echo ""
   message "Installation de Podman terminée"
+  echo ""
 fi
 
 # Installation de la complétion
@@ -36,8 +39,10 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
   sudo sed -i "s,IMGDIR,$imgdir," /etc/bash_completion.d/jdocker
+  echo ""
   message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
+  echo ""
   exit 0
 fi
 
@@ -62,6 +67,7 @@ case $1 in
           message "Application $app déployée"
         fi
       done
+      echo ""
     else
       error "Aucune application spécifiée en paramètre"
     fi
@@ -79,6 +85,7 @@ case $1 in
           message "Application $app supprimée"
         fi
       done
+      echo ""
     else
       error "Aucune application spécifiée en paramètre"
     fi
