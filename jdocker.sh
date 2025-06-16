@@ -100,7 +100,7 @@ case $1 in
       for app in $*; do
         if podman container exists $app; then
           echo ""
-          message "Redémarrage de $app"
+          warning "Redémarrage du conteneur $app"
           podman restart $app
         else
           echo ""
@@ -114,11 +114,13 @@ case $1 in
     ;;
   pr | purge)
     echo ""
+    warning "Nettoyage..."
     podman system prune -f
     echo ""
     ;;
   pra | purgeall)
     echo ""
+    warning "Suppression des images et des volumes non utilisés..."
     podman system prune -f -a --volumes
     echo ""
     ;;
