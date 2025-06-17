@@ -4,7 +4,7 @@ Ce script permet une administration plus simplifiée des conteneurs Podman en mo
 
 ## Configuration
 
-Avant d'utiliser ce script, vous devez tout d'abord modifier le fichier `jdocker.cfg`, pour spécifier les informations suivantes :
+Avant d'utiliser ce script, vous devez tout d'abord renommer le fichier `.jdocker.cfg.template` `jdocker.cfg`, pour ensuite y indiquer les informations suivantes :
 
 - Votre nom d'utilisateur, utilisé pour la création des dossiers nécessaires au bon fonctionnement du script
 
@@ -76,7 +76,7 @@ Commandes disponibles :
 
 ## Sauvegarde
 
-`jdocker.sh` propose un système de sauvegarde des volumes. Pour automatiser vos sauvegardes, modifiez le fichier `jdocker.cron` selon vos préférences. 
+`jdocker.sh` propose un système de sauvegarde des volumes. Pour automatiser vos sauvegardes, renommez le fichier `.jdocker.cron.template` en `jdocker.cron` , puis adaptez-le selon vos préférences. 
 Exécutez ensuite `./jdocker.sh bk` pour le copier automatiquement dans le répertoire `/etc/cron.d`.
 
 ```txt

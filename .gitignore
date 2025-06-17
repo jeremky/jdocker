@@ -1,2 +1,6 @@
+# Fichiers
+jdocker.cfg
+jdocker.cron
+
 # Répertoires
 cfg/*
