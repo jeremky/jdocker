@@ -1,6 +1,6 @@
 # jdocker.sh
 
-CE Ce script permet une administration plus simplifiée des conteneurs Podman en mode rootless. Les fichiers `compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `docker-compose.yml`.
+Ce script permet une administration plus simplifiée des conteneurs Podman en mode rootless. Les fichiers `compose.yml` sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `docker-compose.yml`.
 
 ## Configuration
 
