@@ -1,6 +1,7 @@
 # Fichiers
 jdocker.cfg
 jdocker.cron
+test
 
 # Répertoires
 cfg/*
