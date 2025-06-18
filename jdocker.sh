@@ -133,6 +133,7 @@ case $1 in
         if [[ -d $configdir/$app ]]; then
           $dir/jdocker.sh p $app
           $dir/jdocker.sh rm $app
+          $dir/jdocker.sh bk $app
           $dir/jdocker.sh it $app
         else
           error "Application $app introuvable"
@@ -198,18 +199,23 @@ case $1 in
           if [[ ! -d $destbackup/$app ]]; then
             mkdir -p $destbackup/$app
           fi
-          $dir/jdocker.sh rm $app
+          if podman container exists $app; then
+            restartafter=1
+            $dir/jdocker.sh rm $app
+          fi
           cd $containersdir
+          echo
           warning "Sauvegarde de $app..."
-          podman unshare tar czf $app.$(date '+%Y%m%d').tar.gz $app
-          podman unshare chown root: $app.$(date '+%Y%m%d').tar.gz
-          mv $app.$(date '+%Y%m%d').tar.gz $destbackup/$app
+          bckfile=$app.$(date '+%Y%m%d%H%M').tar.gz
+          podman unshare tar czf $bckfile $app
+          podman unshare chown root: $bckfile
+          mv $bckfile $destbackup/$app
           find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
-          ls $destbackup/$app/$app.$(date '+%Y%m%d').tar.gz
+          ls $destbackup/$app/$bckfile
           message "Sauvegarde terminée"
-          $dir/jdocker.sh it $app
-        else
-          error "Dossier $containersdir/$app introuvable"
+          if (($restartafter)); then
+            $dir/jdocker.sh it $app
+          fi
         fi
       done
     else
