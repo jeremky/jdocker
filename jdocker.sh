@@ -60,14 +60,18 @@ process() {
     fi
     case $action in
       install)
-        warning "Déploiement de $app..."
-        $compose -f "$configdir/$app/"*compose.yml up -d
-        message "Application $app déployée"
+        if ! podman container exists $app; then
+          warning "Déploiement de $app..."
+          $compose -f "$configdir/$app/"*compose.yml up -d
+          message "Application $app déployée"
+        fi
         ;;
       remove)
-        warning "Suppression de $app..."
-        $compose -f "$configdir/$app/"*compose.yml down
-        message "Application $app supprimée"
+        if podman container exists $app; then
+          warning "Suppression de $app..."
+          $compose -f "$configdir/$app/"*compose.yml down
+          message "Application $app supprimée"
+        fi
         ;;
       pull)
         if ! grep -q "image:.*localhost" "$configdir/$app/"*compose.yml; then
@@ -113,11 +117,13 @@ case $1 in
     shift
     checkarg $@ || exit 1
     process install $@
+    echo
     ;;
   rm | remove)
     shift
     checkarg $@ || exit 1
     process remove $@
+    echo
     ;;
   r | restart)
     shift
@@ -132,25 +138,26 @@ case $1 in
     ;;
   pra | purgeall)
     unused=$(comm -23 <(podman volume ls --format "{{.Name}}" | sort) \
-                   <(podman ps -a --format "{{.ID}}" | xargs -r podman inspect \
-                     --format '{{range .Mounts}}{{if eq .Type "volume"}}{{.Name}}{{"\n"}}{{end}}{{end}}' 2>/dev/null | sort | uniq))
+      <(podman ps -a --format "{{.ID}}" | xargs -r podman inspect \
+      --format '{{range .Mounts}}{{if eq .Type "volume"}}{{.Name}}{{"\n"}}{{end}}{{end}}' 2>/dev/null | sort | uniq))
     if [[ -n "$unused" ]]; then
-    warning "Attention : cela va supprimer les volumes suivants :"
-    echo "$unused"
-    echo
-    read -p "Confirmer ? (o/n) : " reponse
-    case $reponse in
-      o|oui)
-        warning "Suppression dans images, des réseaux et des volumes non utilisés..."
-        ;;
-      *)
-        message "Commande annulée"
-        exit 0
-        ;;
-    esac
+      warning "Attention : cela va supprimer les volumes suivants :"
+      echo "$unused"
+      echo
+      read -p "Confirmer ? (o/n) : " reponse
+      case $reponse in
+        o|oui)
+          warning "Suppression dans images, des réseaux et des volumes non utilisés..."
+          ;;
+        *)
+          message "Commande annulée"
+          exit 0
+          ;;
+      esac
     fi
     podman system prune -f -a --volumes
     message "Nettoyage terminé"
+    echo
     ;;
   lo | load)
     shift
@@ -171,11 +178,13 @@ case $1 in
       process backup $app
       process install $app
     done
+    echo
     ;;
   p | pull)
     if [[ -n "$2" ]]; then
       shift
       process pull $@
+      echo
     else
       podman images --format "{{.Repository}}:{{.Tag}}" | grep -v '^localhost' | xargs -r -L1 podman pull
     fi
@@ -217,6 +226,7 @@ case $1 in
     if [[ -n "$2" ]]; then
       shift
       process backup $@
+      echo
     else
       if [[ -f $dir/jdocker.cron ]]; then
         sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
