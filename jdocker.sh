@@ -127,12 +127,28 @@ case $1 in
     done
     ;;
   pr | purge)
-    warning "Suppression dans images non utilisées..."
     podman system prune -f
     message "Nettoyage terminé"
     ;;
   pra | purgeall)
-    warning "Suppression des images et des volumes non utilisés..."
+    unused=$(comm -23 <(podman volume ls --format "{{.Name}}" | sort) \
+                   <(podman ps -a --format "{{.ID}}" | xargs -r podman inspect \
+                     --format '{{range .Mounts}}{{if eq .Type "volume"}}{{.Name}}{{"\n"}}{{end}}{{end}}' 2>/dev/null | sort | uniq))
+    if [[ -n "$unused" ]]; then
+    warning "Attention : cela va supprimer les volumes suivants :"
+    echo "$unused"
+    echo
+    read -p "Confirmer ? (o/n) : " reponse
+    case $reponse in
+      o|oui)
+        warning "Suppression dans images, des réseaux et des volumes non utilisés..."
+        ;;
+      *)
+        message "Commande annulée"
+        exit 0
+        ;;
+    esac
+    fi
     podman system prune -f -a --volumes
     message "Nettoyage terminé"
     ;;
@@ -157,11 +173,11 @@ case $1 in
     done
     ;;
   p | pull)
-    if [[ ! -z "$2" ]]; then
+    if [[ -n "$2" ]]; then
       shift
       process pull $@
     else
-      podman images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo podman pull
+      podman images --format "{{.Repository}}:{{.Tag}}" | grep -v '^localhost' | xargs -r -L1 podman pull
     fi
     ;;
   l | logs)
@@ -198,7 +214,7 @@ case $1 in
     podman volume ls
     ;;
   bk | backup)
-    if [[ ! -z "$2" ]]; then
+    if [[ -n "$2" ]]; then
       shift
       process backup $@
     else
