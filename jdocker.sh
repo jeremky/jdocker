@@ -64,6 +64,8 @@ process() {
           warning "Déploiement de $app..."
           $compose -f "$configdir/$app/"*compose.yml up -d
           message "Application $app déployée"
+        else
+          error "Application $app déjà déployée"
         fi
         ;;
       remove)
@@ -71,6 +73,8 @@ process() {
           warning "Suppression de $app..."
           $compose -f "$configdir/$app/"*compose.yml down
           message "Application $app supprimée"
+        else
+          error "Application $app non déployée"
         fi
         ;;
       pull)
