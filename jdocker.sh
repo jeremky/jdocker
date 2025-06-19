@@ -5,7 +5,7 @@ dir=$(dirname "$0")
 # Messages colorisés
 error()    { echo -e "\033[0;31m====> $*\033[0m" ;}
 message()  { echo -e "\033[0;32m====> $*\033[0m" ;}
-warning()  { echo -e "\033[0;33m====> $*\033[0m" ;}
+warning()  { echo ; echo -e "\033[0;33m====> $*\033[0m" ;}
 
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
@@ -18,7 +18,6 @@ fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
-  echo
   warning "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
@@ -44,6 +43,64 @@ if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   exit 0
 fi
 
+checkarg() {
+  if [[ $# -eq 0 ]]; then
+    error "Aucune application spécifiée en paramètre"
+    return 1
+  fi
+}
+
+process() {
+  local action=$1
+  shift
+  for app in $@; do
+    if [[ ! -d "$configdir/$app" ]]; then
+      error "Application $app introuvable"
+      continue
+    fi
+    case $action in
+      install)
+        warning "Déploiement de $app..."
+        $compose -f "$configdir/$app/"*compose.yml up -d
+        message "Application $app déployée"
+        ;;
+      remove)
+        warning "Suppression de $app..."
+        $compose -f "$configdir/$app/"*compose.yml down
+        message "Application $app supprimée"
+        ;;
+      pull)
+        if ! grep -q "image:.*localhost" "$configdir/$app/"*compose.yml; then
+          warning "Récupération de la nouvelle image $app..."
+          podman pull $(grep "image:" "$configdir/$app/"*compose.yml | awk '{print $2}')
+          message "Nouvelle image $app récupérée"
+        fi
+        ;;
+      backup)
+        if [[ -d $containersdir/$app ]]; then
+          if podman container exists $app; then
+            restartafter=1
+            process remove $app
+          fi
+          mkdir -p $destbackup/$app
+          cd $containersdir
+          warning "Sauvegarde de $app..."
+          bckfile=$app.$(date '+%Y%m%d%H%M').tar.gz
+          podman unshare tar czf $bckfile $app
+          podman unshare chown root: $bckfile
+          mv $bckfile $destbackup/$app
+          find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
+          ls $destbackup/$app/$bckfile
+          message "Sauvegarde terminée"
+          if (($restartafter)); then
+            process install $app
+          fi
+        fi
+        ;;
+    esac
+  done
+}
+
 # Commandes
 case $1 in
   ls | list)
@@ -53,68 +110,31 @@ case $1 in
     podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
     ;;
   it | install)
-    if [[ ! -z "$2" ]]; then
-      shift
-      for app in $@; do
-        if [[ ! -d $configdir/$app || -z "$1" ]]; then
-          error "Application $app introuvable"
-        else
-          echo
-          warning "Déploiement de $app..."
-          $compose -f $configdir/$app/*compose.yml up -d
-          message "Application $app déployée"
-        fi
-      done
-    else
-      error "Aucune application spécifiée en paramètre"
-    fi
+    shift
+    checkarg $@ || exit 1
+    process install $@
     ;;
   rm | remove)
-    if [[ ! -z "$2" ]]; then
-      shift
-      for app in $@; do
-        if [[ ! -d $configdir/$app || -z "$1" ]]; then
-          error "Application $app introuvable"
-        else
-          echo
-          warning "Suppression de $app..."
-          $compose -f $configdir/$app/*compose.yml down
-          message "Application $app supprimée"
-        fi
-      done
-    else
-      error "Aucune application spécifiée en paramètre"
-    fi
+    shift
+    checkarg $@ || exit 1
+    process remove $@
     ;;
   r | restart)
-    if [[ ! -z "$2" ]]; then
-      shift
-      for app in $@; do
-        echo
-        if podman container exists $app; then
-          warning "Redémarrage du conteneur $app"
-          podman restart $app
-        else
-          error "Conteneur $app introuvable"
-        fi
-      done
-    else
-      error "Aucune application spécifiée en paramètre"
-    fi
+    shift
+    checkarg $@ || exit 1
+    for app in $@; do
+      podman restart $app
+    done
     ;;
   pr | purge)
-    echo
     warning "Suppression dans images non utilisées..."
     podman system prune -f
     message "Nettoyage terminé"
-    echo
     ;;
   pra | purgeall)
-    echo
     warning "Suppression des images et des volumes non utilisés..."
     podman system prune -f -a --volumes
     message "Nettoyage terminé"
-    echo
     ;;
   lo | load)
     shift
@@ -127,33 +147,19 @@ case $1 in
     done
     ;;
   up | upgrade)
-    if [[ ! -z "$2" ]]; then
-      shift
-      for app in $@; do
-        if [[ -d $configdir/$app ]]; then
-          $dir/jdocker.sh p $app
-          $dir/jdocker.sh rm $app
-          $dir/jdocker.sh bk $app
-          $dir/jdocker.sh it $app
-        else
-          error "Application $app introuvable"
-        fi
-      done
-    else
-      error "Aucune application spécifiée en paramètre"
-    fi
+    shift
+    checkarg $@ || exit 1
+    for app in $@; do
+      process pull $app
+      process remove $app
+      process backup $app
+      process install $app
+    done
     ;;
   p | pull)
     if [[ ! -z "$2" ]]; then
       shift
-      for app in $@; do
-        if [[ -d $configdir/$app && -z "$(cat $configdir/$app/*compose.yml | grep "image:" | grep localhost)" ]]; then
-          echo
-          warning "Récupération de la nouvelle image $app..."
-          podman pull $(cat $configdir/$app/*compose.yml | grep "image:" | cut -d: -f3,2)
-          message "Nouvelle image $app récupérée"
-        fi
-      done
+      process pull $@
     else
       podman images | grep -v ^REPO | grep -v localhost | sed 's/ \+/:/g' | cut -d: -f1,2 | xargs -L1 $sudo podman pull
     fi
@@ -194,30 +200,7 @@ case $1 in
   bk | backup)
     if [[ ! -z "$2" ]]; then
       shift
-      for app in $@; do
-        if [[ -d $containersdir/$app ]]; then
-          if [[ ! -d $destbackup/$app ]]; then
-            mkdir -p $destbackup/$app
-          fi
-          if podman container exists $app; then
-            restartafter=1
-            $dir/jdocker.sh rm $app
-          fi
-          cd $containersdir
-          echo
-          warning "Sauvegarde de $app..."
-          bckfile=$app.$(date '+%Y%m%d%H%M').tar.gz
-          podman unshare tar czf $bckfile $app
-          podman unshare chown root: $bckfile
-          mv $bckfile $destbackup/$app
-          find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
-          ls $destbackup/$app/$bckfile
-          message "Sauvegarde terminée"
-          if (($restartafter)); then
-            $dir/jdocker.sh it $app
-          fi
-        fi
-      done
+      process backup $@
     else
       if [[ -f $dir/jdocker.cron ]]; then
         sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
