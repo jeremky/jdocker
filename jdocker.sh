@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dir=$(dirname "$0")
+dir=$(dirname "$(realpath "$0")")
 
 # Messages colorisés
 error()    { echo -e "\033[0;31m====> $*\033[0m" ;}
@@ -133,8 +133,10 @@ case $1 in
     done
     ;;
   pr | purge)
+    warning "Suppression des images non utilisées..."
     podman system prune -f
     message "Nettoyage terminé"
+    echo
     ;;
   pra | purgeall)
     unused=$(comm -23 <(podman volume ls --format "{{.Name}}" | sort) \
@@ -147,13 +149,15 @@ case $1 in
       read -p "Confirmer ? (o/n) : " reponse
       case $reponse in
         o|oui)
-          warning "Suppression dans images, des réseaux et des volumes non utilisés..."
+          warning "Suppression des images, des réseaux et des volumes non utilisés..."
           ;;
         *)
           message "Commande annulée"
           exit 0
           ;;
       esac
+    else
+      warning "Suppression des images et des réseaux non utilisés..."
     fi
     podman system prune -f -a --volumes
     message "Nettoyage terminé"
