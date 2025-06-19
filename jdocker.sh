@@ -244,8 +244,10 @@ case $1 in
         sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
         sudo sed -i "s,SCR,$(realpath "$0")," /etc/cron.d/jdocker
         sudo sed -i "s,USER,$user," /etc/cron.d/jdocker
+        echo
         message "Fichier /etc/cron.d/jdocker en place"
         cat /etc/cron.d/jdocker
+        echo
       else
         error "Fichier $dir/jdocker.cron absent"
       fi
