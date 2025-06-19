@@ -217,5 +217,6 @@ case $1 in
     echo
     message "Commandes disponibles :"
     cat $dir/.jdocker.help
+    echo
     ;;
 esac
