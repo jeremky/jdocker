@@ -121,13 +121,11 @@ case $1 in
     shift
     checkarg $@ || exit 1
     process install $@
-    echo
     ;;
   rm | remove)
     shift
     checkarg $@ || exit 1
     process remove $@
-    echo
     ;;
   r | restart)
     shift
@@ -186,7 +184,6 @@ case $1 in
       process backup $app
       process install $app
     done
-    echo
     ;;
   p | pull)
     if [[ -n "$2" ]]; then
@@ -234,7 +231,6 @@ case $1 in
     if [[ -n "$2" ]]; then
       shift
       process backup $@
-      echo
     else
       if [[ -f $dir/jdocker.cron ]]; then
         sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
