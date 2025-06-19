@@ -55,7 +55,8 @@ process() {
   shift
   for app in $@; do
     if [[ ! -d "$configdir/$app" ]]; then
-      error "Application $app introuvable"
+      echo
+      error "Application $app introuvable, $action impossible"
       continue
     fi
     case $action in
@@ -65,6 +66,7 @@ process() {
           $compose -f "$configdir/$app/"*compose.yml up -d
           message "Application $app déployée"
         else
+          echo
           error "Application $app déjà déployée"
         fi
         ;;
@@ -74,6 +76,7 @@ process() {
           $compose -f "$configdir/$app/"*compose.yml down
           message "Application $app supprimée"
         else
+          echo
           error "Application $app non déployée"
         fi
         ;;
@@ -121,11 +124,13 @@ case $1 in
     shift
     checkarg $@ || exit 1
     process install $@
+    echo
     ;;
   rm | remove)
     shift
     checkarg $@ || exit 1
     process remove $@
+    echo
     ;;
   r | restart)
     shift
@@ -155,6 +160,7 @@ case $1 in
           ;;
         *)
           message "Commande annulée"
+          echo
           exit 0
           ;;
       esac
@@ -184,6 +190,7 @@ case $1 in
       process backup $app
       process install $app
     done
+    echo
     ;;
   p | pull)
     if [[ -n "$2" ]]; then
@@ -231,6 +238,7 @@ case $1 in
     if [[ -n "$2" ]]; then
       shift
       process backup $@
+      echo
     else
       if [[ -f $dir/jdocker.cron ]]; then
         sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
