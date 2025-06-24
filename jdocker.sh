@@ -229,7 +229,14 @@ case $1 in
     ;;
   u | unshare)
     shift
-    podman unshare $*
+    if [ $# -eq 0 ]; then
+    podman unshare --rootless-netns bash --rcfile <(echo '
+      source ~/.bashrc
+      PS1="\[\033[01;33m\]unshare@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] "
+    ')
+  else
+    podman unshare --rootless-netns $@
+  fi
     ;;
   v | volumes)
     podman volume ls
