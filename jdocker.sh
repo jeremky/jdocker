@@ -33,9 +33,8 @@ fi
 # Installation de la complétion
 if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
-  sudo sed -i "s,CONFIGDIR,$configdir," /etc/bash_completion.d/jdocker
-  sudo sed -i "s,CONTDIR,$containersdir," /etc/bash_completion.d/jdocker
-  sudo sed -i "s,IMGDIR,$imgdir," /etc/bash_completion.d/jdocker
+  export containersdir configdir imgdir
+  envsubst '$configdir $containersdir $imgdir' < "$dir/.jdocker.comp" | sudo tee /etc/bash_completion.d/jdocker > /dev/null
   echo
   message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
@@ -54,16 +53,16 @@ process() {
   local action=$1
   shift
   for app in $@; do
-    if [[ ! -d "$configdir/$app" ]]; then
+    if [[ ! -f $configdir/$app/compose.yml ]]; then
       echo
-      error "Application $app introuvable, $action impossible"
+      error "Fichier compose.yml pour $app introuvable, $action impossible"
       continue
     fi
     case $action in
       install)
         if ! podman container exists $app; then
           warning "Déploiement de $app..."
-          $compose -f "$configdir/$app/"*compose.yml up -d
+          $compose -f $configdir/$app/compose.yml up -d
           message "Application $app déployée"
         else
           echo
@@ -73,7 +72,7 @@ process() {
       remove)
         if podman container exists $app; then
           warning "Suppression de $app..."
-          $compose -f "$configdir/$app/"*compose.yml down
+          $compose -f $configdir/$app/compose.yml down
           message "Application $app supprimée"
         else
           echo
@@ -81,9 +80,9 @@ process() {
         fi
         ;;
       pull)
-        if ! grep -q "image:.*localhost" "$configdir/$app/"*compose.yml; then
+        if ! grep -q "image:.*localhost" $configdir/$app/compose.yml; then
           warning "Récupération de la nouvelle image $app..."
-          podman pull $(grep "image:" "$configdir/$app/"*compose.yml | awk '{print $2}')
+          podman pull $(grep "image:" $configdir/$app/compose.yml | awk '{print $2}')
           message "Nouvelle image $app récupérée"
         fi
         ;;
@@ -94,14 +93,11 @@ process() {
             process remove $app
           fi
           mkdir -p $destbackup/$app
-          cd $containersdir
           warning "Sauvegarde de $app..."
-          bckfile=$app.$(date '+%Y%m%d%H%M').tar.gz
-          podman unshare tar czf $bckfile $app
-          podman unshare chown root: $bckfile
-          mv $bckfile $destbackup/$app
+          bckfile=$destbackup/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
+          podman unshare bash -c "tar -C $containersdir -czf $bckfile $app && chown root: $bckfile"
           find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
-          ls $destbackup/$app/$bckfile
+          ls $bckfile
           message "Sauvegarde terminée"
           if (($restartafter)); then
             process install $app
@@ -248,9 +244,8 @@ case $1 in
       echo
     else
       if [[ -f $dir/jdocker.cron ]]; then
-        sudo cp $dir/jdocker.cron /etc/cron.d/jdocker
-        sudo sed -i "s,SCR,$(realpath "$0")," /etc/cron.d/jdocker
-        sudo sed -i "s,USER,$user," /etc/cron.d/jdocker
+        export dir user
+        envsubst '$dir $user' < "$dir/jdocker.cron" | sudo tee /etc/cron.d/jdocker > /dev/null
         echo
         message "Fichier /etc/cron.d/jdocker en place"
         cat /etc/cron.d/jdocker
