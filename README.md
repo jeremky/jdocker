@@ -81,11 +81,11 @@ Exécutez ensuite `./jdocker.sh bk` pour le copier automatiquement dans le répe
 
 ```txt
 # jdocker cron
-jdocksh=SCR
+jdocksh=$dir/jdocker.sh
 
 # exemple1
-0 0 * * *  USER $jdocksh bk exemple1 >/dev/null 2>&1
+0 0 * * *  $user $jdocksh bk exemple1 >/dev/null 2>&1
 
 # exemple2
-0 1 * * *  USER $jdocksh bk exemple2 >/dev/null 2>&1
+0 1 * * *  $user $jdocksh bk exemple2 >/dev/null 2>&1
 ```
