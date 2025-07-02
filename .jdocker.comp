@@ -8,7 +8,7 @@ _jdocker_completion() {
   cword=$COMP_CWORD
 
   # Liste des commandes principales
-  _commands="list listall networks images volumes logs load install remove restart purge purgeall attach pull upgrade stats statsall bash backup unshare help"
+  _commands="list listall networks images volumes logs load install remove restart purge purgeall attach pull upgrade stats statsall bash backup unshare lazydocker help"
 
    if [[ "$cword" -eq 1 ]]; then
     COMPREPLY=($(compgen -W "$_commands" -- "$cur"))

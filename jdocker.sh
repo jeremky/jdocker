@@ -238,6 +238,13 @@ case $1 in
       fi
     fi
     ;;
+  lzd | lazydocker)
+    if [[ ! -f ~/.local/bin/lazydocker ]]; then
+      curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+    fi
+    export DOCKER_HOST=unix:///var/run/user/$(id -g)/podman/podman.sock
+    lazydocker
+    ;;
   * | help)
     echo
     message "Commandes disponibles :"

@@ -74,6 +74,7 @@ Commandes disponibles :
   sh  | bash            Se connecter au bash d'un conteneur spécifié
   bk  | backup          Sauvegarder un conteneur spécifié
   u   | unshare         Basculer l'ID via la commande podman unshare
+  lzd | lazydocker      Lance l'outil lazydocker et l'installe s'il n'est pas présent
   h   | help            Afficher cette aide
 ```
 
