@@ -108,6 +108,13 @@ process() {
   done
 }
 
+purge() {
+  warning "Suppression des données non utilisées..."
+  podman system prune $options
+  message "Nettoyage terminé"
+  echo
+}
+
 # Commandes
 case $1 in
   ls | list)
@@ -136,36 +143,12 @@ case $1 in
     done
     ;;
   pr | purge)
-    warning "Suppression des images non utilisées..."
-    podman system prune -f
-    message "Nettoyage terminé"
-    echo
+    options="-f"
+    purge
     ;;
   pra | purgeall)
-    unused=$(comm -23 <(podman volume ls --format "{{.Name}}" | sort) \
-      <(podman ps -a --format "{{.ID}}" | xargs -r podman inspect \
-      --format '{{range .Mounts}}{{if eq .Type "volume"}}{{.Name}}{{"\n"}}{{end}}{{end}}' 2>/dev/null | sort | uniq))
-    if [[ -n "$unused" ]]; then
-      warning "Attention : cela va supprimer les volumes suivants :"
-      echo "$unused"
-      echo
-      read -p "Confirmer ? (o/n) : " reponse
-      case $reponse in
-        o|oui)
-          warning "Suppression des images, des réseaux et des volumes non utilisés..."
-          ;;
-        *)
-          message "Commande annulée"
-          echo
-          exit 0
-          ;;
-      esac
-    else
-      warning "Suppression des images et des réseaux non utilisés..."
-    fi
-    podman system prune -f -a --volumes
-    message "Nettoyage terminé"
-    echo
+    options="-a --volumes"
+    purge
     ;;
   lo | load)
     shift
@@ -185,6 +168,7 @@ case $1 in
       process remove $app
       process backup $app
       process install $app
+      [[ $autoclean = true ]] && purge
     done
     echo
     ;;
@@ -226,13 +210,13 @@ case $1 in
   u | unshare)
     shift
     if [ $# -eq 0 ]; then
-    podman unshare --rootless-netns bash --rcfile <(echo '
+      podman unshare --rootless-netns bash --rcfile <(echo '
       source ~/.bashrc
       PS1="\[\033[01;33m\]unshare@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] "
-    ')
-  else
-    podman unshare --rootless-netns $@
-  fi
+      ')
+    else
+      podman unshare --rootless-netns $@
+    fi
     ;;
   v | volumes)
     podman volume ls

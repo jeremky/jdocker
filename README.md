@@ -39,6 +39,9 @@ retention=7
 # dossier des images locales
 imgdir=/tmp/dockerimg
 
+# ménage automatique après upgrade
+autoclean=true
+
 ```
 
 > le dossier `configdir` doit contenir un sous dossier pour chaque application, avec un fichier `compose.yml` et un fichier `.env`
