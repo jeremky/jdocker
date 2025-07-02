@@ -243,7 +243,7 @@ case $1 in
       curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
     fi
     export DOCKER_HOST=unix:///var/run/user/$(id -g)/podman/podman.sock
-    lazydocker
+    ~/.local/bin/lazydocker
     ;;
   * | help)
     echo
