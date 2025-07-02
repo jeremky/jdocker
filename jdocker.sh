@@ -25,8 +25,7 @@ if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
   sudo sysctl net.ipv4.ip_unprivileged_port_start=$port
   echo "net.ipv4.ip_unprivileged_port_start=$port" | sudo tee /etc/sysctl.d/10-podman.conf
   sudo loginctl enable-linger $user
-  systemctl enable --user --now podman-restart.service
-  systemctl enable --user --now podman.socket
+  systemctl enable --user --now podman-restart.service podman.socket
   message "Installation de Podman terminée"
 fi
 
@@ -109,10 +108,10 @@ process() {
 }
 
 purge() {
+  options=$@
   warning "Suppression des données non utilisées..."
   podman system prune $options
   message "Nettoyage terminé"
-  echo
 }
 
 # Commandes
@@ -143,12 +142,12 @@ case $1 in
     done
     ;;
   pr | purge)
-    options="-f"
-    purge
+    purge -f
+    echo
     ;;
   pra | purgeall)
-    options="-a --volumes"
-    purge
+    purge -a --volumes
+    echo
     ;;
   lo | load)
     shift
@@ -168,8 +167,8 @@ case $1 in
       process remove $app
       process backup $app
       process install $app
-      [[ $autoclean = true ]] && purge
     done
+    [[ $autoclean = true ]] && purge -f
     echo
     ;;
   p | pull)
