@@ -142,7 +142,7 @@ case $1 in
     done
     ;;
   pr | purge)
-    purge -f
+    purge -a -f
     echo
     ;;
   pra | purgeall)
