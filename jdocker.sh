@@ -209,7 +209,6 @@ case $1 in
   u | unshare)
     shift
     if [ $# -eq 0 ]; then
-      #podman unshare --rootless-netns bash --rcfile <(echo '
       podman unshare bash --rcfile <(echo '
       source ~/.bashrc
       PS1="\[\033[01;33m\]unshare@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] "
