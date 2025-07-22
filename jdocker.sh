@@ -165,7 +165,7 @@ case $1 in
     for app in $@; do
       process pull $app
       process remove $app
-      process backup $app
+      [[ $autobackup = true ]] && process backup $app
       process install $app
     done
     [[ $autoclean = true ]] && purge -f
