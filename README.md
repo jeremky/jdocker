@@ -39,6 +39,9 @@ retention=7
 # dossier des images locales
 imgdir=/tmp/dockerimg
 
+# sauvegarde automatique lors de l'upgrade
+autobackup=false
+
 # ménage automatique après upgrade
 autoclean=true
 
