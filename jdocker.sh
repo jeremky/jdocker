@@ -80,7 +80,7 @@ process() {
         ;;
       pull)
         if ! grep -q "image:.*localhost" $configdir/$app/compose.yml; then
-          warning "Récupération de la nouvelle image $app..."
+          warning "Récupération de la nouvelle image de $app..."
           podman pull $(grep "image:" $configdir/$app/compose.yml | awk '{print $2}')
           message "Nouvelle image $app récupérée"
         fi
