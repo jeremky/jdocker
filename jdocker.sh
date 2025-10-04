@@ -3,9 +3,9 @@
 dir=$(dirname "$(realpath "$0")")
 
 # Messages en couleur
-error()    { echo -e "\033[0;31m====> $*\033[0m" ;}
-message()  { echo -e "\033[0;32m====> $*\033[0m" ;}
-warning()  { echo ; echo -e "\033[0;33m====> $*\033[0m" ;}
+error()   { echo -e "\033[0;31m====> $*\033[0m" ;}
+message() { echo -e "\033[0;32m====> $*\033[0m" ;}
+warning() { echo ; echo -e "\033[0;33m====> $*\033[0m" ;}
 
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
