@@ -1,18 +1,26 @@
 # jdocker.sh
 
-Ce script permet une administration plus simplifiée des conteneurs Podman en mode rootless. Les fichiers de déploiement sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `compose.yml`.
+Ce script permet une administration plus simplifiée des conteneurs Podman
+en mode rootless. Les fichiers de déploiement sont centralisés dans le répertoire
+de votre choix, ce qui permet de les déployer facilement, sans avoir besoin
+d'être dans le dossier où se trouve le fichier `compose.yml`.
 
 ## Configuration
 
-Avant d'utiliser ce script, vous devez tout d'abord renommer le fichier `.jdocker.cfg.template` `jdocker.cfg`, pour ensuite y indiquer les informations suivantes :
+Avant d'utiliser ce script, vous devez tout d'abord renommer le fichier
+`.jdocker.cfg.template` `jdocker.cfg`, pour ensuite y indiquer les informations
+suivantes :
 
-- Votre nom d'utilisateur, utilisé pour la création des dossiers nécessaires au bon fonctionnement du script
+- Votre nom d'utilisateur, utilisé pour la création des dossiers nécessaires au
+bon fonctionnement du script
 
-- L'application de composition à utiliser. Si vous n'en avez pas déjà, laissez `podman-compose`. Il sera automatiquement installé lors du premier lancement du script.
+- L'application de composition à utiliser. Si vous n'en avez pas déjà, laissez
+`podman-compose`. Il sera automatiquement installé lors du premier lancement du script.
 
 - Le port minimal autorisé utilisé par vos conteneurs.
 
-- Les différents répertoires où sont stockées les données (les fichiers `compose.yml`, les backups, les volumes...)
+- Les différents répertoires où sont stockées les données
+(les fichiers `compose.yml`, les backups, les volumes...)
 
 ```txt
 # jdocker config
@@ -47,11 +55,14 @@ autoclean=true
 
 ```
 
-> le dossier `configdir` doit contenir un sous dossier pour chaque application, avec un fichier `compose.yml` et un fichier `.env`
+> le dossier `configdir` doit contenir un sous dossier pour chaque application,
+avec un fichier `compose.yml` et un fichier `.env`
 
 ## Utilisation
 
-Lancez le script une première fois pour installer Podman et l'auto complétion. Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez-le.
+Lancez le script une première fois pour installer Podman et l'auto complétion.
+Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker`
+et relancez-le.
 
 Pour consulter l'aide, lancez `./jdocker.sh` sans paramètre :
 
@@ -83,8 +94,11 @@ Commandes disponibles :
 
 ## Sauvegarde
 
-`jdocker.sh` propose un système de sauvegarde des volumes. Pour automatiser vos sauvegardes, renommez le fichier `.jdocker.cron.template` en `jdocker.cron` , puis adaptez-le selon vos préférences. 
-Exécutez ensuite `./jdocker.sh bk` pour le copier automatiquement dans le répertoire `/etc/cron.d`.
+`jdocker.sh` propose un système de sauvegarde des volumes. Pour automatiser vos
+sauvegardes, renommez le fichier `.jdocker.cron.template` en `jdocker.cron`,
+puis adaptez-le selon vos préférences.
+Exécutez ensuite `./jdocker.sh bk` pour le copier automatiquement dans le
+répertoire `/etc/cron.d`.
 
 ```txt
 # jdocker cron
