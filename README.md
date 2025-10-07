@@ -8,7 +8,7 @@ d'être dans le dossier où se trouve le fichier `compose.yml`.
 ## Configuration
 
 Avant d'utiliser ce script, vous devez tout d'abord renommer le fichier
-`.jdocker.cfg.template` `jdocker.cfg`, pour ensuite y indiquer les informations
+`.jdocker.cfg.template` en `jdocker.cfg`, pour ensuite y indiquer les informations
 suivantes :
 
 - Votre nom d'utilisateur, utilisé pour la création des dossiers nécessaires au
@@ -17,7 +17,7 @@ bon fonctionnement du script
 - L'application de composition à utiliser. Si vous n'en avez pas déjà, laissez
 `podman-compose`. Il sera automatiquement installé lors du premier lancement du script.
 
-- Le port minimal autorisé utilisé par vos conteneurs.
+- Le port minimal autorisé utilisé par vos conteneurs (80 par défaut)
 
 - Les différents répertoires où sont stockées les données
 (les fichiers `compose.yml`, les backups, les volumes...)
