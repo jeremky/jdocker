@@ -168,7 +168,7 @@ case $1 in
       [[ $autobackup = true ]] && process backup $app
       process install $app
     done
-    [[ $autoclean = true ]] && purge -f
+    [[ $autoclean = true ]] && purge -a -f
     echo
     ;;
   p | pull)
