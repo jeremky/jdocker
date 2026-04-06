@@ -3,9 +3,9 @@
 dir=$(dirname "$(realpath "$0")")
 
 # Messages en couleur
-error()   { echo -e "\033[0;31m====> $*\033[0m" ;}
-message() { echo -e "\033[0;32m====> $*\033[0m" ;}
-warning() { echo ; echo -e "\033[0;33m====> $*\033[0m" ;}
+error() { echo -e "\033[0;31m====> $*\033[0m"; }
+message() { echo -e "\033[0;32m====> $*\033[0m"; }
+warning() { echo -e "\033[0;33m====> $*\033[0m"; }
 
 # Chargement du fichier de config
 cfg="$dir/jdocker.cfg"
@@ -33,7 +33,7 @@ fi
 if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
   sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
   export containersdir configdir imgdir
-  envsubst '$configdir $containersdir $imgdir' < "$dir/.jdocker.comp" | sudo tee /etc/bash_completion.d/jdocker > /dev/null
+  envsubst '$configdir $containersdir $imgdir' <"$dir/.jdocker.comp" | sudo tee /etc/bash_completion.d/jdocker >/dev/null
   echo
   message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
   echo "  source /etc/bash_completion"
@@ -228,7 +228,7 @@ case $1 in
     else
       if [[ -f $dir/jdocker.cron ]]; then
         export dir user
-        envsubst '$dir $user' < "$dir/jdocker.cron" | sudo tee /etc/cron.d/jdocker > /dev/null
+        envsubst '$dir $user' <"$dir/jdocker.cron" | sudo tee /etc/cron.d/jdocker >/dev/null
         echo
         message "Fichier /etc/cron.d/jdocker en place"
         cat /etc/cron.d/jdocker
@@ -240,7 +240,7 @@ case $1 in
     ;;
   lzd | lazydocker)
     if [[ ! -f ~/.local/bin/lazydocker ]]; then
-      ( cd $HOME && curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash )
+      (cd $HOME && curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash)
     fi
     export DOCKER_HOST=unix:///var/run/user/$(id -g)/podman/podman.sock
     ~/.local/bin/lazydocker
