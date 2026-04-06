@@ -1,0 +1,22 @@
+  ls  | list            Lister les conteneurs actifs
+  lsa | listall         Lister les conteneurs actifs avec les ports et l'image utilisée
+  n   | networks        Lister les réseaux virtuels
+  v   | volumes         Lister les volumes virtuels
+  i   | images          Lister les images
+  l   | logs            Consulter les logs pour un conteneur spécifié
+  lo  | load            Charger une ou plusieurs images locales spécifiées
+  it  | install         Installer un conteneur avec compose
+  rm  | remove          Supprimer un conteneur avec compose
+  r   | restart         Redémarrer un conteneur
+  pr  | purge           Purger les images et les réseaux non utilisés
+  pra | purgeall        Purger également les volumes non utilisés
+  at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
+  p   | pull            Récupérer la dernière version de l'image d'un conteneur spécifié
+  up  | upgrade         Télécharger la dernière image et mettre à jour un conteneur spécifié
+  ps  | stats           Afficher les statistiques des conteneurs en cours d'exécution
+  psa | statsall        Afficher les statistiques des conteneurs détaillées
+  sh  | bash            Se connecter au bash d'un conteneur spécifié
+  bk  | backup          Sauvegarder un conteneur spécifié
+  u   | unshare         Basculer l'ID via la commande podman unshare
+  lzd | lazydocker      Lance l'outil lazydocker et l'installe s'il n'est pas présent
+  h   | help            Afficher cette aide

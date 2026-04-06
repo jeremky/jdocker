@@ -1,0 +1,58 @@
+_jdocker_completion() {
+  local cur prev words cword
+  _init_completion -s || return
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+  words=("${COMP_WORDS[@]}")
+  cword=$COMP_CWORD
+
+  # Liste des commandes principales
+  _commands="list listall networks images volumes logs load install remove restart purge purgeall attach pull upgrade stats statsall bash backup unshare lazydocker help"
+
+   if [[ "$cword" -eq 1 ]]; then
+    COMPREPLY=($(compgen -W "$_commands" -- "$cur"))
+    return 0
+   fi
+
+  case "$prev" in
+    l|logs|sh|bash|at|attach)
+      containers=$(podman ps --format "{{.Names}}")
+      COMPREPLY=($(compgen -W "$containers" -- "$cur"))
+      return 0
+      ;;
+  esac
+
+  # Gestion des sous-commandes avec plusieurs conteneurs
+  local all_apps
+  case "${words[1]}" in
+    install|it|remove|rm|pull|p|upgrade|up)
+      all_apps=$(ls ${configdir} 2>/dev/null)
+      ;;
+    bk|backup)
+      all_apps=$(ls ${containersdir} 2>/dev/null)
+      ;;
+    lo|load)
+      all_apps=$(ls ${imgdir} 2>/dev/null)
+      ;;
+    r|restart)
+      all_apps=$(podman container ls -a --noheading --format "table {{.Names}}")
+      ;;
+  esac
+
+  # Arguments déjà utilisés (sauf jdocker et la sous-commande)
+  local used=()
+  for ((i = 2; i < cword; i++)); do
+    used+=("${words[i]}")
+  done
+
+  # On retire les apps déjà utilisées
+  for app in "${used[@]}"; do
+    all_apps=$(echo "$all_apps" | grep -vx "$app")
+  done
+
+  COMPREPLY=($(compgen -W "$all_apps" -- "$cur"))
+  return 0
+}
+
+complete -F _jdocker_completion jdocker
