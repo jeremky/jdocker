@@ -18,7 +18,7 @@ fi
 
 # Installation de Podman
 if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
-  warning "Installation de Podman..."
+  echo && warning "Installation de Podman..."
   sudo apt install -y podman podman-compose
   sudo mkdir -p $containersdir
   sudo chown $user: $containersdir
@@ -60,7 +60,7 @@ process() {
     case $action in
       install)
         if ! podman container exists $app; then
-          warning "Déploiement de $app..."
+          echo && warning "Déploiement de $app..."
           $compose -f $configdir/$app/compose.yml up -d
           message "Application $app déployée"
         else
@@ -70,7 +70,7 @@ process() {
         ;;
       remove)
         if podman container exists $app; then
-          warning "Suppression de $app..."
+          echo && warning "Suppression de $app..."
           $compose -f $configdir/$app/compose.yml down
           message "Application $app supprimée"
         else
@@ -80,7 +80,7 @@ process() {
         ;;
       pull)
         if ! grep -q "image:.*localhost" $configdir/$app/compose.yml; then
-          warning "Récupération de la nouvelle image de $app..."
+          echo && warning "Récupération de la nouvelle image de $app..."
           podman pull $(grep "image:" $configdir/$app/compose.yml | awk '{print $2}')
           message "Nouvelle image $app récupérée"
         fi
@@ -92,7 +92,7 @@ process() {
             process remove $app
           fi
           mkdir -p $destbackup/$app
-          warning "Sauvegarde de $app..."
+          echo && warning "Sauvegarde de $app..."
           bckfile=$destbackup/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
           podman unshare bash -c "tar -C $containersdir -czf $bckfile $app && chown root: $bckfile"
           find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
@@ -109,7 +109,7 @@ process() {
 
 purge() {
   options=$@
-  warning "Suppression des données non utilisées..."
+  echo && warning "Suppression des données non utilisées..."
   podman system prune $options
   message "Nettoyage terminé"
 }
@@ -188,7 +188,7 @@ case $1 in
     fi
     ;;
   at | attach)
-    warning "Ctrl+p, Ctrl+q pour quitter"
+    echo && warning "Ctrl+p, Ctrl+q pour quitter"
     podman attach $2
     ;;
   ps | stats)
