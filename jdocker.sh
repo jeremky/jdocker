@@ -1,44 +1,17 @@
 #!/bin/bash
 
-dir=$(dirname "$(realpath "$0")")
-
 # Messages en couleur
 error() { echo -e "\033[0;31m====> $*\033[0m"; }
 message() { echo -e "\033[0;32m====> $*\033[0m"; }
 warning() { echo -e "\033[0;33m====> $*\033[0m"; }
 
 # Chargement du fichier de config
-cfg="$dir/jdocker.cfg"
+cfg="$HOME/.config/jdocker/jdocker.config"
 if [[ -f $cfg ]]; then
   . $cfg
 else
   error "Fichier $cfg introuvable"
   exit 1
-fi
-
-# Installation de Podman
-if [[ ! -f /usr/bin/podman && -f /usr/bin/apt ]]; then
-  echo && warning "Installation de Podman..."
-  sudo apt install -y podman podman-compose
-  sudo mkdir -p $containersdir
-  sudo chown $user: $containersdir
-  sudo sysctl net.ipv4.ip_unprivileged_port_start=$port
-  echo "net.ipv4.ip_unprivileged_port_start=$port" | sudo tee /etc/sysctl.d/10-podman.conf
-  sudo loginctl enable-linger $user
-  systemctl enable --user --now podman-restart.service podman.socket
-  message "Installation de Podman terminée"
-fi
-
-# Installation de la complétion
-if [[ ! -f /etc/bash_completion.d/jdocker ]]; then
-  sudo cp $dir/.jdocker.comp /etc/bash_completion.d/jdocker
-  export containersdir configdir imgdir
-  envsubst '$configdir $containersdir $imgdir' <"$dir/.jdocker.comp" | sudo tee /etc/bash_completion.d/jdocker >/dev/null
-  echo
-  message "Auto complétion installée. Redémarrez la session ou chargez la complétion avec :"
-  echo "  source /etc/bash_completion"
-  echo
-  exit 0
 fi
 
 checkarg() {
@@ -52,7 +25,7 @@ process() {
   local action=$1
   shift
   for app in $@; do
-    if [[ ! -f $configdir/$app/compose.yml ]]; then
+    if [[ ! -f $composedir/$app/compose.yml ]]; then
       echo
       error "Fichier compose.yml pour $app introuvable, $action impossible"
       continue
@@ -61,7 +34,7 @@ process() {
       install)
         if ! podman container exists $app; then
           echo && warning "Déploiement de $app..."
-          $compose -f $configdir/$app/compose.yml up -d
+          podman-compose -f $composedir/$app/compose.yml up -d
           message "Application $app déployée"
         else
           echo
@@ -71,7 +44,7 @@ process() {
       remove)
         if podman container exists $app; then
           echo && warning "Suppression de $app..."
-          $compose -f $configdir/$app/compose.yml down
+          podman-compose -f $composedir/$app/compose.yml down
           message "Application $app supprimée"
         else
           echo
@@ -79,23 +52,24 @@ process() {
         fi
         ;;
       pull)
-        if ! grep -q "image:.*localhost" $configdir/$app/compose.yml; then
+        if ! grep -q "image:.*localhost" $composedir/$app/compose.yml; then
           echo && warning "Récupération de la nouvelle image de $app..."
-          podman pull $(grep "image:" $configdir/$app/compose.yml | awk '{print $2}')
+          podman pull $(grep "image:" $composedir/$app/compose.yml | awk '{print $2}')
           message "Nouvelle image $app récupérée"
         fi
         ;;
       backup)
-        if [[ -d $containersdir/$app ]]; then
+        restartafter=0
+        if [[ -d $volumesdir/$app ]]; then
           if podman container exists $app; then
             restartafter=1
             process remove $app
           fi
-          mkdir -p $destbackup/$app
+          mkdir -p $backupsdir/$app
           echo && warning "Sauvegarde de $app..."
-          bckfile=$destbackup/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
-          podman unshare bash -c "tar -C $containersdir -czf $bckfile $app && chown root: $bckfile"
-          find $destbackup/$app -name $app.*.gz -mtime +$retention -exec rm {} \;
+          bckfile=$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
+          podman unshare bash -c "tar -C $volumesdir -czf $bckfile $app && chown root: $bckfile"
+          find $backupsdir/$app -name $app.*.gz -mtime +$backupdays -exec rm {} \;
           ls $bckfile
           message "Sauvegarde terminée"
           if (($restartafter)); then
@@ -117,10 +91,7 @@ purge() {
 # Commandes
 case $1 in
   ls | list)
-    podman container ls -a --format "table {{.Names}} \t {{.Status}}"
-    ;;
-  lsa | listall)
-    podman container ls -a --format "table {{.Names}} \t {{.Status}} \t {{.Ports}} \t {{.Image}}"
+    podman container ls -a --format "table {{.Names}}   {{.Status}}"
     ;;
   it | install)
     shift
@@ -152,10 +123,10 @@ case $1 in
   lo | load)
     shift
     for img in $@; do
-      if [[ ! -f $imgdir/$img ]]; then
-        error "Fichier $img non trouvé dans $imgdir"
+      if [[ ! -f $imagesdir/$img ]]; then
+        error "Fichier $img non trouvé dans $imagesdir"
       else
-        podman load -i $imgdir/$img
+        podman load -i $imagesdir/$img
       fi
     done
     ;;
@@ -191,11 +162,11 @@ case $1 in
     echo && warning "Ctrl+p, Ctrl+q pour quitter"
     podman attach $2
     ;;
-  ps | stats)
-    podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemUsage}}"
+  ps | lsa)
+    podman container ls -a --format "table {{.ID}} {{.Names}} {{.Image}} {{.CreatedHuman}} {{.Status}} {{.Ports}}"
     ;;
-  psa | statsall)
-    podman stats --format "table {{.Name}}\t {{.CPUPerc}}\t {{.MemPerc}}\t {{.MemUsage}}\t {{.NetIO}}\t {{.BlockIO}}"
+  s | stats)
+    podman stats --format "table {{.Name}}  {{.CPUPerc}}  {{.MemPerc}}  {{.MemUsage}}  {{.NetIO}}"
     ;;
   sh | bash)
     podman exec -it $2 sh
@@ -225,23 +196,33 @@ case $1 in
       shift
       process backup $@
       echo
-    else
-      if [[ -f $dir/jdocker.cron ]]; then
-        export dir user
-        envsubst '$dir $user' <"$dir/jdocker.cron" | sudo tee /etc/cron.d/jdocker >/dev/null
-        echo
-        message "Fichier /etc/cron.d/jdocker en place"
-        cat /etc/cron.d/jdocker
-        echo
-      else
-        error "Fichier $dir/jdocker.cron absent"
-      fi
     fi
     ;;
   * | help)
     echo
     message "Commandes disponibles :"
-    cat $dir/.jdocker.help
+    cat <<'EOF'
+    ls  | list            Lister les conteneurs actifs
+    n   | networks        Lister les réseaux virtuels
+    v   | volumes         Lister les volumes virtuels
+    i   | images          Lister les images
+    l   | logs            Consulter les logs pour un conteneur spécifié
+    lo  | load            Charger une ou plusieurs images locales spécifiées
+    it  | install         Installer un conteneur avec compose
+    rm  | remove          Supprimer un conteneur avec compose
+    r   | restart         Redémarrer un conteneur
+    pr  | purge           Purger les images et les réseaux non utilisés
+    pra | purgeall        Purger également les volumes non utilisés
+    at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
+    p   | pull            Récupérer la dernière version de l'image d'un conteneur spécifié
+    up  | upgrade         Télécharger la dernière image et mettre à jour un conteneur spécifié
+    ps  | lsa             Afficher les informations détaillées des conteneurs
+    s   | stats           Afficher les statistiques en temps réel des conteneurs
+    sh  | bash            Se connecter au bash d'un conteneur spécifié
+    bk  | backup          Sauvegarder un conteneur spécifié
+    u   | unshare         Basculer l'ID via la commande podman unshare
+    h   | help            Afficher cette aide
+EOF
     echo
     ;;
 esac
