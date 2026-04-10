@@ -1,5 +1,7 @@
 # jdocker
 
+> jdocker a été entièrement revu : le script s'installe désormais comme un vrai binaire via make install, en respectant les conventions Linux standard (`~/.local/bin`, `~/.config`, `~/.local/share`). L'installation prend en charge la configuration de Podman, pour un utilisateur sans droits sudo.
+
 Ce script permet une l'installation et une administration plus simplifiée des conteneurs Podman en mode rootless sur un système Debian.
 Les fichiers de déploiement sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `compose.yml`.
 
