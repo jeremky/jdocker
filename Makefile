@@ -9,7 +9,7 @@ BASEPORT ?= 80
 
 .PHONY: install uninstall
 
-install:
+install: jdocker.sh jdocker.config jdocker.cron .jdocker.comp
 	@if ! which podman > /dev/null 2>&1; then \
 		sudo apt install -y podman podman-compose && \
 		sudo sysctl net.ipv4.ip_unprivileged_port_start=$(BASEPORT) && \
