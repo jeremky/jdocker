@@ -58,8 +58,11 @@ process() {
       pull)
         if ! grep -q "image:.*localhost" $composedir/$app/compose.yml; then
           echo && warning "Récupération de la nouvelle image de $app..."
-          podman pull $(grep "image:" $composedir/$app/compose.yml | awk '{print $2}')
-          message "Nouvelle image $app récupérée"
+          if podman pull $(grep "image:" $composedir/$app/compose.yml | awk '{print $2}'); then
+            message "Nouvelle image de $app récupérée"
+          else
+            error "Erreur lors de la récupération de l'image de $app"
+          fi
         fi
         ;;
       backup)
@@ -72,10 +75,13 @@ process() {
           mkdir -p $backupsdir/$app
           echo && warning "Sauvegarde de $app..."
           bckfile=$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
-          podman unshare bash -c "tar -C $volumesdir -czf $bckfile $app && chown root: $bckfile"
-          find $backupsdir/$app -name $app.*.gz -mtime +$backupdays -exec rm {} \;
-          ls $bckfile
-          message "Sauvegarde terminée"
+          if podman unshare bash -c "tar -C $volumesdir -czf $bckfile $app && chown root: $bckfile"; then
+            find $backupsdir/$app -name $app.*.gz -mtime +$backupdays -exec rm {} \;
+            ls $bckfile
+            message "Sauvegarde de $app terminée"
+          else
+            error "Erreur lors de la sauvegarde de $app"
+          fi
           if (($restartafter)); then
             process install $app
           fi
