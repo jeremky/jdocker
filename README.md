@@ -28,7 +28,8 @@ backupsdir=$HOME/backups
 imagesdir=$HOME/images
 ```
 
-> le dossier `composedir` doit contenir un sous dossier pour chaque application, avec un fichier `compose.yml` et un fichier `.env`
+> le dossier `composedir` doit contenir un sous dossier pour chaque application, avec un fichier `compose.yml` à l'intérieur.
+> Par exemple : `~/compose/app1/compose.yml`
 
 ## Installation
 
