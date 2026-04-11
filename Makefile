@@ -27,17 +27,20 @@ install:
 		echo "Podman est déjà installé"; \
 	fi
 
-	@sudo install -m 755 -D jdocker.sh $(BINDIR)/jdocker
-	@sudo install -m 644 -D jdocker.config $(CONFDIR)/jdocker.config
-
 	@if [ ! -f /etc/cron.d/jdocker ]; then \
 		export PODMAN_USER=$(PODMAN_USER) PODMAN_HOME=$(PODMAN_HOME) && \
 		envsubst '$$PODMAN_USER $$PODMAN_HOME' < jdocker.cron | sudo tee /etc/cron.d/jdocker > /dev/null; \
 	fi
 
+	@if [ ! -f $(CONFDIR)/jdocker.config ]; then \
+		sudo install -m 644 -D jdocker.config $(CONFDIR)/jdocker.config; \
+	fi
+
 	@if [ ! -f $(COMPDIR)/jdocker ]; then \
 		sudo install -m 644 -D .jdocker.comp $(COMPDIR)/jdocker; \
 	fi
+
+	@sudo install -m 755 -D jdocker.sh $(BINDIR)/jdocker
 
 	@sudo chown -R $(PODMAN_USER): $(PODMAN_HOME)/.config $(PODMAN_HOME)/.local
 	@sudo -u $(PODMAN_USER) bash -c '. $(CONFDIR)/jdocker.config && \
