@@ -1,6 +1,6 @@
 # jdocker
 
-> jdocker a été entièrement revu : le script s'installe désormais comme un vrai binaire via make install, en respectant les conventions Linux standard (`~/.local/bin`, `~/.config`, `~/.local/share`). L'installation prend en charge la configuration de Podman, pour un utilisateur sans droits sudo.
+> jdocker a été entièrement revu : le script s'installe désormais comme un vrai binaire via make install, en respectant les conventions Linux standard (`~/.local/bin`, `~/.config`, `~/.local/share`)
 
 Ce script permet une l'installation et une administration plus simplifiée des conteneurs Podman en mode rootless sur un système Debian.
 Les fichiers de déploiement sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `compose.yml`.
@@ -66,10 +66,9 @@ sudo make install PODMAN_USER=<user> BASEPORT=<port>
 
 ## Utilisation
 
-Lancez le script une première fois pour installer Podman et l'auto complétion.
-Si vous déplacez le script, supprimez le fichier `/etc/bash_completion.d/jdocker` et relancez-le.
+Une fois installé, `jdocker` est utilisable directement depuis votre terminal.
 
-Pour consulter l'aide, lancez `./jdocker.sh` sans paramètre :
+Pour consulter l'aide, lancez `jdocker` sans paramètre :
 
 ```txt
 Commandes disponibles :
