@@ -40,7 +40,6 @@ process() {
             error "Erreur lors du déploiement de $app"
           fi
         else
-          echo
           error "Application $app déjà déployée"
         fi
         ;;
@@ -53,7 +52,6 @@ process() {
             error "Erreur lors de la suppression de $app"
           fi
         else
-          echo
           error "Application $app non déployée"
         fi
         ;;
