@@ -94,8 +94,11 @@ process() {
 purge() {
   options=$@
   echo && warning "Suppression des données non utilisées..."
-  podman system prune $options
-  message "Nettoyage terminé"
+  if podman system prune $options; then
+    message "Nettoyage terminé"
+  else
+    error "Erreur lors du nettoyage"
+  fi
 }
 
 # Commandes
