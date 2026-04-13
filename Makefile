@@ -42,7 +42,7 @@ install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 
 	@sudo install -m 755 -D jdocker.sh $(BINDIR)/jdocker
 
-	@sudo chown -R $(PODMAN_USER): $(PODMAN_HOME)/.cfg $(PODMAN_HOME)/.local
+	@sudo chown -R $(PODMAN_USER): $(PODMAN_HOME)/.config $(PODMAN_HOME)/.local
 	@sudo -u $(PODMAN_USER) bash -c '. $(CONFDIR)/jdocker.cfg && \
 			mkdir -p $$composedir $$volumesdir $$backupsdir $$imagesdir'
 	@echo "Installation de jdocker effectuée. Redémarrez la session bash"
