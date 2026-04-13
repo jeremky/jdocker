@@ -9,7 +9,7 @@ BASEPORT ?= 80
 
 .PHONY: install uninstall
 
-install: jdocker.sh jdocker.config jdocker.cron .jdocker.comp
+install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 	@if ! which podman > /dev/null 2>&1; then \
 		sudo apt install -y podman podman-compose && \
 		sudo sysctl net.ipv4.ip_unprivileged_port_start=$(BASEPORT) && \
@@ -32,8 +32,8 @@ install: jdocker.sh jdocker.config jdocker.cron .jdocker.comp
 		envsubst '$$PODMAN_USER $$PODMAN_HOME' < jdocker.cron | sudo tee /etc/cron.d/jdocker > /dev/null; \
 	fi
 
-	@if [ ! -f $(CONFDIR)/jdocker.config ]; then \
-		sudo install -m 644 -D jdocker.config $(CONFDIR)/jdocker.config; \
+	@if [ ! -f $(CONFDIR)/jdocker.cfg ]; then \
+		sudo install -m 644 -D jdocker.cfg $(CONFDIR)/jdocker.cfg; \
 	fi
 
 	@if [ ! -f $(COMPDIR)/jdocker ]; then \
@@ -42,8 +42,8 @@ install: jdocker.sh jdocker.config jdocker.cron .jdocker.comp
 
 	@sudo install -m 755 -D jdocker.sh $(BINDIR)/jdocker
 
-	@sudo chown -R $(PODMAN_USER): $(PODMAN_HOME)/.config $(PODMAN_HOME)/.local
-	@sudo -u $(PODMAN_USER) bash -c '. $(CONFDIR)/jdocker.config && \
+	@sudo chown -R $(PODMAN_USER): $(PODMAN_HOME)/.cfg $(PODMAN_HOME)/.local
+	@sudo -u $(PODMAN_USER) bash -c '. $(CONFDIR)/jdocker.cfg && \
 			mkdir -p $$composedir $$volumesdir $$backupsdir $$imagesdir'
 	@echo "Installation de jdocker effectuée. Redémarrez la session bash"
 

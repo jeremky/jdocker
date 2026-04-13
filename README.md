@@ -7,14 +7,14 @@ Les fichiers de déploiement sont centralisés dans le répertoire de votre choi
 
 ## Configuration
 
-Avant d'installer ce script, vous devez tout d'abord adapter le fichier `jdocker.config` selon vos préférences :
+Avant d'installer ce script, vous devez tout d'abord adapter le fichier `jdocker.cfg` selon vos préférences :
 
 - `autobackup` : Sauvegarde automatique des volumes externes lors d'une mise à jour
 - `autoclean` : Suppression automatique des images après mise à jour
 - `backupdays` : la durée de rétention pour des sauvegardes
 - Les différents répertoires où sont stockées les données (les fichiers `compose.yml`, les backups, les volumes...)
 
-Ce fichier de config sera modifiable à posteriori à l'emplacement suivant : `$HOME/.config/jdocker/jdocker.config`
+Ce fichier de config sera modifiable à posteriori à l'emplacement suivant : `$HOME/.config/jdocker/jdocker.cfg`
 
 ```txt
 # jdocker config

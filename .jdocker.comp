@@ -1,7 +1,7 @@
 _jdocker_completion() {
   bind 'set colored-stats off'
 
-  cfg="$HOME/.config/jdocker/jdocker.config"
+  cfg="$HOME/.config/jdocker/jdocker.cfg"
   [[ -f $cfg ]] && . $cfg
 
   local cur prev words cword
