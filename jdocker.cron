@@ -2,7 +2,7 @@
 jdocksh=$PODMAN_HOME/.local/bin/jdocker
 
 # app1
-0 0 * * *  $PODMAN_USER $jdocksh bk app1 >/dev/null 2>&1
+#0 0 * * *  $PODMAN_USER $jdocksh bk app1 >/dev/null 2>&1
 
 # app2
-0 1 * * *  $PODMAN_USER $jdocksh bk app2 >/dev/null 2>&1
+#0 1 * * *  $PODMAN_USER $jdocksh bk app2 >/dev/null 2>&1
