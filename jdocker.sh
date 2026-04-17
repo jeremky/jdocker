@@ -8,9 +8,10 @@ warning() { echo -e "\033[0;33m====> $*\033[0m"; }
 # Chargement du fichier de config
 cfg="$HOME/.config/jdocker/jdocker.cfg"
 if [[ -f $cfg ]]; then
+  # shellcheck source=./jdocker.cfg
   . $cfg
 else
-  error "Fichier $cfg introuvable"
+  error "Fichier $HOME/.config/jdocker/jdocker.cfg introuvable"
   exit 1
 fi
 
@@ -24,8 +25,8 @@ checkarg() {
 process() {
   local action=$1
   shift
-  for app in $@; do
-    if [[ ! -f $composedir/$app/compose.yml ]]; then
+  for app in "$@"; do
+    if [[ ! -f "$composedir/$app/compose.yml" ]]; then
       echo
       error "Fichier compose.yml pour $app introuvable, $action impossible"
       continue
@@ -58,7 +59,7 @@ process() {
       pull)
         if ! grep -q "image:.*localhost" $composedir/$app/compose.yml; then
           echo && warning "Récupération de la nouvelle image de $app..."
-          if podman pull $(grep "image:" $composedir/$app/compose.yml | awk '{print $2}'); then
+          if podman pull "$(grep "image:" $composedir/$app/compose.yml | awk '{print $2}')"; then
             message "Nouvelle image de $app récupérée"
           else
             error "Erreur lors de la récupération de l'image de $app"
@@ -67,16 +68,16 @@ process() {
         ;;
       backup)
         restartafter=0
-        if [[ -d $volumesdir/$app ]]; then
+        if [[ -d "$volumesdir/$app" ]]; then
           if podman container exists $app; then
             restartafter=1
             process remove $app
           fi
-          mkdir -p $backupsdir/$app
+          mkdir -p "$backupsdir/$app"
           echo && warning "Sauvegarde de $app..."
           bckfile=$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
           if podman unshare bash -c "tar -C $volumesdir -czf $bckfile $app && chown root: $bckfile"; then
-            find $backupsdir/$app -name $app.*.gz -mtime +$backupdays -exec rm {} \;
+            find $backupsdir/$app -name "$app.*.gz" -mtime +$backupdays -exec rm {} \;
             ls $bckfile
             message "Sauvegarde de $app terminée"
           else
@@ -92,7 +93,7 @@ process() {
 }
 
 purge() {
-  options=$@
+  options=$*
   echo && warning "Suppression des données non utilisées..."
   if podman system prune $options; then
     message "Nettoyage terminé"
@@ -108,21 +109,21 @@ case $1 in
     ;;
   it | install)
     shift
-    checkarg $@ || exit 1
-    process install $@
+    checkarg "$@" || exit 1
+    process install "$@"
     echo
     ;;
   rm | remove)
     shift
-    checkarg $@ || exit 1
-    process remove $@
+    checkarg "$@" || exit 1
+    process remove "$@"
     echo
     ;;
   r | restart)
     shift
-    checkarg $@ || exit 1
-    for app in $@; do
-      podman restart $app
+    checkarg "$@" || exit 1
+    for app in "$@"; do
+      podman restart "$app"
     done
     ;;
   pr | purge)
@@ -135,18 +136,18 @@ case $1 in
     ;;
   lo | load)
     shift
-    for img in $@; do
-      if [[ ! -f $imagesdir/$img ]]; then
+    for img in "$@"; do
+      if [[ ! -f "$imagesdir/$img" ]]; then
         error "Fichier $img non trouvé dans $imagesdir"
       else
-        podman load -i $imagesdir/$img
+        podman load -i "$imagesdir/$img"
       fi
     done
     ;;
   up | upgrade)
     shift
-    checkarg $@ || exit 1
-    for app in $@; do
+    checkarg "$@" || exit 1
+    for app in "$@"; do
       process pull $app
       process remove $app
       [[ $autobackup = true ]] && process backup $app
@@ -158,7 +159,7 @@ case $1 in
   p | pull)
     if [[ -n "$2" ]]; then
       shift
-      process pull $@
+      process pull "$@"
       echo
     else
       podman images --format "{{.Repository}}:{{.Tag}}" | grep -v '^localhost' | xargs -r -L1 podman pull
@@ -198,7 +199,7 @@ case $1 in
       PS1="\[\033[01;33m\]unshare@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] "
       ')
     else
-      podman unshare --rootless-netns $@
+      podman unshare --rootless-netns "$@"
     fi
     ;;
   v | volumes)
@@ -207,11 +208,11 @@ case $1 in
   bk | backup)
     if [[ -n "$2" ]]; then
       shift
-      process backup $@
+      process backup "$@"
       echo
     fi
     ;;
-  * | help)
+  *)
     echo
     message "Commandes disponibles :"
     cat <<'EOF'
