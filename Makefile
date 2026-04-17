@@ -11,7 +11,7 @@ BASEPORT ?= 80
 
 install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 	@if ! which podman > /dev/null 2>&1; then \
-		sudo apt install -y podman podman-compose && \
+		sudo apt -y install podman podman-compose && \
 		sudo sysctl net.ipv4.ip_unprivileged_port_start=$(BASEPORT) && \
 		echo "net.ipv4.ip_unprivileged_port_start=$(BASEPORT)" | sudo tee /etc/sysctl.d/10-podman.conf > /dev/null && \
 		sudo loginctl enable-linger $(PODMAN_USER) && \
