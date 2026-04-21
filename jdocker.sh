@@ -57,12 +57,12 @@ process() {
         fi
         ;;
       pull)
-        echo && warning "Récupération des images pour $app..."
+        echo && warning "Pull des images pour $app..."
         while IFS= read -r image; do
           if podman pull "$image"; then
-            message "Nouvelle image récupérée : $image"
+            message "Pull terminé pour $image"
           else
-            error "Erreur lors de la récupération de l'image : $image"
+            error "Erreur de pull pour $image"
           fi
         done < <(grep "image:" $composedir/$app/compose.yml | awk '{print $2}' | grep -v "^localhost")
         ;;
@@ -194,7 +194,7 @@ case $1 in
   u | unshare)
     shift
     if [ $# -eq 0 ]; then
-      podman unshare bash --rcfile <(echo '
+      podman unshare bash --rcfile <(printf '
       source ~/.bashrc
       PS1="\[\033[01;33m\]unshare@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] "
       ')
