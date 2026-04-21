@@ -57,14 +57,14 @@ process() {
         fi
         ;;
       pull)
-        if ! grep -q "image:.*localhost" $composedir/$app/compose.yml; then
-          echo && warning "Récupération de la nouvelle image de $app..."
-          if podman pull "$(grep "image:" $composedir/$app/compose.yml | awk '{print $2}')"; then
-            message "Nouvelle image de $app récupérée"
+        echo && warning "Récupération des images pour $app..."
+        while IFS= read -r image; do
+          if podman pull "$image"; then
+            message "Nouvelle image récupérée : $image"
           else
-            error "Erreur lors de la récupération de l'image de $app"
+            error "Erreur lors de la récupération de l'image : $image"
           fi
-        fi
+        done < <(grep "image:" $composedir/$app/compose.yml | awk '{print $2}' | grep -v "^localhost")
         ;;
       backup)
         restartafter=0
