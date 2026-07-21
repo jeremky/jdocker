@@ -12,7 +12,7 @@ _jdocker_completion() {
   words=("${COMP_WORDS[@]}")
   cword=$COMP_CWORD
 
-  _commands="list networks volumes images logs load install remove restart purge purgeall attach pull upgrade ps stats bash backup unshare help"
+  _commands="list networks volumes images logs load install remove start stop restart purge purgeall attach pull upgrade ps stats bash backup unshare help"
 
    if [[ "$cword" -eq 1 ]]; then
     COMPREPLY=($(compgen -W "$_commands" -- "$cur"))
@@ -38,7 +38,7 @@ _jdocker_completion() {
     lo|load)
       all_apps=$(ls ${imagesdir} 2>/dev/null)
       ;;
-    r|restart)
+    r|restart|st|start|sp|stop)
       all_apps=$(podman container ls -a --noheading --format "table {{.Names}}")
       ;;
   esac
