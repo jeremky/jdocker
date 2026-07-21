@@ -81,6 +81,8 @@ Commandes disponibles :
   lo  | load            Charger une ou plusieurs images locales spécifiées
   it  | install         Installer un conteneur avec compose
   rm  | remove          Supprimer un conteneur avec compose
+  st  | start           Démarrer un conteneur
+  sp  | stop            Arrêter un conteneur
   r   | restart         Redémarrer un conteneur
   pr  | purge           Purger les images et les réseaux non utilisés
   pra | purgeall        Purger également les volumes non utilisés
