@@ -71,14 +71,14 @@ process() {
           mkdir -p "$backupsdir/$app"
           echo && warning "Sauvegarde de $app..."
           bckfile=$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
-          if podman unshare bash -c "tar -C $volumesdir -czf $bckfile $app && chown root: $bckfile"; then
+          if podman unshare bash -c "tar -C $volumesdir -czf $bckfile $app && chown root:root $bckfile"; then
             find $backupsdir/$app -name "$app.*.gz" -mtime +$backupdays -exec rm {} \;
             ls $bckfile
             message "Sauvegarde de $app terminée"
           else
             error "Erreur lors de la sauvegarde de $app"
           fi
-          if (($restartafter)); then
+          if ((restartafter)); then
             process install $app
           fi
         fi
