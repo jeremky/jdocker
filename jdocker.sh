@@ -22,7 +22,7 @@ checkarg() {
 }
 
 process() {
-  local action=$1
+  local action="$1"
   shift
   for app in "$@"; do
     if [[ ! -f "$composedir/$app/compose.yml" ]]; then
@@ -30,11 +30,11 @@ process() {
       error "Fichier compose.yml pour $app introuvable, $action impossible"
       continue
     fi
-    case $action in
+    case "$action" in
       install)
-        if ! podman container exists $app; then
+        if ! podman container exists "$app"; then
           echo && warning "Déploiement de $app..."
-          if podman-compose -f $composedir/$app/compose.yml up -d; then
+          if podman-compose -f "$composedir/$app/compose.yml" up -d; then
             message "Application $app déployée"
           else
             error "Erreur lors du déploiement de $app"
@@ -44,9 +44,9 @@ process() {
         fi
         ;;
       remove)
-        if podman container exists $app; then
+        if podman container exists "$app"; then
           echo && warning "Suppression de $app..."
-          if podman-compose -f $composedir/$app/compose.yml down; then
+          if podman-compose -f "$composedir/$app/compose.yml" down; then
             message "Application $app supprimée"
           else
             error "Erreur lors de la suppression de $app"
@@ -59,27 +59,27 @@ process() {
         echo && warning "Pull des images pour $app..."
         while IFS= read -r image; do
           podman pull "$image" || error "Erreur de pull pour $image"
-        done < <(grep "image:" $composedir/$app/compose.yml | awk '{print $2}' | grep -v "^localhost")
+        done < <(grep "image:" "$composedir/$app/compose.yml" | awk '{print $2}' | grep -v "^localhost")
         ;;
       backup)
         restartafter=0
         if [[ -d "$volumesdir/$app" ]]; then
-          if podman container exists $app; then
+          if podman container exists "$app"; then
             restartafter=1
-            process remove $app
+            process remove "$app"
           fi
           mkdir -p "$backupsdir/$app"
           echo && warning "Sauvegarde de $app..."
-          bckfile=$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz
-          if podman unshare bash -c "tar -C $volumesdir -czf $bckfile $app && chown root:root $bckfile"; then
-            find $backupsdir/$app -name "$app.*.gz" -mtime +$backupdays -exec rm {} \;
-            ls $bckfile
+          bckfile="$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz"
+          if podman unshare bash -c "tar -C \"$volumesdir\" -czf \"$bckfile\" \"$app\" && chown root:root \"$bckfile\""; then
+            find "$backupsdir/$app" -name "$app.*.gz" -mtime "+$backupdays" -exec rm {} \;
+            ls "$bckfile"
             message "Sauvegarde de $app terminée"
           else
             error "Erreur lors de la sauvegarde de $app"
           fi
           if ((restartafter)); then
-            process install $app
+            process install "$app"
           fi
         fi
         ;;
@@ -88,9 +88,9 @@ process() {
 }
 
 purge() {
-  options=$*
+  local options=("$@")
   echo && warning "Suppression des données non utilisées..."
-  if podman system prune $options; then
+  if podman system prune "${options[@]}"; then
     message "Nettoyage terminé"
   else
     error "Erreur lors du nettoyage"
@@ -98,7 +98,7 @@ purge() {
 }
 
 # Commandes
-case $1 in
+case "$1" in
   ls | list)
     podman container ls -a --format "table {{.Names}}   {{.Status}}"
     ;;
@@ -157,12 +157,12 @@ case $1 in
     shift
     checkarg "$@" || exit 1
     for app in "$@"; do
-      process pull $app
-      process remove $app
-      [[ $autobackup = true ]] && process backup $app
-      process install $app
+      process pull "$app"
+      process remove "$app"
+      [[ "$autobackup" = true ]] && process backup "$app"
+      process install "$app"
     done
-    [[ $autoclean = true ]] && purge -a -f
+    [[ "$autoclean" = true ]] && purge -a -f
     echo
     ;;
   p | pull)
