@@ -175,15 +175,19 @@ case $1 in
     fi
     ;;
   l | logs)
-    if [[ -z "$3" ]]; then
-      podman logs -f $2
+    shift
+    checkarg "$@" || exit 1
+    if [[ -z "$2" ]]; then
+      podman logs -f "$1"
     else
-      podman logs --since=$3 $2
+      podman logs --since="$2" "$1"
     fi
     ;;
   at | attach)
+    shift
+    checkarg "$@" || exit 1
     echo && warning "Ctrl+p, Ctrl+q pour quitter"
-    podman attach $2
+    podman attach "$1"
     ;;
   ps | lsa)
     podman container ls -a --format "table {{.ID}} {{.Names}} {{.Image}} {{.CreatedHuman}} {{.Status}} {{.Ports}}"
@@ -192,7 +196,9 @@ case $1 in
     podman stats --format "table {{.Name}}  {{.CPUPerc}}  {{.MemPerc}}  {{.MemUsage}}  {{.NetIO}}"
     ;;
   sh | bash)
-    podman exec -it $2 sh
+    shift
+    checkarg "$@" || exit 1
+    podman exec -it "$1" sh
     ;;
   n | networks)
     podman network ls
@@ -215,11 +221,10 @@ case $1 in
     podman volume ls
     ;;
   bk | backup)
-    if [[ -n "$2" ]]; then
-      shift
-      process backup "$@"
-      echo
-    fi
+    shift
+    checkarg "$@" || exit 1
+    process backup "$@"
+    echo
     ;;
   *)
     echo
