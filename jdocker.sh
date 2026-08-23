@@ -59,7 +59,7 @@ process() {
         echo && warning "Pull des images pour $app..."
         while IFS= read -r image; do
           podman pull "$image" || error "Erreur de pull pour $image"
-        done < <(grep "image:" "$composedir/$app/compose.yml" | awk '{print $2}' | grep -v "^localhost")
+        done < <(grep 'image:' "$composedir/$app/compose.yml" | awk '{print $2}' | grep -v "^localhost")
         ;;
       backup)
         restartafter=0
