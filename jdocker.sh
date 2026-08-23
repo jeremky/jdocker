@@ -21,6 +21,12 @@ checkarg() {
   fi
 }
 
+log() {
+  local logfile="$HOME/.local/state/jdocker/jdocker.log"
+  mkdir -p "$(dirname "$logfile")"
+  echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >> "$logfile"
+}
+
 process() {
   local action="$1"
   shift
@@ -70,17 +76,23 @@ process() {
           fi
           mkdir -p "$backupsdir/$app"
           echo && warning "Sauvegarde de $app..."
+          log "Sauvegarde de $app démarrée"
           bckfile="$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz"
           if podman unshare bash -c "tar -C \"$volumesdir\" -czf \"$bckfile\" \"$app\" && chown root:root \"$bckfile\""; then
             find "$backupsdir/$app" -name "$app.*.gz" -mtime "+$backupdays" -exec rm {} \;
             ls "$bckfile"
             message "Sauvegarde de $app terminée"
+            log "Sauvegarde de $app terminée : $bckfile"
           else
             error "Erreur lors de la sauvegarde de $app"
+            log "Erreur lors de la sauvegarde de $app"
           fi
           if ((restartafter)); then
             process install "$app"
           fi
+        else
+          warning "Aucun volume trouvé pour $app, sauvegarde ignorée"
+          log "Aucun volume trouvé pour $app, sauvegarde ignorée"
         fi
         ;;
     esac
@@ -90,10 +102,13 @@ process() {
 purge() {
   local options=("$@")
   echo && warning "Suppression des données non utilisées..."
+  log "Purge démarrée (options: ${options[*]})"
   if podman system prune "${options[@]}"; then
     message "Nettoyage terminé"
+    log "Purge terminée (options: ${options[*]})"
   else
     error "Erreur lors du nettoyage"
+    log "Erreur lors de la purge (options: ${options[*]})"
   fi
 }
 
@@ -157,10 +172,12 @@ case "$1" in
     shift
     checkarg "$@" || exit 1
     for app in "$@"; do
+      log "Mise à jour de $app démarrée"
       process pull "$app"
       process remove "$app"
       [[ "$autobackup" = true ]] && process backup "$app"
       process install "$app"
+      log "Mise à jour de $app terminée"
     done
     [[ "$autoclean" = true ]] && purge -a -f
     echo
