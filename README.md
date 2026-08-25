@@ -14,11 +14,12 @@ Avant d'installer ce script, vous devez tout d'abord adapter le fichier `jdocker
 - `backupdays` : la durée de rétention pour des sauvegardes
 - Les différents répertoires où sont stockées les données (les fichiers `compose.yml`, les backups, les volumes...)
 
-Ce fichier de config sera modifiable à posteriori à l'emplacement suivant : `$HOME/.config/jdocker/jdocker.cfg`
+Ce fichier de config sera modifiable à posteriori à l'emplacement suivant : `~/.config/jdocker/jdocker.cfg`
 
 ```txt
 # jdocker config
 autobackup=false
+logging=true
 autoclean=true
 backupdays=7
 
@@ -112,3 +113,7 @@ jdocksh=$PODMAN_HOME/.local/bin/jdocker
 # app2
 0 1 * * *  $PODMAN_USER $jdocksh bk app2 >/dev/null 2>&1
 ```
+
+## Logs
+
+Si l'option de log est activée, un fichier de log des tâches effectuées est disponible ici : `~/.local/state/jdocker/jdocker.log`
