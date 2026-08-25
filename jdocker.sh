@@ -24,7 +24,7 @@ checkarg() {
 log() {
   local logfile="$HOME/.local/state/jdocker/jdocker.log"
   mkdir -p "$(dirname "$logfile")"
-  echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >> "$logfile"
+  echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >>"$logfile"
 }
 
 process() {
