@@ -5,13 +5,15 @@ BINDIR = $(PODMAN_HOME)/.local/bin
 CONFDIR = $(PODMAN_HOME)/.config/jdocker
 COMPDIR = $(PODMAN_HOME)/.local/share/bash-completion/completions
 
+PKGMAN := $(shell command -v apt >/dev/null 2>&1 && echo apt || echo dnf)
+
 BASEPORT ?= 80
 
 .PHONY: install uninstall
 
 install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
-	@if ! which podman > /dev/null 2>&1; then \
-		sudo apt -y install podman podman-compose && \
+	@if ! command -v podman-compose > /dev/null 2>&1; then \
+		sudo $(PKGMAN) -y install podman podman-compose && \
 		sudo sysctl net.ipv4.ip_unprivileged_port_start=$(BASEPORT) && \
 		echo "net.ipv4.ip_unprivileged_port_start=$(BASEPORT)" | sudo tee /etc/sysctl.d/10-podman.conf > /dev/null && \
 		sudo loginctl enable-linger $(PODMAN_USER) && \
@@ -30,6 +32,11 @@ install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 	@if [ ! -f /etc/cron.d/jdocker ]; then \
 		export PODMAN_USER=$(PODMAN_USER) PODMAN_HOME=$(PODMAN_HOME) && \
 		envsubst '$$PODMAN_USER $$PODMAN_HOME' < jdocker.cron | sudo tee /etc/cron.d/jdocker > /dev/null; \
+	fi
+
+	@if [ ! -f $(PODMAN_HOME)/.config/containers/mounts.conf ] && [ "$(PKGMAN)" = "dnf" ]; then \
+		sudo mkdir -p $(PODMAN_HOME)/.config/containers && \
+		sudo touch $(PODMAN_HOME)/.config/containers/mounts.conf; \
 	fi
 
 	@if [ ! -f $(CONFDIR)/jdocker.cfg ]; then \

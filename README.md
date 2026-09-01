@@ -2,7 +2,7 @@
 
 > jdocker a été entièrement revu : le script s'installe désormais comme un vrai binaire via make install, en respectant les conventions Linux standard (`~/.local/bin`, `~/.config`)
 
-Ce script permet une l'installation et une administration plus simplifiée des conteneurs Podman en mode rootless sur un système Debian.
+Ce script permet une l'installation et une administration plus simplifiée des conteneurs Podman en mode rootless sur un système Debian, RHEL et dérivés.
 Les fichiers de déploiement sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `compose.yml`.
 
 ## Configuration
@@ -106,6 +106,7 @@ Pour automatiser vos sauvegardes, adaptez le fichier `/etc/cron.d/jdocker` selon
 ```txt
 # jdocker cron
 jdocksh=$PODMAN_HOME/.local/bin/jdocker
+jdocklog=$PODMAN_HOME/.local/state/jdocker/jdocker.log
 
 # app1
 0 0 * * *  $PODMAN_USER $jdocksh bk app1 >/dev/null 2>&1
