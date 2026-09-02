@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Messages en couleur
-error() { echo -e "\033[0;31m====> $*\033[0m"; }
-message() { echo -e "\033[0;32m====> $*\033[0m"; }
-warning() { echo -e "\033[0;33m====> $*\033[0m"; }
+error() { echo -e "\033[0;36m──────────\033[0m\n\033[0;31m❱ $*\033[0m"; }
+message() { echo -e "\033[0;36m──────────\033[0m\n\033[0;32m❱ $*\033[0m"; }
+warning() { echo -e "\033[0;36m──────────\033[0m\n\033[0;33m❱ $*\033[0m"; }
 
 # Chargement du fichier de config
 cfg="$HOME/.config/jdocker/jdocker.cfg"
