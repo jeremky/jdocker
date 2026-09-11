@@ -40,7 +40,7 @@ process() {
     case "$action" in
       install)
         if ! podman container exists "$app"; then
-          echo && warning "Déploiement de $app..."
+          echo && warning "Déploiement de $app"
           if podman compose -f "$composedir/$app/compose.yml" up -d; then
             message "Application $app déployée"
           else
@@ -52,7 +52,7 @@ process() {
         ;;
       remove)
         if podman container exists "$app"; then
-          echo && warning "Suppression de $app..."
+          echo && warning "Suppression de $app"
           if podman compose -f "$composedir/$app/compose.yml" down; then
             message "Application $app supprimée"
           else
@@ -63,7 +63,7 @@ process() {
         fi
         ;;
       pull)
-        echo && warning "Pull des images pour $app..."
+        echo && warning "Pull des images pour $app"
         while IFS= read -r image; do
           podman pull "$image" || error "Erreur de pull pour $image"
         done < <(grep 'image:' "$composedir/$app/compose.yml" | awk '{print $2}' | grep -v "^localhost")
@@ -77,7 +77,7 @@ process() {
             process remove "$app"
           fi
           mkdir -p "$backupsdir/$app"
-          echo && warning "Sauvegarde de $app..."
+          echo && warning "Sauvegarde de $app"
           log "Sauvegarde de $app démarrée"
           bckfile="$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz"
           if podman unshare bash -c "tar -C \"$volumesdir\" -czf \"$bckfile\" \"$app\" && chown root:root \"$bckfile\""; then
@@ -103,7 +103,7 @@ process() {
 
 purge() {
   local options=("$@")
-  echo && warning "Suppression des données non utilisées..."
+  echo && warning "Suppression des données non utilisées"
   log "Purge démarrée (options: ${options[*]})"
   if podman system prune "${options[@]}"; then
     message "Nettoyage terminé"
