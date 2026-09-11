@@ -171,7 +171,11 @@ case "$1" in
       process install "$app"
       log "Mise à jour de $app terminée"
     done
-    [[ "$autoclean" = true ]] && echo && purge -a -f
+    if [[ "$autoclean" = true ]]; then
+      echo && warning "Ménage automatique"
+      purge -a -f
+      message "Ménage terminé"
+    fi
     echo
     ;;
   p | pull)
