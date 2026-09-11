@@ -62,15 +62,7 @@ process() {
         fi
         ;;
       pull)
-        images=$(grep 'image:' "$composedir/$app/compose.yml" | awk '{print $2}' | grep -v "^localhost")
-        if [[ -z "$images" ]]; then
-          continue
-        fi
-        echo && warning "Pull des images pour $app"
-        while IFS= read -r image; do
-          podman pull "$image" || error "Erreur de pull pour $image"
-        done <<<"$images"
-        message "Pull des images terminé"
+        podman compose -f "$composedir/$app/compose.yml" pull || error "Erreur lors du pull des images pour $app"
         ;;
       backup)
         restartafter=0
@@ -106,13 +98,10 @@ process() {
 
 purge() {
   local options=("$@")
-  echo && warning "Suppression des données non utilisées"
   log "Purge démarrée (options: ${options[*]})"
   if podman system prune "${options[@]}"; then
-    message "Nettoyage terminé"
     log "Purge terminée (options: ${options[*]})"
   else
-    error "Erreur lors du nettoyage"
     log "Erreur lors de la purge (options: ${options[*]})"
   fi
 }
@@ -157,11 +146,9 @@ case "$1" in
     ;;
   pr | purge)
     purge -a -f
-    echo
     ;;
   pra | purgeall)
     purge -a --volumes
-    echo
     ;;
   lo | load)
     shift
@@ -184,7 +171,7 @@ case "$1" in
       process install "$app"
       log "Mise à jour de $app terminée"
     done
-    [[ "$autoclean" = true ]] && purge -a -f
+    [[ "$autoclean" = true ]] && echo && purge -a -f
     echo
     ;;
   p | pull)
