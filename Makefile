@@ -5,13 +5,17 @@ BINDIR = $(PODMAN_HOME)/.local/bin
 CONFDIR = $(PODMAN_HOME)/.config/jdocker
 COMPDIR = $(PODMAN_HOME)/.local/share/bash-completion/completions
 
-PKGMAN := $(shell command -v apt >/dev/null 2>&1 && echo apt || echo dnf)
+PKGMAN := $(shell command -v apt >/dev/null 2>&1 && echo apt || (command -v dnf >/dev/null 2>&1 && echo dnf))
 
 BASEPORT ?= 80
 
 .PHONY: install uninstall
 
 install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
+	@if [ -z "$(PKGMAN)" ]; then \
+		echo "Erreur : aucun gestionnaire de paquets supporté détecté" >&2 ; \
+		exit 1; \
+	fi
 	@if ! command -v podman-compose > /dev/null 2>&1; then \
 		sudo $(PKGMAN) -y install podman podman-compose && \
 		sudo sysctl net.ipv4.ip_unprivileged_port_start=$(BASEPORT) && \
