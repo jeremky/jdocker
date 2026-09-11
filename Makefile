@@ -34,10 +34,9 @@ install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 		envsubst '$$PODMAN_USER $$PODMAN_HOME' < jdocker.cron | sudo tee /etc/cron.d/jdocker > /dev/null; \
 	fi
 
-	@if [ ! -f $(PODMAN_HOME)/.config/containers/mounts.conf ] && [ "$(PKGMAN)" = "dnf" ]; then \
-		sudo mkdir -p $(PODMAN_HOME)/.config/containers && \
-		sudo touch $(PODMAN_HOME)/.config/containers/mounts.conf; \
-	fi
+	@sudo mkdir -p $(PODMAN_HOME)/.config/containers
+	@[ -f $(PODMAN_HOME)/.config/containers/mounts.conf ] || sudo touch $(PODMAN_HOME)/.config/containers/mounts.conf
+	@[ -f $(PODMAN_HOME)/.config/containers/containers.conf ] || printf '[engine]\ncompose_warning_logs = false\n' | sudo tee $(PODMAN_HOME)/.config/containers/containers.conf > /dev/null
 
 	@if [ ! -f $(CONFDIR)/jdocker.cfg ]; then \
 		sudo install -m 644 -D jdocker.cfg $(CONFDIR)/jdocker.cfg; \
