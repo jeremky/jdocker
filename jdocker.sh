@@ -41,7 +41,7 @@ process() {
       install)
         if ! podman container exists "$app"; then
           echo && warning "Déploiement de $app..."
-          if podman-compose -f "$composedir/$app/compose.yml" up -d; then
+          if podman compose -f "$composedir/$app/compose.yml" up -d; then
             message "Application $app déployée"
           else
             error "Erreur lors du déploiement de $app"
@@ -53,7 +53,7 @@ process() {
       remove)
         if podman container exists "$app"; then
           echo && warning "Suppression de $app..."
-          if podman-compose -f "$composedir/$app/compose.yml" down; then
+          if podman compose -f "$composedir/$app/compose.yml" down; then
             message "Application $app supprimée"
           else
             error "Erreur lors de la suppression de $app"
