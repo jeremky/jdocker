@@ -62,10 +62,14 @@ process() {
         fi
         ;;
       pull)
+        images=$(grep 'image:' "$composedir/$app/compose.yml" | awk '{print $2}' | grep -v "^localhost")
+        if [[ -z "$images" ]]; then
+          continue
+        fi
         echo && warning "Pull des images pour $app"
         while IFS= read -r image; do
           podman pull "$image" || error "Erreur de pull pour $image"
-        done < <(grep 'image:' "$composedir/$app/compose.yml" | awk '{print $2}' | grep -v "^localhost")
+        done <<<"$images"
         message "Pull des images terminé"
         ;;
       backup)
@@ -189,7 +193,7 @@ case "$1" in
       process pull "$@"
       echo
     else
-      podman images --format "{{.Repository}}:{{.Tag}}" | grep -v '^localhost' | xargs -r -L1 podman pull
+      podman images --format "{{.Repository}}:{{.Tag}}" | grep -v '^localhost' | grep -v '<none>' | xargs -r -L1 podman pull
     fi
     ;;
   l | logs)
