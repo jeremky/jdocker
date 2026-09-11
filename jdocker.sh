@@ -98,9 +98,8 @@ process() {
 
 purge() {
   local options=("$@")
-  log "Purge démarrée (options: ${options[*]})"
   if podman system prune "${options[@]}"; then
-    log "Purge terminée (options: ${options[*]})"
+    log "Purge effectué (options: ${options[*]})"
   else
     log "Erreur lors de la purge (options: ${options[*]})"
   fi
