@@ -34,7 +34,7 @@ imagesdir=$HOME/images
 
 ## Installation
 
-L'installation va automatiquement déployer `podman` et un fournisseur `compose` (`podman-compose` ou `docker-compose`), et effectuer la configuration pour autoriser votre utilisateur à exploiter correctement Podman.
+L'installation va automatiquement déployer `podman` et `podman-compose`, et effectuer la configuration pour autoriser votre utilisateur à exploiter correctement Podman.
 
 ### Utilisateur actuel
 
