@@ -240,7 +240,7 @@ case "$1" in
     ;;
   *)
     echo
-    message "Commandes disponibles :"
+    warning "Commandes disponibles :"
     cat <<'EOF'
     ls  | list            Lister les conteneurs actifs
     n   | networks        Lister les réseaux virtuels
