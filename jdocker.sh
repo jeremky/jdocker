@@ -87,9 +87,6 @@ process() {
           if ((restartafter)); then
             process install "$app"
           fi
-        else
-          warning "Aucun volume trouvé pour $app, sauvegarde ignorée"
-          log "Aucun volume trouvé pour $app, sauvegarde ignorée"
         fi
         ;;
     esac
