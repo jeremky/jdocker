@@ -13,7 +13,7 @@ BASEPORT ?= 80
 
 install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 	@if [ -z "$(PKGMAN)" ]; then \
-		echo "Erreur : aucun gestionnaire de paquets supporté détecté" >&2 ; \
+		echo "Error: no supported package manager detected" >&2 ; \
 		exit 1; \
 	fi
 	@if ! command -v podman-compose > /dev/null 2>&1; then \
@@ -25,12 +25,12 @@ install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 			systemctl --user enable --now podman-restart.service podman.socket; \
 		else \
 			echo && \
-			echo "Pour activer les services Podman, lancer la commande suivante en tant que $(PODMAN_USER) :" && \
+			echo "To enable Podman services, run the following command as $(PODMAN_USER):" && \
 			echo "  systemctl --user enable --now podman-restart.service podman.socket" && \
 			echo; \
 		fi; \
 	else \
-		echo "Podman est déjà installé"; \
+		echo "Podman is already installed"; \
 	fi
 
 	@if [ ! -f /etc/cron.d/jdocker ]; then \
@@ -55,7 +55,7 @@ install: jdocker.sh jdocker.cfg jdocker.cron .jdocker.comp
 	@sudo chown -R $(PODMAN_USER): $(PODMAN_HOME)/.config $(PODMAN_HOME)/.local
 	@sudo -u $(PODMAN_USER) bash -c '. $(CONFDIR)/jdocker.cfg && \
 			mkdir -p $$composedir $$volumesdir $$backupsdir $$imagesdir'
-	@echo "Installation de jdocker effectuée. Redémarrez la session bash"
+	@echo "jdocker installed. Restart your bash session"
 
 uninstall:
 	@sudo rm -f /etc/sysctl.d/10-podman.conf
@@ -63,4 +63,4 @@ uninstall:
 	@sudo rm -f $(BINDIR)/jdocker
 	@sudo rm -f $(COMPDIR)/jdocker
 	@sudo rm -fr $(CONFDIR)
-	@echo "Suppression de jdocker effectuée"
+	@echo "jdocker removed"

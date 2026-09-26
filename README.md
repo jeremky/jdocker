@@ -1,20 +1,21 @@
 # jdocker
 
-> jdocker a été entièrement revu : le script s'installe désormais comme un vrai binaire via make install, en respectant les conventions Linux standard (`~/.local/bin`, `~/.config`)
+> jdocker has been fully reworked: the script now installs as a real binary via `make install`, following standard Linux conventions (`~/.local/bin`, `~/.config`)
 
-Ce script permet une l'installation et une administration plus simplifiée des conteneurs Podman en mode rootless sur un système Debian, RHEL et dérivés.
-Les fichiers de déploiement sont centralisés dans le répertoire de votre choix, ce qui permet de les déployer facilement, sans avoir besoin d'être dans le dossier où se trouve le fichier `compose.yml`.
+This script makes it easier to install and manage rootless Podman containers on Debian, RHEL and derivatives.
+Deployment files are kept in a directory of your choice, so you can deploy them easily without having to be in the directory containing the `compose.yml` file.
 
 ## Configuration
 
-Avant d'installer ce script, vous devez tout d'abord adapter le fichier `jdocker.cfg` selon vos préférences :
+Before installing this script, first adjust the `jdocker.cfg` file to suit your preferences:
 
-- `autobackup` : Sauvegarde automatique des volumes externes lors d'une mise à jour
-- `autoclean` : Suppression automatique des images après mise à jour
-- `backupdays` : la durée de rétention pour des sauvegardes
-- Les différents répertoires où sont stockées les données (les fichiers `compose.yml`, les backups, les volumes...)
+- `autobackup`: automatically back up external volumes during an upgrade
+- `logging`: write completed tasks to a log file
+- `autoclean`: automatically remove images after an upgrade
+- `backupdays`: backup retention period, in days
+- The directories where data is stored (`compose.yml` files, backups, volumes...)
 
-Ce fichier de config sera modifiable à posteriori à l'emplacement suivant : `~/.config/jdocker/jdocker.cfg`
+This config file can be edited later at: `~/.config/jdocker/jdocker.cfg`
 
 ```txt
 # jdocker config
@@ -29,30 +30,30 @@ backupsdir=$HOME/backups
 imagesdir=$HOME/images
 ```
 
-> le dossier `composedir` doit contenir un sous dossier pour chaque application, avec un fichier `compose.yml` à l'intérieur.
-> Par exemple : `~/compose/app1/compose.yml`
+> The `composedir` directory must contain one subdirectory per application, each with a `compose.yml` file inside.
+> For example: `~/compose/app1/compose.yml`
 
 ## Installation
 
-L'installation va automatiquement déployer `podman` et `podman-compose`, et effectuer la configuration pour autoriser votre utilisateur à exploiter correctement Podman.
+The installation automatically sets up `podman` and `podman-compose`, and configures your user to run Podman properly.
 
-### Utilisateur actuel
+### Current user
 
-Si votre utilisateur dispose des droits sudo :
+If your user has sudo privileges:
 
 ```bash
 make install
 ```
 
-### Utilisateur sans sudo
+### User without sudo
 
-Dans le cas contraire, il faut exécuter en tant que `root` et préciser pour quel utilisateur installer l'application :
+Otherwise, run it as `root` and specify which user to install the application for:
 
 ```bash
 sudo make install PODMAN_USER=<user>
 ```
 
-Comme indiqué à la fin de l'installation, pensez à activer les services liés à Podman. Contrairement à l'installation classique, l'activation de ces services n'est pas automatique :
+As shown at the end of the installation, remember to enable the Podman services. Unlike the standard installation, these services are not enabled automatically:
 
 ```bash
 systemctl --user enable --now podman-restart.service podman.socket
@@ -60,48 +61,48 @@ systemctl --user enable --now podman-restart.service podman.socket
 
 ### Port
 
-Par défaut, un utilisateur standard ne peut pas utiliser un port inférieur à 1024. l'installation va permettre de modifier ce paramètre pour l'utilisation des ports à partir de 80. Si vous désirez changer cette valeur :
+By default, a regular user can't use ports below 1024. The installation changes this setting to allow ports from 80 upward. To use a different value:
 
 ```bash
 sudo make install PODMAN_USER=<user> BASEPORT=<port>
 ```
 
-## Utilisation
+## Usage
 
-Une fois installé, `jdocker` est utilisable directement depuis votre terminal.
+Once installed, `jdocker` can be run directly from your terminal.
 
-Pour consulter l'aide, lancez `jdocker` sans paramètre :
+To see the help, run `jdocker` without arguments:
 
 ```txt
-Commandes disponibles :
-  ls  | list            Lister les conteneurs actifs
-  n   | networks        Lister les réseaux virtuels
-  v   | volumes         Lister les volumes virtuels
-  i   | images          Lister les images
-  l   | logs            Consulter les logs pour un conteneur spécifié
-  lo  | load            Charger une ou plusieurs images locales spécifiées
-  it  | install         Installer un conteneur avec compose
-  rm  | remove          Supprimer un conteneur avec compose
-  st  | start           Démarrer un conteneur
-  sp  | stop            Arrêter un conteneur
-  r   | restart         Redémarrer un conteneur
-  pr  | purge           Purger les images et les réseaux non utilisés
-  pra | purgeall        Purger également les volumes non utilisés
-  at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
-  p   | pull            Récupérer la dernière version de l'image d'un conteneur spécifié
-  up  | upgrade         Télécharger la dernière image et mettre à jour un conteneur spécifié
-  ps  | lsa             Afficher les informations détaillées des conteneurs
-  s   | stats           Afficher les statistiques en temps réel des conteneurs
-  sh  | bash            Se connecter au bash d'un conteneur spécifié
-  bk  | backup          Sauvegarder un conteneur spécifié
-  u   | unshare         Basculer l'ID via la commande podman unshare
-  h   | help            Afficher cette aide
+Available commands:
+  ls  | list            List active containers
+  n   | networks        List virtual networks
+  v   | volumes         List virtual volumes
+  i   | images          List images
+  l   | logs            Show logs for a given container
+  lo  | load            Load one or more given local images
+  it  | install         Install a container with compose
+  rm  | remove          Remove a container with compose
+  st  | start           Start a container
+  sp  | stop            Stop a container
+  r   | restart         Restart a container
+  pr  | purge           Purge unused images and networks
+  pra | purgeall        Also purge unused volumes
+  at  | attach          Attach to the open prompt of a given container
+  p   | pull            Pull the latest image of a given container
+  up  | upgrade         Download the latest image and upgrade a given container
+  ps  | lsa             Show detailed container information
+  s   | stats           Show real-time container statistics
+  sh  | bash            Open a shell in a given container
+  bk  | backup          Back up a given container
+  u   | unshare         Switch ID with podman unshare
+  h   | help            Show this help
 ```
 
-## Sauvegarde
+## Backup
 
-`jdocker` propose un système de sauvegarde des volumes externalisés.
-Pour automatiser vos sauvegardes, adaptez le fichier `/etc/cron.d/jdocker` selon vos préférences :
+`jdocker` provides a backup system for external volumes.
+To automate your backups, adjust `/etc/cron.d/jdocker` to suit your preferences:
 
 ```txt
 # jdocker cron
@@ -117,4 +118,4 @@ jdocklog=$PODMAN_HOME/.local/state/jdocker/jdocker.log
 
 ## Logs
 
-Si l'option de log est activée, un fichier de log des tâches effectuées est disponible ici : `~/.local/state/jdocker/jdocker.log`
+If logging is enabled, a log of completed tasks is available at: `~/.local/state/jdocker/jdocker.log`
