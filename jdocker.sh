@@ -259,7 +259,7 @@ case "$1" in
     s   | stats           Show real-time container statistics
     sh  | bash            Open a shell in a given container
     bk  | backup          Back up a given container
-    u   | unshare         Switch ID with podman unshare
+    u   | unshare         Enter a podman unshare shell
     h   | help            Show this help
 EOF
     echo
