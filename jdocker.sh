@@ -1,14 +1,14 @@
 #!/bin/bash -e
 
-# Messages en couleur
+# Colored messages
 error() { echo -e "\033[0;31m❯ $*\033[0m"; }
 message() { echo -e "\033[0;36m──────────\033[0m\n\033[0;32m❯ $*\033[0m"; }
 warning() { echo -e "\033[0;33m❯ $*\033[0m\n\033[0;36m──────────\033[0m"; }
 
-# Chargement du fichier de config
+# Load config file
 cfg="$HOME/.config/jdocker/jdocker.cfg"
 if [[ ! -f "$cfg" ]]; then
-  error "Fichier $cfg introuvable"
+  error "File $cfg not found"
   exit 1
 fi
 # shellcheck source=./jdocker.cfg
@@ -16,7 +16,7 @@ fi
 
 checkarg() {
   if [[ $# -eq 0 ]]; then
-    error "Aucune application spécifiée en paramètre"
+    error "No application specified"
     return 1
   fi
 }
@@ -33,36 +33,36 @@ process() {
   shift
   for app in "$@"; do
     if [[ ! -f "$composedir/$app/compose.yml" ]]; then
-      error "Fichier $composedir/$app/compose.yml introuvable"
+      error "File $composedir/$app/compose.yml not found"
       exit 1
     fi
     case "$action" in
       install)
         if ! podman container exists "$app"; then
-          echo && warning "Déploiement de $app"
+          echo && warning "Deploying $app"
           if podman compose -f "$composedir/$app/compose.yml" up -d; then
-            message "Application $app déployée"
+            message "Application $app deployed"
           else
-            error "Erreur lors du déploiement de $app"
+            error "Error while deploying $app"
           fi
         else
-          error "Application $app déjà déployée"
+          error "Application $app already deployed"
         fi
         ;;
       remove)
         if podman container exists "$app"; then
-          echo && warning "Suppression de $app"
+          echo && warning "Removing $app"
           if podman compose -f "$composedir/$app/compose.yml" down; then
-            message "Application $app supprimée"
+            message "Application $app removed"
           else
-            error "Erreur lors de la suppression de $app"
+            error "Error while removing $app"
           fi
         else
-          error "Application $app non déployée"
+          error "Application $app not deployed"
         fi
         ;;
       pull)
-        podman compose -f "$composedir/$app/compose.yml" pull || error "Erreur lors du pull des images pour $app"
+        podman compose -f "$composedir/$app/compose.yml" pull || error "Error while pulling images for $app"
         ;;
       backup)
         restartafter=0
@@ -72,17 +72,17 @@ process() {
             process remove "$app"
           fi
           mkdir -p "$backupsdir/$app"
-          echo && warning "Sauvegarde de $app"
-          log "Sauvegarde de $app démarrée"
+          echo && warning "Backing up $app"
+          log "Backup of $app started"
           bckfile="$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz"
           if podman unshare bash -c "tar -C \"$volumesdir\" -czf \"$bckfile\" \"$app\" && chown root:root \"$bckfile\""; then
             find "$backupsdir/$app" -name "$app.*.gz" -mtime "+$backupdays" -exec rm {} \;
             ls "$bckfile"
-            message "Sauvegarde de $app terminée"
-            log "Sauvegarde de $app terminée : $bckfile"
+            message "Backup of $app complete"
+            log "Backup of $app complete: $bckfile"
           else
-            error "Erreur lors de la sauvegarde de $app"
-            log "Erreur lors de la sauvegarde de $app"
+            error "Error while backing up $app"
+            log "Error while backing up $app"
           fi
           if ((restartafter)); then
             process install "$app"
@@ -96,13 +96,13 @@ process() {
 purge() {
   local options=("$@")
   if podman system prune "${options[@]}"; then
-    log "Purge effectué (options: ${options[*]})"
+    log "Purge complete (options: ${options[*]})"
   else
-    log "Erreur lors de la purge (options: ${options[*]})"
+    log "Error while purging (options: ${options[*]})"
   fi
 }
 
-# Commandes
+# Commands
 case "$1" in
   ls | list)
     podman container ls -a --format "table {{.Names}}   {{.Status}}"
@@ -150,7 +150,7 @@ case "$1" in
     shift
     for img in "$@"; do
       if [[ ! -f "$imagesdir/$img" ]]; then
-        error "Fichier $img non trouvé dans $imagesdir"
+        error "File $img not found in $imagesdir"
       else
         podman load -i "$imagesdir/$img"
       fi
@@ -160,17 +160,17 @@ case "$1" in
     shift
     checkarg "$@" || exit 1
     for app in "$@"; do
-      log "Mise à jour de $app démarrée"
+      log "Upgrade of $app started"
       process pull "$app"
       process remove "$app"
       [[ "$autobackup" = true ]] && process backup "$app"
       process install "$app"
-      log "Mise à jour de $app terminée"
+      log "Upgrade of $app complete"
     done
     if [[ "$autoclean" = true ]]; then
-      echo && warning "Ménage automatique"
+      echo && warning "Automatic cleanup"
       purge -a -f
-      message "Ménage terminé"
+      message "Cleanup complete"
     fi
     echo
     ;;
@@ -195,7 +195,7 @@ case "$1" in
   at | attach)
     shift
     checkarg "$@" || exit 1
-    echo && warning "Ctrl+p, Ctrl+q pour quitter"
+    echo && warning "Ctrl+p, Ctrl+q to detach"
     podman attach "$1"
     ;;
   ps | lsa)
@@ -237,30 +237,30 @@ case "$1" in
     ;;
   *)
     echo
-    warning "Commandes disponibles :"
+    warning "Available commands:"
     cat <<'EOF'
-    ls  | list            Lister les conteneurs actifs
-    n   | networks        Lister les réseaux virtuels
-    v   | volumes         Lister les volumes virtuels
-    i   | images          Lister les images
-    l   | logs            Consulter les logs pour un conteneur spécifié
-    lo  | load            Charger une ou plusieurs images locales spécifiées
-    it  | install         Installer un conteneur avec compose
-    rm  | remove          Supprimer un conteneur avec compose
-    st  | start           Démarrer un conteneur
-    sp  | stop            Arrêter un conteneur
-    r   | restart         Redémarrer un conteneur
-    pr  | purge           Purger les images et les réseaux non utilisés
-    pra | purgeall        Purger également les volumes non utilisés
-    at  | attach          S'attacher au prompt ouvert pour un conteneur spécifié
-    p   | pull            Récupérer la dernière version de l'image d'un conteneur spécifié
-    up  | upgrade         Télécharger la dernière image et mettre à jour un conteneur spécifié
-    ps  | lsa             Afficher les informations détaillées des conteneurs
-    s   | stats           Afficher les statistiques en temps réel des conteneurs
-    sh  | bash            Se connecter au bash d'un conteneur spécifié
-    bk  | backup          Sauvegarder un conteneur spécifié
-    u   | unshare         Basculer l'ID via la commande podman unshare
-    h   | help            Afficher cette aide
+    ls  | list            List active containers
+    n   | networks        List virtual networks
+    v   | volumes         List virtual volumes
+    i   | images          List images
+    l   | logs            Show logs for a given container
+    lo  | load            Load one or more given local images
+    it  | install         Install a container with compose
+    rm  | remove          Remove a container with compose
+    st  | start           Start a container
+    sp  | stop            Stop a container
+    r   | restart         Restart a container
+    pr  | purge           Purge unused images and networks
+    pra | purgeall        Also purge unused volumes
+    at  | attach          Attach to the open prompt of a given container
+    p   | pull            Pull the latest image of a given container
+    up  | upgrade         Download the latest image and upgrade a given container
+    ps  | lsa             Show detailed container information
+    s   | stats           Show real-time container statistics
+    sh  | bash            Open a shell in a given container
+    bk  | backup          Back up a given container
+    u   | unshare         Switch ID with podman unshare
+    h   | help            Show this help
 EOF
     echo
     ;;
