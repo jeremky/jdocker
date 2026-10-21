@@ -75,7 +75,12 @@ process() {
           echo && warning "Backing up $app"
           log "Backup of $app started"
           bckfile="$backupsdir/$app/$app.$(date '+%Y%m%d%H%M').tar.gz"
-          if podman unshare bash -c "tar -C \"$volumesdir\" -czf \"$bckfile\" \"$app\" && chown root:root \"$bckfile\""; then
+          if command -v pigz &>/dev/null; then
+            bckcommand="tar -I pigz -C \"$volumesdir\" -cf \"$bckfile\" \"$app\""
+          else
+            bckcommand="tar -C \"$volumesdir\" -czf \"$bckfile\" \"$app\""
+          fi
+          if podman unshare bash -c "$bckcommand"; then
             find "$backupsdir/$app" -name "$app.*.gz" -mtime "+$backupdays" -exec rm {} \;
             ls "$bckfile"
             message "Backup of $app complete"
